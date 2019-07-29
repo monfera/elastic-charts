@@ -2,9 +2,9 @@ import { inject } from 'mobx-react';
 import { PureComponent } from 'react';
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 import { getGroupId } from '../../../utils/ids';
-import { SpecProps } from '../../../specs/specs_parser';
+import { SettingSpecProps } from '../../../specs/settings';
 
-type RectAnnotationProps = SpecProps & RectAnnotationSpec;
+type RectAnnotationProps = RectAnnotationSpec;
 
 export class RectAnnotationSpecComponent extends PureComponent<RectAnnotationProps> {
   static defaultProps: Partial<RectAnnotationProps> = {

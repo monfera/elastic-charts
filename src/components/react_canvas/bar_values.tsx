@@ -1,10 +1,10 @@
 import React from 'react';
 import { Group, Rect, Text } from 'react-konva';
-import { BarGeometry } from '../../chart_types/xy_chart/rendering/rendering';
 import { Rotation } from '../../chart_types/xy_chart/utils/specs';
 import { DisplayValueStyle } from '../../utils/themes/theme';
 import { Dimensions } from '../../utils/dimensions';
 import { buildBarValueProps } from './utils/rendering_props_utils';
+import { BarGeometry } from '../../utils/geometry';
 
 interface BarValuesProps {
   chartDimensions: Dimensions;

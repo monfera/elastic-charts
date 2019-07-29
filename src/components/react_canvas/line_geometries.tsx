@@ -2,12 +2,7 @@ import { Group as KonvaGroup, ContainerConfig } from 'konva';
 import React from 'react';
 import { Circle, Group, Path } from 'react-konva';
 import { LegendItem } from '../../chart_types/xy_chart/legend/legend';
-import {
-  getGeometryStyle,
-  LineGeometry,
-  PointGeometry,
-  getGeometryIdKey,
-} from '../../chart_types/xy_chart/rendering/rendering';
+import { getGeometryStyle, getGeometryIdKey } from '../../chart_types/xy_chart/rendering/rendering';
 import { SharedGeometryStyle } from '../../utils/themes/theme';
 import {
   buildLineRenderProps,
@@ -15,6 +10,7 @@ import {
   PointStyleProps,
   buildPointRenderProps,
 } from './utils/rendering_props_utils';
+import { LineGeometry, PointGeometry } from '../../utils/geometry';
 
 interface LineGeometriesDataProps {
   animated?: boolean;

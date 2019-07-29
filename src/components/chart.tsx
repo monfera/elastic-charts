@@ -1,9 +1,7 @@
 import React, { CSSProperties } from 'react';
 import classNames from 'classnames';
-import { Provider } from 'mobx-react';
-
+import { Provider } from 'react-redux';
 import { SpecsParser } from '../specs/specs_parser';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
 import { AnnotationTooltip } from './annotation_tooltips';
 import { ChartResizer } from './chart_resizer';
 import { Crosshair } from './crosshair';
@@ -15,6 +13,8 @@ import { isHorizontal } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
+import { chartStoreReducer } from '../store/chart_store';
+import { createStore } from 'redux';
 
 interface ChartProps {
   /** The type of rendered
@@ -34,10 +34,11 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   static defaultProps: ChartProps = {
     renderer: 'canvas',
   };
-  private chartSpecStore: ChartStore;
+  private chartStore: any;
+  // private legendId: string;
   constructor(props: any) {
     super(props);
-    this.chartSpecStore = new ChartStore(props.id);
+    this.chartStore = createStore(chartStoreReducer);
     this.state = {
       legendPosition: this.chartSpecStore.legendPosition.get(),
     };
@@ -78,7 +79,7 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   }
 
   render() {
-    const { renderer, size, className } = this.props;
+    const { size, className } = this.props;
     const containerStyle = Chart.getContainerStyle(size);
     const Horizontal = isHorizontal(this.state.legendPosition);
     const chartClassNames = classNames('echChart', className, {
@@ -86,16 +87,14 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     });
 
     return (
-      <Provider chartStore={this.chartSpecStore}>
+      <Provider store={this.chartStore}>
         <div style={containerStyle} className={chartClassNames}>
           <Legend />
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
             <ChartResizer />
             <Crosshair />
-            {// TODO reenable when SVG rendered is aligned with canvas one
-            renderer === 'svg' && <ChartContainer />}
-            {renderer === 'canvas' && <ChartContainer />}
+            <ChartContainer />
             <Tooltips />
             <AnnotationTooltip />
             <Highlighter />

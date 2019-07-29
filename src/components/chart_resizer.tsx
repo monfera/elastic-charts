@@ -1,11 +1,13 @@
-import { inject, observer } from 'mobx-react';
 import React, { RefObject } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
 import { debounce } from 'ts-debounce';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+import { Dimensions } from '../utils/dimensions';
+import { UpdateParentDimensionAction, updateParentDimensions } from '../store/actions/chart_settings';
+import { Dispatch } from 'redux';
+import { connect } from 'react-redux';
 
 interface ResizerProps {
-  chartStore?: ChartStore;
+  updateParentDimensions(dimension: Dimensions): void;
 }
 class Resizer extends React.Component<ResizerProps> {
   private initialResizeComplete = false;
@@ -30,7 +32,7 @@ class Resizer extends React.Component<ResizerProps> {
 
   onResize = (entries: ResizeObserverEntry[]) => {
     entries.forEach(({ contentRect: { width, height } }) => {
-      this.props.chartStore!.updateParentDimensions(width, height, 0, 0);
+      this.props.updateParentDimensions({ width, height, top: 0, left: 0 });
     });
   };
 
@@ -48,4 +50,19 @@ class Resizer extends React.Component<ResizerProps> {
   };
 }
 
-export const ChartResizer = inject('chartStore')(observer(Resizer));
+const mapDispatchToProps = (dispatch: Dispatch<UpdateParentDimensionAction>) => {
+  return {
+    updateParentDimensions: (dimensions: Dimensions) => {
+      dispatch(updateParentDimensions(dimensions));
+    },
+  };
+};
+
+const mapStateToProps = () => {
+  return {};
+};
+
+export const ChartResizer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Resizer);

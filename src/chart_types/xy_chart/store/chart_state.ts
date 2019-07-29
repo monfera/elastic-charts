@@ -7,20 +7,11 @@ import {
   AxisTicksDimensions,
   computeAxisTicksDimensions,
   getAxisTicksPositions,
-  mergeYCustomDomainsByGroupId,
 } from '../utils/axis_utils';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import { XDomain } from '../domains/x_domain';
 import { YDomain } from '../domains/y_domain';
 import { computeLegend, LegendItem } from '../legend/legend';
-import {
-  AreaGeometry,
-  BarGeometry,
-  GeometryValue,
-  IndexedGeometry,
-  LineGeometry,
-  PointGeometry,
-} from '../rendering/rendering';
 import { countBarsInCluster } from '../utils/scales';
 import {
   DataSeriesColorsValues,
@@ -85,6 +76,15 @@ import {
   updateDeselectedDataSeries,
 } from './utils';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import {
+  GeometryValue,
+  PointGeometry,
+  BarGeometry,
+  AreaGeometry,
+  LineGeometry,
+  IndexedGeometry,
+} from '../../../utils/geometry';
+import { mergeYCustomDomainsByGroupId } from './reducers/merge_y_custom_domains';
 
 export interface Point {
   x: number;

@@ -1,4 +1,3 @@
-import { BarGeometry } from '../rendering/rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { DataSeriesColorsValues } from '../utils/series';
 import { BarSeriesSpec, BasicSeriesSpec, RectAnnotationSpec, Position } from '../utils/specs';
@@ -9,11 +8,14 @@ import { ScaleType } from '../../../utils/scales/scales';
 import { ChartStore } from './chart_state';
 import { computeSeriesDomains } from './utils';
 import { ScaleBand } from '../../../utils/scales/scale_band';
+import { BarGeometry } from '../../../utils/geometry';
 
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');
 
 const ordinalBarSeries: BarSeriesSpec = {
+  chartType: 'xy_axis',
+  specType: 'series',
   id: SPEC_ID,
   groupId: GROUP_ID,
   seriesType: 'bar',
@@ -26,6 +28,8 @@ const ordinalBarSeries: BarSeriesSpec = {
   hideInLegend: false,
 };
 const linearBarSeries: BarSeriesSpec = {
+  chartType: 'xy_axis',
+  specType: 'series',
   id: SPEC_ID,
   groupId: GROUP_ID,
   seriesType: 'bar',

@@ -1,39 +1,43 @@
 import React from 'react';
-import { inject, observer } from 'mobx-react';
-import { ChartStore } from '../../chart_types/xy_chart/store/chart_state';
+import { bindActionCreators, Dispatch } from 'redux';
+import { connect } from 'react-redux';
+import { onCursorPositionChange } from '../../store/actions/cursor';
 import { ReactiveChart } from './reactive_chart';
 interface ReactiveChartProps {
-  chartStore?: ChartStore; // FIX until we find a better way on ts mobx
+  chartInitialized: boolean;
+  isChartEmpty: boolean;
+  onCursorPositionChange: typeof onCursorPositionChange;
+  chartCursor: string;
 }
 
 class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   static displayName = 'ChartContainer';
 
   render() {
-    const { chartInitialized } = this.props.chartStore!;
-    if (!chartInitialized.get()) {
+    const { chartInitialized } = this.props;
+    if (!chartInitialized) {
       return null;
     }
-    const { setCursorPosition, isChartEmpty } = this.props.chartStore!;
+    const { onCursorPositionChange, isChartEmpty, isBrushing, chartCursor, handleChartClick } = this.props;
     return (
       <div
         className="echChartCursorContainer"
         style={{
-          cursor: this.props.chartStore!.chartCursor.get(),
+          cursor: chartCursor,
         }}
         onMouseMove={({ nativeEvent: { offsetX, offsetY } }) => {
-          if (!isChartEmpty.get()) {
-            setCursorPosition(offsetX, offsetY);
+          if (!isChartEmpty) {
+            onCursorPositionChange(offsetX, offsetY);
           }
         }}
         onMouseLeave={() => {
-          setCursorPosition(-1, -1);
+          onCursorPositionChange(-1, -1);
         }}
         onMouseUp={() => {
-          if (this.props.chartStore!.isBrushing.get()) {
+          if (isBrushing) {
             return;
           }
-          this.props.chartStore!.handleChartClick();
+          handleChartClick();
         }}
       >
         <ReactiveChart />
@@ -42,4 +46,23 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
   }
 }
 
-export const ChartContainer = inject('chartStore')(observer(ChartContainerComponent));
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      onCursorPositionChange,
+      handleChartClick,
+    },
+    dispatch,
+  );
+const mapStateToProps = (state: ChartState) => {
+  return {
+    chartInitialized: true,
+    isChartEmpty: true,
+    isBrushing: true,
+  };
+};
+
+export const ChartContainer = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ChartContainerComponent);

@@ -4,10 +4,11 @@ import { computeSeriesDomains } from '../store/utils';
 import { getGroupId, getSpecId, SpecId } from '../../../utils/ids';
 import { ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
-import { IndexedGeometry, LineGeometry, PointGeometry, renderLine } from './rendering';
+import { renderLine } from './rendering';
 import { computeXScale, computeYScales } from '../utils/scales';
 import { LineSeriesSpec } from '../utils/specs';
 import { LIGHT_THEME } from '../../../utils/themes/light_theme';
+import { LineGeometry, IndexedGeometry, PointGeometry } from '../../../utils/geometry';
 
 const SPEC_ID = getSpecId('spec_1');
 const GROUP_ID = getGroupId('group_1');

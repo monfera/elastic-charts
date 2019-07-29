@@ -10,7 +10,7 @@ import {
   RawDataSeries,
   splitSeries,
 } from './series';
-import { BasicSeriesSpec } from './specs';
+import { BasicSeriesSpec, LineSeriesSpec } from './specs';
 import { formatStackedDataSeriesValues } from './stacked_series_utils';
 import * as TestDataset from '../../../utils/data_samples/test_dataset';
 
@@ -285,7 +285,9 @@ describe('Series', () => {
 
   test('should split an array of specs into data series', () => {
     const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
-    const spec1: BasicSeriesSpec = {
+    const spec1: LineSeriesSpec = {
+      specType: 'series',
+      chartType: 'xy_axis',
       id: getSpecId('spec1'),
       groupId: getGroupId('group'),
       seriesType: 'line',
@@ -298,6 +300,8 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const spec2: BasicSeriesSpec = {
+      specType: 'series',
+      chartType: 'xy_axis',
       id: getSpecId('spec2'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -319,6 +323,8 @@ describe('Series', () => {
   test('should compute data series for stacked specs', () => {
     const seriesSpecs = new Map<SpecId, BasicSeriesSpec>();
     const spec1: BasicSeriesSpec = {
+      specType: 'series',
+      chartType: 'xy_axis',
       id: getSpecId('spec1'),
       groupId: getGroupId('group'),
       seriesType: 'line',
@@ -331,6 +337,8 @@ describe('Series', () => {
       hideInLegend: false,
     };
     const spec2: BasicSeriesSpec = {
+      specType: 'series',
+      chartType: 'xy_axis',
       id: getSpecId('spec2'),
       groupId: getGroupId('group2'),
       seriesType: 'line',
@@ -351,6 +359,8 @@ describe('Series', () => {
   });
   test('should get series color map', () => {
     const spec1: BasicSeriesSpec = {
+      specType: 'series',
+      chartType: 'xy_axis',
       id: getSpecId('spec1'),
       groupId: getGroupId('group'),
       seriesType: 'line',
@@ -399,6 +409,8 @@ describe('Series', () => {
     const specId = getSpecId('splitSpec');
 
     const splitSpec: BasicSeriesSpec = {
+      specType: 'series',
+      chartType: 'xy_axis',
       id: specId,
       groupId: getGroupId('group'),
       seriesType: 'line',

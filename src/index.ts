@@ -25,7 +25,6 @@ export {
   RectAnnotationDatum,
   RectAnnotationSpec,
 } from './chart_types/xy_chart/utils/specs';
-export { GeometryValue } from './chart_types/xy_chart/rendering/rendering';
 export { AnnotationTooltipFormatter } from './chart_types/xy_chart/annotations/annotation_utils';
 export { SettingSpecProps } from './specs/settings';
 export {
@@ -34,3 +33,4 @@ export {
   ElementOverListener,
   LegendItemListener,
 } from './chart_types/xy_chart/store/chart_state';
+export { GeometryValue } from './utils/geometry';

@@ -1,0 +1,1 @@
+- da `computeSeriesDomainsSelector` attualmente lo store di XY Axis salva un array che si chiama `deselectedDataSeries` che viene usato dalla legenda per capire quali serie sono deselezionate e dal calcolatore del dominio per determinare il corretto dominio del grafico. Come gestiamo questi dati intermedi? Un selector specializzato per l'XY AXis store?

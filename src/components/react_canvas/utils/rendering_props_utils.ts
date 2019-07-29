@@ -1,4 +1,3 @@
-import { GeometryStyle } from '../../../chart_types/xy_chart/rendering/rendering';
 import { Rotation } from '../../../chart_types/xy_chart/utils/specs';
 import {
   AreaStyle,
@@ -7,6 +6,8 @@ import {
   PointStyle,
   RectBorderStyle,
   RectStyle,
+  ArcStyle,
+  GeometryStyle,
 } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { GlobalKonvaElementProps } from '../globals';
@@ -413,6 +414,36 @@ export function buildBarBorderRenderProps(
     stroke,
     ...geometryStyle,
     opacity, // want to override opactiy of geometryStyle
+    ...GlobalKonvaElementProps,
+  };
+}
+
+/**
+ * Return the rendering props for an arc. The color of the arc will be overwritten
+ * by the fill color of the arcStyle parameter if present
+ * @param arcPath the SVG arc path
+ * @param x the horizontal offset to place the arc
+ * @param color the computed color of the line for this series
+ * @param arcStyle the arc style
+ * @param geometryStyle the highlight geometry style
+ */
+export function buildArcRenderProps(
+  transform: { x: number; y: number },
+  arcPath: string,
+  color: string,
+  arcStyle: ArcStyle,
+  geometryStyle: GeometryStyle,
+) {
+  return {
+    x: transform.x,
+    y: transform.y,
+    data: arcPath,
+    fill: arcStyle.fill || color,
+    stroke: arcStyle.stroke,
+    strokeWidth: arcStyle.strokeWidth,
+    lineCap: 'round',
+    lineJoin: 'round',
+    ...geometryStyle,
     ...GlobalKonvaElementProps,
   };
 }

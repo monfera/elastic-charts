@@ -2,17 +2,7 @@ import { isVertical } from '../utils/axis_utils';
 import { CurveType } from '../../../utils/curves';
 import { mergeXDomain, XDomain } from '../domains/x_domain';
 import { mergeYDomain, YDomain } from '../domains/y_domain';
-import {
-  AreaGeometry,
-  BarGeometry,
-  IndexedGeometry,
-  LineGeometry,
-  mutableIndexedGeometryMapUpsert,
-  PointGeometry,
-  renderArea,
-  renderBars,
-  renderLine,
-} from '../rendering/rendering';
+import { mutableIndexedGeometryMapUpsert, renderArea, renderBars, renderLine } from '../rendering/rendering';
 import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scales';
 import {
   DataSeries,
@@ -44,6 +34,7 @@ import { AxisId, GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
 import { SeriesDomainsAndData } from './chart_state';
 import { LegendItem } from '../legend/legend';
+import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
 
 const MAX_ANIMATABLE_BARS = 300;
 const MAX_ANIMATABLE_LINES_AREA_POINTS = 600;
@@ -139,7 +130,7 @@ export function getLastValues(formattedDataSeries: {
  * @returns `SeriesDomainsAndData`
  */
 export function computeSeriesDomains(
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
+  seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, DomainRange>,
   customXDomain?: DomainRange | Domain,
   deselectedDataSeries?: DataSeriesColorsValues[] | null,
