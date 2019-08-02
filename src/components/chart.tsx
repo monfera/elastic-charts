@@ -15,6 +15,7 @@ import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { chartStoreReducer } from '../store/chart_store';
 import { createStore } from 'redux';
+import { Tooltips } from './tooltips';
 
 interface ChartProps {
   /** The type of rendered

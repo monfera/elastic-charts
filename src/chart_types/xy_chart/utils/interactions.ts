@@ -31,6 +31,12 @@ export interface TooltipValue {
   yAccessor: Accessor;
 }
 
+export interface TooltipProps {
+  type?: TooltipType;
+  snap?: boolean;
+  headerFormatter?: TooltipValueFormatter;
+}
+
 export type TooltipValueFormatter = (data: TooltipValue) => JSX.Element | string;
 
 export interface HighlightedElement {
@@ -78,7 +84,7 @@ export function getValidYPosition(xPos: number, yPos: number, chartRotation: Rot
 export function isCrosshairTooltipType(type: TooltipType) {
   return type === TooltipType.VerticalCursor || type === TooltipType.Crosshairs;
 }
-export function isFollowTooltipType(type: TooltipType) {
+export function isFollowTooltipType(type: TooltipType | undefined) {
   return type === TooltipType.Follow;
 }
 export function isNoneTooltipType(type: TooltipType) {
@@ -125,4 +131,12 @@ export function areBarEqual(ig1: BarGeometry, ig2: BarGeometry) {
     ig1.width === ig2.width &&
     ig1.height === ig2.height
   );
+}
+
+export function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
+  return typeof config === 'object';
+}
+
+export function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
+  return typeof config === 'string';
 }

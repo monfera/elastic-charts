@@ -1,29 +1,22 @@
-import { PureComponent } from 'react';
-import { inject } from 'mobx-react';
-
 import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_chart/utils/specs';
-import { mergeWithDefaultTheme, PartialTheme, Theme } from '../utils/themes/theme';
+import { PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
 import {
   BrushEndListener,
-  ChartStore,
   ElementClickListener,
   ElementOverListener,
   LegendItemListener,
   CursorUpdateListener,
 } from '../chart_types/xy_chart/store/chart_state';
-import { ScaleTypes } from '../utils/scales/scales';
+import { ChartTypes } from '../store/chart_store';
+import { getConnect, specComponentFactory } from '../store/spec_factory';
+import { Spec } from '.';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
+import { ScaleTypes } from '../utils/scales/scales';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
-
-interface TooltipProps {
-  type?: TooltipType;
-  snap?: boolean;
-  headerFormatter?: TooltipValueFormatter;
-}
 
 /**
  * Event used to syncronize cursors between Charts.
@@ -41,16 +34,15 @@ export interface CursorEvent {
   value: number | string;
 }
 
-function isTooltipProps(config: TooltipType | TooltipProps): config is TooltipProps {
-  return typeof config === 'object';
+interface TooltipProps {
+  type?: TooltipType;
+  snap?: boolean;
+  headerFormatter?: TooltipValueFormatter;
+  unit?: string;
+  value: number | string;
 }
 
-function isTooltipType(config: TooltipType | TooltipProps): config is TooltipType {
-  return typeof config === 'string';
-}
-
-export interface SettingSpecProps {
-  chartStore?: ChartStore;
+export interface SettingsSpec extends Spec {
   /**
    * Partial theme to be merged with base
    *
@@ -91,128 +83,36 @@ export interface SettingSpecProps {
   resizeDebounce?: number;
 }
 
-function getTheme(baseTheme?: Theme, theme?: PartialTheme | PartialTheme[]): Theme {
-  const base = baseTheme ? baseTheme : LIGHT_THEME;
+export type DefaultSettingsProps =
+  | 'id'
+  | 'chartType'
+  | 'specType'
+  | 'rendering'
+  | 'rotation'
+  | 'resizeDebounce'
+  | 'animateData'
+  | 'showLegend'
+  | 'debug'
+  | 'tooltip'
+  | 'showLegendDisplayValue'
+  | 'theme';
 
-  if (Array.isArray(theme)) {
-    const [firstTheme, ...axillaryThemes] = theme;
-    return mergeWithDefaultTheme(firstTheme, base, axillaryThemes);
-  }
-
-  return theme ? mergeWithDefaultTheme(theme, base) : base;
-}
-
-function updateChartStore(props: SettingSpecProps) {
-  const {
-    chartStore,
-    theme,
-    baseTheme,
-    rotation,
-    rendering,
-    animateData,
-    showLegend,
-    tooltip,
-    legendPosition,
-    showLegendDisplayValue,
-    onElementClick,
-    onElementOver,
-    onElementOut,
-    onBrushEnd,
-    onLegendItemOver,
-    onLegendItemOut,
-    onLegendItemClick,
-    onLegendItemMinusClick,
-    onLegendItemPlusClick,
-    onCursorUpdate,
-    debug,
-    xDomain,
-    resizeDebounce,
-  } = props;
-
-  if (!chartStore) {
-    return;
-  }
-
-  chartStore.chartTheme = getTheme(baseTheme, theme);
-  chartStore.chartRotation = rotation;
-  chartStore.chartRendering = rendering;
-  chartStore.animateData = animateData;
-  chartStore.debug = debug;
-  chartStore.resizeDebounce = resizeDebounce!;
-
-  if (tooltip && isTooltipProps(tooltip)) {
-    const { type, snap, headerFormatter } = tooltip;
-    chartStore.tooltipType.set(type!);
-    chartStore.tooltipSnap.set(snap!);
-    chartStore.tooltipHeaderFormatter = headerFormatter;
-  } else if (tooltip && isTooltipType(tooltip)) {
-    chartStore.tooltipType.set(tooltip);
-  }
-
-  chartStore.setShowLegend(showLegend);
-
-  if (legendPosition) {
-    chartStore.legendPosition.set(legendPosition);
-  }
-  chartStore.showLegendDisplayValue.set(showLegendDisplayValue);
-  chartStore.customXDomain = xDomain;
-
-  if (onElementOver) {
-    chartStore.setOnElementOverListener(onElementOver);
-  }
-  if (onElementClick) {
-    chartStore.setOnElementClickListener(onElementClick);
-  }
-  if (onElementOut) {
-    chartStore.setOnElementOutListener(onElementOut);
-  }
-  if (onBrushEnd) {
-    chartStore.setOnBrushEndListener(onBrushEnd);
-  }
-  if (onLegendItemOver) {
-    chartStore.setOnLegendItemOverListener(onLegendItemOver);
-  }
-  if (onLegendItemOut) {
-    chartStore.setOnLegendItemOutListener(onLegendItemOut);
-  }
-  if (onLegendItemClick) {
-    chartStore.setOnLegendItemClickListener(onLegendItemClick);
-  }
-  if (onLegendItemPlusClick) {
-    chartStore.setOnLegendItemPlusClickListener(onLegendItemPlusClick);
-  }
-  if (onLegendItemMinusClick) {
-    chartStore.setOnLegendItemMinusClickListener(onLegendItemMinusClick);
-  }
-  if (onCursorUpdate) {
-    chartStore.setOnCursorUpdateListener(onCursorUpdate);
-  }
-}
-
-export class SettingsComponent extends PureComponent<SettingSpecProps> {
-  static defaultProps: Partial<SettingSpecProps> = {
-    rendering: 'canvas',
-    rotation: 0,
-    animateData: true,
-    showLegend: false,
-    resizeDebounce: 10,
-    debug: false,
-    tooltip: {
-      type: DEFAULT_TOOLTIP_TYPE,
-      snap: DEFAULT_TOOLTIP_SNAP,
-    },
-    showLegendDisplayValue: true,
-  };
-
-  componentDidMount() {
-    updateChartStore(this.props);
-  }
-  componentDidUpdate() {
-    updateChartStore(this.props);
-  }
-  render() {
-    return null;
-  }
-}
-
-export const Settings = inject('chartStore')(SettingsComponent);
+export const DEFAULT_SETTINGS: Pick<SettingsSpec, DefaultSettingsProps> = {
+  id: '__global__settings___',
+  chartType: ChartTypes.Global,
+  specType: 'settings',
+  rendering: 'canvas',
+  rotation: 0,
+  animateData: true,
+  showLegend: false,
+  resizeDebounce: 10,
+  debug: false,
+  tooltip: {
+    type: DEFAULT_TOOLTIP_TYPE,
+    snap: DEFAULT_TOOLTIP_SNAP,
+    value: '',
+  },
+  showLegendDisplayValue: true,
+  theme: LIGHT_THEME,
+};
+export const Settings = getConnect()(specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS));

@@ -286,7 +286,7 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
     const annotationDimensions = [{ rect: { x: 49, y: -1, width: 3, height: 99 } }];
     const rectAnnotationSpec: RectAnnotationSpec = {
-      annotationId: getAnnotationId('rect'),
+      id: getAnnotationId('rect'),
       groupId: GROUP_ID,
       annotationType: 'rectangle',
       dataValues: [{ coordinates: { x0: 1, x1: 1.5, y0: 0.5, y1: 10 } }],

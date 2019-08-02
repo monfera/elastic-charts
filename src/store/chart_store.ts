@@ -5,14 +5,18 @@ import { SPEC_PARSED } from './actions/specs';
 import { PieChartStore } from '../chart_types/pie_chart/store/chart_store';
 import { specsReducer } from './reducers/specs';
 import { chartSettingsReducer } from './reducers/chart_settings';
+import { interactionsReducer } from './reducers/interactions';
 import { Dimensions } from '../utils/dimensions';
 import { Theme } from '../utils/themes/theme';
 import { LIGHT_THEME } from '../utils/themes/light_theme';
 import { Rotation } from '../chart_types/xy_chart/utils/specs';
 import { Transform } from '../chart_types/xy_chart/store/utils';
+import { XYAxisChartStore } from 'chart_types/xy_chart/store/chart_store';
 
 export interface IChartStore {
-  render(specList: SpecList, settings: StoreSettings): GeometriesList;
+  chartType: ChartType;
+  render(state: IChartState): GeometriesList;
+  getChartDimensions(state: IChartState): Dimensions;
 }
 
 export interface SpecList {
@@ -22,10 +26,17 @@ export interface StoreSettings {
   debug: boolean;
   parentDimensions: Dimensions;
   theme: Theme;
-  canDataBeAnimated: boolean;
-  chartDimensions: Dimensions;
   chartRotation: Rotation;
   chartTransform: Transform;
+  legendCollapsed: boolean;
+}
+
+export interface InteractionsStore {
+  rawCursorPosition: {
+    x: number;
+    y: number;
+  };
+  isBrushing: boolean;
 }
 export interface GeometriesList {
   points?: PointGeometry[];
@@ -41,13 +52,31 @@ export interface IChartState {
   chartType: ChartType | null;
   chartStore: IChartStore | null;
   settings: StoreSettings;
+  interactions: InteractionsStore;
 }
+
+export const ChartTypes = Object.freeze({
+  Global: 'global' as 'global',
+  Pie: 'pie' as 'pie',
+  XYAxis: 'xy_axis' as 'xy_axis',
+});
+
+export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
 
 const initialState: IChartState = {
   initialized: false,
-  specs: {},
+  specs: {
+    // [DEFAULT_SETTINGS.id]: DEFAULT_SETTINGS,
+  },
   chartType: null,
   chartStore: null,
+  interactions: {
+    rawCursorPosition: {
+      x: -1,
+      y: -1,
+    },
+    isBrushing: false,
+  },
   settings: {
     debug: false,
     parentDimensions: {
@@ -57,28 +86,16 @@ const initialState: IChartState = {
       top: 0,
     },
     theme: LIGHT_THEME,
-    canDataBeAnimated: false,
-    chartDimensions: {
-      height: 0,
-      width: 0,
-      left: 0,
-      top: 0,
-    },
     chartRotation: 0,
     chartTransform: {
       rotate: 0,
       x: 0,
       y: 0,
     },
+    legendCollapsed: false,
   },
 };
-
-export const ChartTypes = Object.freeze({
-  Pie: 'pie' as 'pie',
-  XYAxis: 'xy_axis' as 'xy_axis',
-});
-
-export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis;
+console.log({ initialState });
 
 export function chartStoreReducer(state = initialState, action: any) {
   console.log(`dispatch: ${action.type}`);
@@ -106,6 +123,7 @@ export function chartStoreReducer(state = initialState, action: any) {
         ...state,
         specs: specsReducer(state.specs, action),
         settings: chartSettingsReducer(state.settings, action),
+        interactions: interactionsReducer(state.interactions, action),
       };
   }
 }
@@ -121,7 +139,7 @@ function findMainChartType(specs: SpecList) {
     acc[chartType] = acc[chartType] + 1;
     return acc;
   }, {});
-  const chartTypes = Object.keys(types);
+  const chartTypes = Object.keys(types).filter((type) => type !== 'global');
   if (chartTypes.length > 1) {
     console.warn('Multiple chart type on the same configuration');
     return null;
@@ -130,9 +148,16 @@ function findMainChartType(specs: SpecList) {
   }
 }
 
-function intializeChartStore(chartType: ChartType | null): IChartStore {
+function intializeChartStore(chartType: ChartType | null): IChartStore | null {
   console.log(`initializing ${chartType}`);
-  return new PieChartStore();
+  switch (chartType) {
+    case 'pie':
+      return new PieChartStore();
+    case 'xy_axis':
+      return new XYAxisChartStore();
+    default:
+      return null;
+  }
 }
 
 function isChartTypeChanged(state: IChartState, newChartType: ChartType | null) {

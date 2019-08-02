@@ -1,11 +1,19 @@
 import classNames from 'classnames';
-import { inject, observer } from 'mobx-react';
 import React from 'react';
 import { TooltipValue, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+import { connect } from 'react-redux';
+import { IChartState } from '../store/chart_store';
+import { getTooltipHeaderFormatterSelector } from '../chart_types/xy_chart/store/selectors/get_tooltip_header_formatter';
+import { getTooltipPositionSelector } from '../chart_types/xy_chart/store/selectors/get_tooltip_position';
+import { isInitialized } from '../store/selectors/is_initialized';
+import { getTooltipValuesSelector } from '../chart_types/xy_chart/store/selectors/get_tooltip_values_highlighted_geoms';
+import { isTooltipVisibleSelector } from '../chart_types/xy_chart/store/selectors/is_tooltip_visible';
 
 interface TooltipProps {
-  chartStore?: ChartStore;
+  isTooltipVisible: boolean;
+  tooltipValues: TooltipValue[];
+  tooltipPosition: { transform: string };
+  tooltipHeaderFormatter?: TooltipValueFormatter;
 }
 
 class TooltipsComponent extends React.Component<TooltipProps> {
@@ -20,17 +28,17 @@ class TooltipsComponent extends React.Component<TooltipProps> {
   }
 
   render() {
-    const { isTooltipVisible, tooltipData, tooltipPosition, tooltipHeaderFormatter } = this.props.chartStore!;
+    const { isTooltipVisible, tooltipValues, tooltipPosition, tooltipHeaderFormatter } = this.props;
 
-    if (!isTooltipVisible.get()) {
+    if (!isTooltipVisible) {
       return <div className="echTooltip echTooltip--hidden" />;
     }
 
     return (
       <div className="echTooltip" style={{ transform: tooltipPosition.transform }}>
-        <div className="echTooltip__header">{this.renderHeader(tooltipData[0], tooltipHeaderFormatter)}</div>
+        <div className="echTooltip__header">{this.renderHeader(tooltipValues[0], tooltipHeaderFormatter)}</div>
         <div className="echTooltip__list">
-          {tooltipData.slice(1).map(({ name, value, color, isHighlighted, seriesKey, yAccessor }) => {
+          {tooltipValues.slice(1).map(({ name, value, color, isHighlighted, seriesKey, yAccessor }) => {
             const classes = classNames('echTooltip__item', {
               /* eslint @typescript-eslint/camelcase:0 */
               echTooltip__rowHighlighted: isHighlighted,
@@ -54,4 +62,27 @@ class TooltipsComponent extends React.Component<TooltipProps> {
   }
 }
 
-export const Tooltips = inject('chartStore')(observer(TooltipsComponent));
+const mapDispatchToProps = () => ({});
+const mapStateToProps = (state: IChartState) => {
+  if (!isInitialized(state)) {
+    return {
+      initialized: false,
+      isTooltipVisible: false,
+      tooltipValues: [],
+      tooltipPosition: { transform: '' },
+      tooltipHeaderFormatter: undefined,
+    };
+  }
+  return {
+    initialized: isInitialized(state),
+    isTooltipVisible: isTooltipVisibleSelector(state),
+    tooltipValues: getTooltipValuesSelector(state),
+    tooltipPosition: getTooltipPositionSelector(state),
+    tooltipHeaderFormatter: getTooltipHeaderFormatterSelector(state),
+  };
+};
+
+export const Tooltips = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TooltipsComponent);

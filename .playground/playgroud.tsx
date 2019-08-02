@@ -14,6 +14,11 @@ import {
 
 export class Playground extends React.Component {
   render() {
+    const pieSpec = {
+      data: [[10],[20], [30]],
+      accessor: 0,
+    }
+    
     return (
       <Fragment>
         <div className="chart">

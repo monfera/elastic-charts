@@ -1,19 +1,17 @@
 import { createSelector } from 'reselect';
-import { IChartState } from '../../../../store/chart_store';
-import { getAxisSpecs } from './get_specs';
+import { getAxisSpecsSelector } from './get_specs';
 import { isYDomain, isCompleteBound, isLowerBound, isUpperBound, isBounded } from '../../utils/axis_utils';
 import { AxisSpec, DomainRange, Rotation } from '../../utils/specs';
+import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
 
-const getChartRotation = (state: IChartState) => state.settings.chartRotation;
-
-export const mergeYCustomDomainsByGroupId = createSelector(
-  [getAxisSpecs, getChartRotation],
-  (axisSpecs, chartRotation): Map<string, DomainRange> => {
-    return mergeYCustomDomains(axisSpecs, chartRotation);
+export const mergeYCustomDomainsByGroupIdSelector = createSelector(
+  [getAxisSpecsSelector, getSettingsSpecSelector],
+  (axisSpecs, settingsSpec): Map<string, DomainRange> => {
+    return mergeYCustomDomainsByGroupId(axisSpecs, settingsSpec ? settingsSpec.rotation : 0);
   },
 );
 
-export function mergeYCustomDomains(axesSpecs: AxisSpec[], chartRotation: Rotation): Map<string, DomainRange> {
+export function mergeYCustomDomainsByGroupId(axesSpecs: AxisSpec[], chartRotation: Rotation): Map<string, DomainRange> {
   const domainsByGroupId = new Map<string, DomainRange>();
 
   axesSpecs.forEach((spec: AxisSpec) => {
@@ -67,6 +65,7 @@ export function mergeYCustomDomains(axesSpecs: AxisSpec[], chartRotation: Rotati
       domainsByGroupId.set(groupId, domain);
     }
   });
-
+  console.log('--- 0 mergeYCustomDomains ---');
+  console.log({ domainsByGroupId });
   return domainsByGroupId;
 }

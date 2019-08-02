@@ -340,9 +340,9 @@ export type RectAnnotationSpec = BaseAnnotationSpec & {
   zIndex?: number;
 };
 
-export interface BaseAnnotationSpec {
-  /** The id of the annotation */
-  annotationId: AnnotationId;
+export interface BaseAnnotationSpec extends Spec {
+  chartType: 'xy_axis';
+  specType: 'annotation';
   /** Annotation type: line, rectangle, text */
   annotationType: AnnotationType;
   /** The ID of the axis group, generated via getGroupId method

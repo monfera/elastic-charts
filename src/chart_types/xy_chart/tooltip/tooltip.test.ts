@@ -21,6 +21,8 @@ describe('Tooltip formatting', () => {
     xScaleType: ScaleType.Linear,
   };
   const YAXIS_SPEC: AxisSpec = {
+    chartType: 'xy_axis',
+    specType: 'axis',
     id: getAxisId('axis_1'),
     groupId: SPEC_GROUP_ID_1,
     hide: false,

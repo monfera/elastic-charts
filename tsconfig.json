@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "declaration": true,
     "outDir": "./dist/",
     "noImplicitAny": true,
@@ -15,7 +16,7 @@
     "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
   },
   "include": ["src/**/*", "stories/**/*"]
 }

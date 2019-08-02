@@ -14,7 +14,7 @@ import {
 } from './specs';
 import { AxisConfig, Theme } from '../../../utils/themes/theme';
 import { Dimensions, Margins } from '../../../utils/dimensions';
-import { AxisId, GroupId } from '../../../utils/ids';
+import { AxisId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
 import { BBox, BBoxCalculator } from '../../../utils/bbox/bbox_calculator';
 
@@ -542,14 +542,19 @@ export function getAxisTicksPositions(
   },
   chartTheme: Theme,
   chartRotation: Rotation,
-  axisSpecs: Map<AxisId, AxisSpec>,
+  axisSpecs: AxisSpec[],
   axisDimensions: Map<AxisId, AxisTicksDimensions>,
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
   enableHistogramMode: boolean,
   barsPadding?: number,
-) {
+): {
+  axisPositions: Map<AxisId, Dimensions>;
+  axisTicks: Map<AxisId, AxisTick[]>;
+  axisVisibleTicks: Map<AxisId, AxisTick[]>;
+  axisGridLinesPositions: Map<AxisId, AxisLinePosition[]>;
+} {
   const { chartPaddings, chartMargins } = chartTheme;
   const axisPositions: Map<AxisId, Dimensions> = new Map();
   const axisVisibleTicks: Map<AxisId, AxisTick[]> = new Map();
@@ -562,7 +567,7 @@ export function getAxisTicksPositions(
   let cumRightSum = chartPaddings.right;
 
   axisDimensions.forEach((axisDim, id) => {
-    const axisSpec = axisSpecs.get(id);
+    const axisSpec = axisSpecs.find((spec) => spec.id === id);
 
     // Consider refactoring this so this condition can be tested
     // Given some of the values that get passed around, maybe re-write as a reduce instead of forEach?

@@ -3,6 +3,7 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { onCursorPositionChange } from '../../store/actions/cursor';
 import { ReactiveChart } from './reactive_chart';
+import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors/is_chart_empty';
 interface ReactiveChartProps {
   chartInitialized: boolean;
   isChartEmpty: boolean;
@@ -54,11 +55,12 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     },
     dispatch,
   );
-const mapStateToProps = (state: ChartState) => {
+const mapStateToProps = (state: IChartState) => {
   return {
-    chartInitialized: true,
-    isChartEmpty: true,
-    isBrushing: true,
+    initialized: state.initialized,
+    isChartEmpty: isChartEmptySelector(state),
+    isBrushing: true, //todo
+    chartCursor: 'pointer', //todo
   };
 };
 

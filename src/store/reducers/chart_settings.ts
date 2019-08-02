@@ -8,7 +8,6 @@ export function chartSettingsReducer(state: StoreSettings, action: UpdateParentD
       return {
         ...state,
         parentDimensions: action.dimensions,
-        chartDimensions: action.dimensions,
       };
     default:
       return state;
