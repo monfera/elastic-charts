@@ -15,7 +15,7 @@ import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
 import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 
-export const getHighlightedGeometriesSelector = createSelector(
+export const getCursorBandPositionSelector = createSelector(
   [
     getAxisCursorPositionSelector,
     computeChartDimensionsSelector,

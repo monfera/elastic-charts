@@ -4,7 +4,7 @@ import { AreaGeometries } from './area_geometries';
 import { ArcGeometries } from './arc_geometries';
 import { BarGeometries } from './bar_geometries';
 import { LineGeometries } from './line_geometries';
-import { IChartState, GeometriesList, StoreSettings } from '../../store/chart_store';
+import { IChartState, GeometriesList, GlobalSettings } from '../../store/chart_store';
 import { onBrushStart, onBrushEnd } from '../../store/actions/brush';
 import { onCursorPositionChange, CursorPositionChangeAction } from '../../store/actions/cursor';
 import { bindActionCreators, Dispatch } from 'redux';
@@ -17,17 +17,30 @@ import { Dimensions } from '../../utils/dimensions';
 import { isChartAnimatableSelector } from '../../chart_types/xy_chart/store/selectors/is_chart_animatable';
 import { isInitialized } from '../../store/selectors/is_initialized';
 import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors/is_chart_empty';
+import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
+import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
+import { Theme } from 'utils/themes/theme';
+import { LIGHT_THEME } from 'utils/themes/light_theme';
+import { computeChartTransformSelector } from 'chart_types/xy_chart/store/selectors/compute_chart_transform';
+import { Transform } from 'chart_types/xy_chart/store/utils';
+import { Rotation } from 'chart_types/xy_chart/utils/specs';
+import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
 
 interface Props {
   initialized: boolean;
   geometries: GeometriesList;
-  settings: StoreSettings;
+  globalSettings: GlobalSettings;
+  chartRotation: Rotation;
   chartDimensions: Dimensions;
+  chartTransform: Transform;
+  theme: Theme;
   isChartAnimatable: boolean;
   onCursorPositionChange(x: number, y: number): CursorPositionChangeAction;
   onBrushEnd(start: Point, end: Point): void;
   onBrushStart(): void;
   isChartEmpty: boolean;
+  componentsBelow: JSX.Element | null;
+  componentsAbove: JSX.Element | null;
 }
 interface ReactiveChartState {
   brushing: boolean;
@@ -81,7 +94,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   };
 
   renderBarSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, settings, isChartAnimatable } = this.props;
+    const { geometries, theme, isChartAnimatable } = this.props;
     if (!geometries) {
       return [];
     }
@@ -92,7 +105,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
         key={'bar-geometries'}
         animated={isChartAnimatable}
         bars={geometries.bars || []}
-        sharedStyle={settings.theme.sharedStyle}
+        sharedStyle={theme.sharedStyle}
         // highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
       />
@@ -107,7 +120,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   };
 
   renderLineSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, settings, isChartAnimatable } = this.props;
+    const { geometries, theme, isChartAnimatable } = this.props;
     if (!geometries) {
       return [];
     }
@@ -119,7 +132,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
         key={'line-geometries'}
         animated={isChartAnimatable}
         lines={geometries.lines || []}
-        sharedStyle={settings.theme.sharedStyle}
+        sharedStyle={theme.sharedStyle}
         // highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
       />
@@ -134,7 +147,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   };
 
   renderAreaSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, settings, isChartAnimatable } = this.props;
+    const { geometries, theme, isChartAnimatable } = this.props;
     if (!geometries) {
       return [];
     }
@@ -146,7 +159,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
         key={'area-geometries'}
         animated={isChartAnimatable}
         areas={geometries.areas || []}
-        sharedStyle={settings.theme.sharedStyle}
+        sharedStyle={theme.sharedStyle}
         // highlightedLegendItem={highlightedLegendItem}
         clippings={clippings}
       />
@@ -161,7 +174,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   };
 
   renderArcSeries = (): ReactiveChartElementIndex[] => {
-    const { geometries, settings, isChartAnimatable } = this.props;
+    const { geometries, theme, isChartAnimatable } = this.props;
     if (!geometries) {
       return [];
     }
@@ -172,7 +185,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
         key={'arc-geometries'}
         animated={isChartAnimatable}
         arcs={geometries.arcs || []}
-        sharedStyle={settings.theme.sharedStyle}
+        sharedStyle={theme.sharedStyle}
         // highlightedLegendItem={highlightedLegendItem}
       />
     );
@@ -275,8 +288,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   // };
 
   sortAndRenderElements() {
-    const { chartDimensions } = this.props;
-    const { chartRotation } = this.props.settings;
+    const { chartDimensions, chartRotation } = this.props;
     const clippings = {
       clipX: 0,
       clipY: 0,
@@ -302,12 +314,13 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   }
 
   render() {
-    const { initialized, settings, chartDimensions, isChartEmpty } = this.props;
+    const { initialized, globalSettings, chartRotation, chartDimensions, isChartEmpty } = this.props;
     if (!initialized) {
       return null;
     }
 
-    const { debug, parentDimensions, chartRotation, chartTransform } = settings;
+    const { debug, parentDimensions } = globalSettings;
+    const { chartTransform } = this.props;
 
     if (isChartEmpty) {
       return (
@@ -326,6 +339,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
     //   };
     // }
 
+    const { componentsBelow, componentsAbove } = this.props;
     return (
       <Stage
         width={parentDimensions.width}
@@ -343,6 +357,8 @@ class Chart extends React.Component<Props, ReactiveChartState> {
           {this.renderAxes()}
         </Layer> */}
 
+        {componentsBelow}
+
         <Layer
           x={chartDimensions.left + chartTransform.x}
           y={chartDimensions.top + chartTransform.y}
@@ -359,15 +375,18 @@ class Chart extends React.Component<Props, ReactiveChartState> {
           </Layer>
         )}
 
-        {/* {isBrushEnabled && (
-          <Layer hitGraphEnabled={false} listening={false}>
-            {this.renderBrushTool()}
-          </Layer>
-        )}
+        {componentsAbove}
 
-        <Layer hitGraphEnabled={false} listening={false}>
-          {this.renderBarValues()}
-        </Layer> */}
+        {/* {isBrushEnabled && (
+            <Layer hitGraphEnabled={false} listening={false}>
+              {this.renderBrushTool()}
+            </Layer>
+          )} */}
+
+        {/* 
+          <Layer hitGraphEnabled={false} listening={false} {...layerClippings}>
+            {this.renderBarValues()}
+          </Layer> */}
       </Stage>
     );
   }
@@ -392,7 +411,9 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   //   return this.props.chartStore!.highlightedLegendItem.get();
   // };
 }
-
+interface ReactiveChartOwnProps {
+  chartStore: any;
+}
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
@@ -402,24 +423,38 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     },
     dispatch,
   );
-const mapStateToProps = (state: IChartState) => {
+const mapStateToProps = (state: IChartState, ownProps: ReactiveChartOwnProps) => {
   if (!isInitialized(state)) {
     return {
       initialized: false,
+      theme: LIGHT_THEME,
       geometries: {},
-      settings: state.settings,
+      globalSettings: state.settings,
+      chartRotation: 0 as 0,
       chartDimensions: getChartDimensionsSelector(state),
+      chartTransform: {
+        x: 0,
+        y: 0,
+        rotate: 0,
+      },
       isChartAnimatable: false,
       isChartEmpty: true,
+      componentsBelow: null,
+      componentsAbove: null,
     };
   }
   return {
     initialized: state.initialized,
+    theme: getChartThemeSelector(state),
     geometries: getRenderedGeometriesSelector(state),
-    settings: state.settings,
+    globalSettings: state.settings,
+    chartRotation: getChartRotationSelector(state),
     chartDimensions: getChartDimensionsSelector(state),
+    chartTransform: computeChartTransformSelector(state),
     isChartAnimatable: isChartAnimatableSelector(state),
     isChartEmpty: isChartEmptySelector(state),
+    componentsBelow: getChartTypeComponentSelector(ownProps.chartStore, -1, 'canvas')(state),
+    componentsAbove: getChartTypeComponentSelector(ownProps.chartStore, 1, 'canvas')(state),
   };
 };
 

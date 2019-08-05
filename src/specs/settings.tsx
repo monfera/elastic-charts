@@ -65,7 +65,7 @@ export interface SettingsSpec extends Spec {
   animateData: boolean;
   showLegend: boolean;
   /** Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter */
-  tooltip?: TooltipType | TooltipProps;
+  tooltip: TooltipType | TooltipProps;
   debug: boolean;
   legendPosition?: Position;
   showLegendDisplayValue: boolean;

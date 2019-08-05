@@ -1,13 +1,13 @@
 import { inject, observer } from 'mobx-react';
 import React from 'react';
-import { isLineAnnotation } from '../chart_types/xy_chart/utils/specs';
-import { AnnotationId } from '../utils/ids';
+import { isLineAnnotation } from '../../utils/specs';
+import { AnnotationId } from '../../../../utils/ids';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
   AnnotationTooltipFormatter,
-} from '../chart_types/xy_chart/annotations/annotation_utils';
-import { ChartStore } from '../chart_types/xy_chart/store/chart_state';
+} from '../../annotations/annotation_utils';
+import { ChartStore } from '../../store/chart_state';
 
 interface AnnotationTooltipProps {
   chartStore?: ChartStore;

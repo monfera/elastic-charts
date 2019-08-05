@@ -9,4 +9,7 @@ export class PieChartStore implements IChartStore {
   getChartDimensions(state: IChartState) {
     return state.settings.parentDimensions;
   }
+  getCustomChartComponents() {
+    return null;
+  }
 }

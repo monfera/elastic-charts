@@ -41,7 +41,9 @@ class ChartContainerComponent extends React.Component<ReactiveChartProps> {
           handleChartClick();
         }}
       >
-        <ReactiveChart />
+        <ChartTypeComponents chartStore={this.chartStore} zIndex={-1} type={'dom'} />
+        <ReactiveChart chartStore={this.chartStore} />
+        <ChartTypeComponents chartStore={this.chartStore} zIndex={1} type={'dom'} />
       </div>
     );
   }

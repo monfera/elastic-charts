@@ -1,2 +1,2 @@
 export { PieSpec } from './pie_chart/specs/pie';
-export { AreaSeriesSpec, BarSeriesSpec, LineSeriesSpec } from './xy_chart/utils/specs';
+export { AreaSeries, BarSeries, LineSeries, Axis } from './xy_chart/specs';

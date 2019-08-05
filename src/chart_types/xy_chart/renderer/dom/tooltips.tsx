@@ -1,13 +1,13 @@
 import classNames from 'classnames';
 import React from 'react';
-import { TooltipValue, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
+import { TooltipValue, TooltipValueFormatter } from '../../utils/interactions';
 import { connect } from 'react-redux';
-import { IChartState } from '../store/chart_store';
-import { getTooltipHeaderFormatterSelector } from '../chart_types/xy_chart/store/selectors/get_tooltip_header_formatter';
-import { getTooltipPositionSelector } from '../chart_types/xy_chart/store/selectors/get_tooltip_position';
-import { isInitialized } from '../store/selectors/is_initialized';
-import { getTooltipValuesSelector } from '../chart_types/xy_chart/store/selectors/get_tooltip_values_highlighted_geoms';
-import { isTooltipVisibleSelector } from '../chart_types/xy_chart/store/selectors/is_tooltip_visible';
+import { IChartState } from '../../../../store/chart_store';
+import { isTooltipVisibleSelector } from '../../store/selectors/is_tooltip_visible';
+import { getTooltipHeaderFormatterSelector } from '../../store/selectors/get_tooltip_header_formatter';
+import { getTooltipPositionSelector } from '../../store/selectors/get_tooltip_position';
+import { getTooltipValuesSelector } from '../../store/selectors/get_tooltip_values_highlighted_geoms';
+import { isInitialized } from '../../../../store/selectors/is_initialized';
 
 interface TooltipProps {
   isTooltipVisible: boolean;

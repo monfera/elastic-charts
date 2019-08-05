@@ -1,16 +1,18 @@
 import { arc, pie } from 'd3-shape';
 import { createSelector } from 'reselect';
-import { IChartState, GeometriesList, StoreSettings } from 'store/chart_store';
+import { IChartState, GeometriesList, GlobalSettings } from 'store/chart_store';
 import { PieSpec } from 'specs';
 import { getPieSpecSelector } from './get_pie_spec';
+import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
+import { Theme } from 'utils/themes/theme';
 
 const getGlobalSettingsSelector = (state: IChartState) => state.settings;
 
-function render(pieSpec: PieSpec, settings: StoreSettings) {
+function render(pieSpec: PieSpec, globalSettings: GlobalSettings, theme: Theme) {
   const paths = pie().value((d: any) => {
     return d[pieSpec.accessor];
   })(pieSpec.data);
-  const { width, height } = settings.chartDimensions;
+  const { width, height } = globalSettings.parentDimensions;
   const outerRadius = width < height ? width / 2 : height / 2;
   const innerRadius = pieSpec.donut ? outerRadius / 2 : 0;
   const arcGenerator = arc();
@@ -31,7 +33,7 @@ function render(pieSpec: PieSpec, settings: StoreSettings) {
         specId: pieSpec.id,
         seriesKey: [],
       },
-      seriesArcStyle: settings.theme.arcSeriesStyle.arc,
+      seriesArcStyle: theme.arcSeriesStyle.arc,
     };
   });
   console.log(arcs);
@@ -39,11 +41,11 @@ function render(pieSpec: PieSpec, settings: StoreSettings) {
 }
 
 export const computeGeometriesSelector = createSelector(
-  [getPieSpecSelector, getGlobalSettingsSelector],
-  (pieSpec, settings): GeometriesList => {
+  [getPieSpecSelector, getGlobalSettingsSelector, getChartThemeSelector],
+  (pieSpec, globalSettings, theme): GeometriesList => {
     if (!pieSpec) {
       return {};
     }
-    return render(pieSpec, settings);
+    return render(pieSpec, globalSettings, theme);
   },
 );

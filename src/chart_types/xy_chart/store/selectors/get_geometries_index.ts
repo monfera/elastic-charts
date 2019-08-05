@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
-import { computeSeriesGeometries } from '../utils';
 import { IndexedGeometry } from '../../../../utils/geometry';
+import { computeSeriesGeometriesSelector } from './compute_series_geometries';
 
 export const getGeometriesIndexSelector = createSelector(
-  [computeSeriesGeometries],
+  [computeSeriesGeometriesSelector],
   (geometries): Map<any, IndexedGeometry[]> => {
     return geometries.geometriesIndex;
   },

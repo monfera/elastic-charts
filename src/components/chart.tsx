@@ -15,8 +15,8 @@ import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { chartStoreReducer } from '../store/chart_store';
 import { createStore } from 'redux';
-import { Tooltips } from './tooltips';
-
+import { ChartTypeComponents } from './chart_type_components';
+import { htmlIdGenerator } from 'utils/commons';
 interface ChartProps {
   /** The type of rendered
    * @default 'canvas'
@@ -36,7 +36,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     renderer: 'canvas',
   };
   private chartStore: any;
-  // private legendId: string;
   constructor(props: any) {
     super(props);
     this.chartStore = createStore(chartStoreReducer);
@@ -94,11 +93,9 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           <SpecsParser>{this.props.children}</SpecsParser>
           <div className="echContainer">
             <ChartResizer />
-            <Crosshair />
             <ChartContainer />
             <Tooltips />
             <AnnotationTooltip />
-            <Highlighter />
           </div>
         </div>
       </Provider>

@@ -12,7 +12,7 @@ export const getTooltipSnapSelector = createSelector(
 function getTooltipSnap(settings: SettingsSpec): boolean {
   const { tooltip } = settings;
   if (tooltip && isTooltipProps(tooltip)) {
-    return tooltip.snap;
+    return tooltip.snap || false;
   }
   return DEFAULT_TOOLTIP_SNAP;
 }

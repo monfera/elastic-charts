@@ -7,27 +7,25 @@ import { specsReducer } from './reducers/specs';
 import { chartSettingsReducer } from './reducers/chart_settings';
 import { interactionsReducer } from './reducers/interactions';
 import { Dimensions } from '../utils/dimensions';
-import { Theme } from '../utils/themes/theme';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { Rotation } from '../chart_types/xy_chart/utils/specs';
-import { Transform } from '../chart_types/xy_chart/store/utils';
 import { XYAxisChartStore } from 'chart_types/xy_chart/store/chart_store';
 
 export interface IChartStore {
   chartType: ChartType;
   render(state: IChartState): GeometriesList;
   getChartDimensions(state: IChartState): Dimensions;
+  getCustomChartComponents(
+    chartStore: any,
+    zIndex: number,
+    componentType: 'dom' | 'svg' | 'canvas',
+  ): JSX.Element | null;
 }
 
 export interface SpecList {
   [specId: string]: Spec;
 }
-export interface StoreSettings {
+export interface GlobalSettings {
   debug: boolean;
   parentDimensions: Dimensions;
-  theme: Theme;
-  chartRotation: Rotation;
-  chartTransform: Transform;
   legendCollapsed: boolean;
 }
 
@@ -51,7 +49,7 @@ export interface IChartState {
   specs: SpecList;
   chartType: ChartType | null;
   chartStore: IChartStore | null;
-  settings: StoreSettings;
+  settings: GlobalSettings;
   interactions: InteractionsStore;
 }
 
@@ -84,13 +82,6 @@ const initialState: IChartState = {
       width: 0,
       left: 0,
       top: 0,
-    },
-    theme: LIGHT_THEME,
-    chartRotation: 0,
-    chartTransform: {
-      rotate: 0,
-      x: 0,
-      y: 0,
     },
     legendCollapsed: false,
   },
