@@ -1,4 +1,5 @@
 import React from 'react';
+import { Layer } from 'react-konva';
 import { IChartStore, ChartTypes, IChartState } from 'store/chart_store';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
@@ -7,6 +8,8 @@ import { htmlIdGenerator } from 'utils/commons';
 import { Highlighter } from '../renderer/dom/highlighter';
 import { Crosshair } from '../renderer/dom/crosshair';
 import { Axes } from '../renderer/canvas/axis';
+import { BarValues } from '../renderer/canvas/bar_values';
+import { Grid } from '../renderer/canvas/grid';
 
 export class XYAxisChartStore implements IChartStore {
   chartType = ChartTypes.XYAxis;
@@ -20,7 +23,7 @@ export class XYAxisChartStore implements IChartStore {
   getChartDimensions(state: IChartState) {
     return computeChartDimensionsSelector(state);
   }
-  getCustomChartComponents(store: any, zIndex: number, type: 'dom' | 'svg' | 'canvas') {
+  getCustomChartComponents(zIndex: number, type: 'dom' | 'svg' | 'canvas') {
     switch (type) {
       case 'dom':
         return getDomComponents(zIndex);
@@ -53,9 +56,18 @@ function getCanvasComponents(zIndex: number): JSX.Element | null {
 }
 
 function getCanvasComponentsAtLevelMinus1() {
-  return null;
+  return (
+    <Layer hitGraphEnabled={false} listening={false}>
+      <Grid />
+    </Layer>
+  );
 }
 
 function getCanvasComponentsAtLevel1() {
-  return <Axes />;
+  return (
+    <Layer hitGraphEnabled={false} listening={false}>
+      <Axes />
+      <BarValues />
+    </Layer>
+  );
 }

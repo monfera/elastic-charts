@@ -47,22 +47,6 @@
 //   return annotationElements;
 // };
 
-// renderBarValues = () => {
-//   const { debug, chartDimensions, geometries, chartTheme, chartRotation } = this.props.chartStore!;
-//   if (!geometries) {
-//     return;
-//   }
-//   const props = {
-//     debug,
-//     chartDimensions,
-//     chartRotation,
-//     bars: geometries.bars,
-//     // displayValue is guaranteed on style as part of the merged theme
-//     displayValueStyle: chartTheme.barSeriesStyle.displayValue!,
-//   };
-//   return <BarValues {...props} />;
-// };
-
 // renderBrushTool = () => {
 //   const { brushing, brushStart, brushEnd } = this.state;
 //   const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;

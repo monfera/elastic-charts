@@ -39,8 +39,6 @@ interface Props {
   onBrushEnd(start: Point, end: Point): void;
   onBrushStart(): void;
   isChartEmpty: boolean;
-  componentsBelow: JSX.Element | null;
-  componentsAbove: JSX.Element | null;
 }
 interface ReactiveChartState {
   brushing: boolean;
@@ -222,38 +220,6 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   //   }
   //   return <Rect x={x} y={y} width={width} height={height} fill="gray" opacity={0.6} />;
   // };
-  // onStartBrusing = (event: { evt: MouseEvent }) => {
-  //   window.addEventListener('mouseup', this.onEndBrushing);
-  //   const { brushExtent } = this.props.chartStore!;
-  //   const point = getPoint(event.evt, brushExtent);
-  //   this.setState(() => ({
-  //     brushing: true,
-  //     brushStart: point,
-  //     brushEnd: point,
-  //   }));
-  // };
-  // onEndBrushing = () => {
-  //   window.removeEventListener('mouseup', this.onEndBrushing);
-  //   const { brushStart, brushEnd } = this.state;
-  //   this.props.chartStore!.onBrushEnd(brushStart, brushEnd);
-  //   this.setState(() => ({
-  //     brushing: false,
-  //     brushStart: { x: 0, y: 0 },
-  //     brushEnd: { x: 0, y: 0 },
-  //   }));
-  // };
-  // onBrushing = (event: { evt: MouseEvent }) => {
-  //   if (!this.state.brushing) {
-  //     return;
-  //   }
-  //   if (!this.props.chartStore!.isBrushing.get()) {
-  //     this.props.chartStore!.onBrushStart();
-  //   }
-  //   const { brushExtent } = this.props.chartStore!;
-  //   const point = getPoint(event.evt, brushExtent);
-  //   this.setState(() => ({
-  //     brushEnd: point,
-  //   }));
 
   // onStartBrusing = (event: { evt: MouseEvent }) => {
   //   window.addEventListener('mouseup', this.onEndBrushing);
@@ -266,6 +232,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   //     brushEnd: point,
   //   }));
   // };
+
   // onEndBrushing = () => {
   //   window.removeEventListener('mouseup', this.onEndBrushing);
   //   const { brushStart, brushEnd } = this.state;
@@ -279,6 +246,9 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   // onBrushing = (event: { evt: MouseEvent }) => {
   //   if (!this.state.brushing) {
   //     return;
+  //   }
+  //   if (!this.props.chartStore!.isBrushing.get()) {
+  //     this.props.chartStore!.onBrushStart();
   //   }
   //   const { brushExtent } = this.props.chartStore!;
   //   const point = getPoint(event.evt, brushExtent);
@@ -339,7 +309,9 @@ class Chart extends React.Component<Props, ReactiveChartState> {
     //   };
     // }
 
-    const { componentsBelow, componentsAbove } = this.props;
+    const childComponents = React.Children.toArray(this.props.children);
+    console.log(childComponents);
+
     return (
       <Stage
         width={parentDimensions.width}
@@ -357,7 +329,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
           {this.renderAxes()}
         </Layer> */}
 
-        {componentsBelow}
+        {childComponents && childComponents[0] ? childComponents[0] : null}
 
         <Layer
           x={chartDimensions.left + chartTransform.x}
@@ -375,8 +347,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
           </Layer>
         )}
 
-        {componentsAbove}
-
+        {childComponents && childComponents[1] ? childComponents[1] : null}
         {/* {isBrushEnabled && (
             <Layer hitGraphEnabled={false} listening={false}>
               {this.renderBrushTool()}
@@ -411,9 +382,7 @@ class Chart extends React.Component<Props, ReactiveChartState> {
   //   return this.props.chartStore!.highlightedLegendItem.get();
   // };
 }
-interface ReactiveChartOwnProps {
-  chartStore: any;
-}
+
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
@@ -423,7 +392,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     },
     dispatch,
   );
-const mapStateToProps = (state: IChartState, ownProps: ReactiveChartOwnProps) => {
+const mapStateToProps = (state: IChartState) => {
   if (!isInitialized(state)) {
     return {
       initialized: false,
@@ -439,8 +408,6 @@ const mapStateToProps = (state: IChartState, ownProps: ReactiveChartOwnProps) =>
       },
       isChartAnimatable: false,
       isChartEmpty: true,
-      componentsBelow: null,
-      componentsAbove: null,
     };
   }
   return {
@@ -453,8 +420,6 @@ const mapStateToProps = (state: IChartState, ownProps: ReactiveChartOwnProps) =>
     chartTransform: computeChartTransformSelector(state),
     isChartAnimatable: isChartAnimatableSelector(state),
     isChartEmpty: isChartEmptySelector(state),
-    componentsBelow: getChartTypeComponentSelector(ownProps.chartStore, -1, 'canvas')(state),
-    componentsAbove: getChartTypeComponentSelector(ownProps.chartStore, 1, 'canvas')(state),
   };
 };
 

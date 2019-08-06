@@ -2,21 +2,15 @@ import React, { CSSProperties } from 'react';
 import classNames from 'classnames';
 import { Provider } from 'react-redux';
 import { SpecsParser } from '../specs/specs_parser';
-import { AnnotationTooltip } from './annotation_tooltips';
 import { ChartResizer } from './chart_resizer';
-import { Crosshair } from './crosshair';
-import { Highlighter } from './highlighter';
 import { Legend } from './legend/legend';
 import { ChartContainer } from './react_canvas/chart_container';
-import { Tooltips } from './tooltips';
 import { isHorizontal } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
 import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { chartStoreReducer } from '../store/chart_store';
 import { createStore } from 'redux';
-import { ChartTypeComponents } from './chart_type_components';
-import { htmlIdGenerator } from 'utils/commons';
 interface ChartProps {
   /** The type of rendered
    * @default 'canvas'
@@ -94,8 +88,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
           <div className="echContainer">
             <ChartResizer />
             <ChartContainer />
-            <Tooltips />
-            <AnnotationTooltip />
           </div>
         </div>
       </Provider>

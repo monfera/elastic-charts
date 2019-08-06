@@ -13,11 +13,7 @@ export interface IChartStore {
   chartType: ChartType;
   render(state: IChartState): GeometriesList;
   getChartDimensions(state: IChartState): Dimensions;
-  getCustomChartComponents(
-    chartStore: any,
-    zIndex: number,
-    componentType: 'dom' | 'svg' | 'canvas',
-  ): JSX.Element | null;
+  getCustomChartComponents(zIndex: number, componentType: 'dom' | 'svg' | 'canvas'): JSX.Element | null;
 }
 
 export interface SpecList {

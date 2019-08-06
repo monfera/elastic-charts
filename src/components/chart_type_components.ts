@@ -5,7 +5,6 @@ import { isInitialized } from 'store/selectors/is_initialized';
 import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
 
 interface OwnProps {
-  chartStore: any;
   zIndex: number;
   type: 'dom' | 'svg' | 'canvas';
 }
@@ -28,7 +27,7 @@ const mapStateToProps = (state: IChartState, ownProps: OwnProps) => {
     };
   }
   return {
-    components: getChartTypeComponentSelector(ownProps.chartStore, ownProps.zIndex, ownProps.type)(state),
+    components: getChartTypeComponentSelector(ownProps.zIndex, ownProps.type)(state),
   };
 };
 

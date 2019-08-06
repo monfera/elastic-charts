@@ -18,6 +18,9 @@ export class Playground extends React.Component {
       data: [[10],[20], [30]],
       accessor: 0,
     }
+    const theme: RecursivePartial<Theme> ={
+      barSeriesStyle: {displayValue:{offsetX: -15}}
+    }
     
     return (
       <Fragment>

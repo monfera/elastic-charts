@@ -20,6 +20,7 @@ const defaultProps = {
 export const AreaSeries = getConnect()(
   specComponentFactory<
     AreaSeriesSpec,
+    | 'seriesType'
     | 'groupId'
     | 'xScaleType'
     | 'yScaleType'
