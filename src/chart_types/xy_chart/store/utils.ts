@@ -65,6 +65,17 @@ export interface ComputedScales {
   yScales: Map<GroupId, Scale>;
 }
 
+export interface ComputedGeometries {
+  scales: ComputedScales;
+  geometries: {
+    points: PointGeometry[];
+    bars: BarGeometry[];
+    areas: AreaGeometry[];
+    lines: LineGeometry[];
+  };
+  geometriesIndex: Map<any, IndexedGeometry[]>;
+  geometriesCounts: GeometriesCounts;
+}
 export function updateDeselectedDataSeries(
   series: DataSeriesColorsValues[] | null,
   value: DataSeriesColorsValues,
@@ -185,17 +196,7 @@ export function computeSeriesGeometries(
   chartRotation: Rotation,
   axesSpecs: AxisSpec[],
   enableHistogramMode: boolean,
-): {
-  scales: ComputedScales;
-  geometries: {
-    points: PointGeometry[];
-    bars: BarGeometry[];
-    areas: AreaGeometry[];
-    lines: LineGeometry[];
-  };
-  geometriesIndex: Map<any, IndexedGeometry[]>;
-  geometriesCounts: GeometriesCounts;
-} {
+): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
 

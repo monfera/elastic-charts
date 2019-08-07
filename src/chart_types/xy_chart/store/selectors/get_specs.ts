@@ -24,6 +24,6 @@ export const getSeriesSpecsSelector = createSelector(
 export const getAnnotationSpecsSelector = createSelector(
   [getSpecs],
   (specs) => {
-    return getSpecsFromStore<AnnotationSpec>(specs, 'xy_axis', 'annotations');
+    return getSpecsFromStore<AnnotationSpec>(specs, 'xy_axis', 'annotation');
   },
 );

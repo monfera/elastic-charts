@@ -19,12 +19,21 @@ import { isInitialized } from '../../store/selectors/is_initialized';
 import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors/is_chart_empty';
 import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
 import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { Theme } from 'utils/themes/theme';
+import { Theme, LineAnnotationStyle, RectAnnotationStyle } from 'utils/themes/theme';
 import { LIGHT_THEME } from 'utils/themes/light_theme';
 import { computeChartTransformSelector } from 'chart_types/xy_chart/store/selectors/compute_chart_transform';
 import { Transform } from 'chart_types/xy_chart/store/utils';
-import { Rotation } from 'chart_types/xy_chart/utils/specs';
-import { getChartTypeComponentSelector } from 'store/selectors/get_chart_type_components';
+import { Rotation, isLineAnnotation, isRectAnnotation, AnnotationSpec } from 'chart_types/xy_chart/utils/specs';
+import { AnnotationId } from 'utils/ids';
+import {
+  AnnotationDimensions,
+  AnnotationLineProps,
+  AnnotationRectProps,
+} from 'chart_types/xy_chart/annotations/annotation_utils';
+import { LineAnnotation } from 'chart_types/xy_chart/renderer/canvas/line_annotation';
+import { RectAnnotation } from 'chart_types/xy_chart/renderer/canvas/rect_annotation';
+import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
+import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
 
 interface Props {
   initialized: boolean;
@@ -39,6 +48,8 @@ interface Props {
   onBrushEnd(start: Point, end: Point): void;
   onBrushStart(): void;
   isChartEmpty: boolean;
+  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
+  annotationSpecs: AnnotationSpec[];
 }
 interface ReactiveChartState {
   brushing: boolean;
@@ -50,7 +61,7 @@ interface ReactiveChartState {
   };
 }
 
-interface ReactiveChartElementIndex {
+export interface ReactiveChartElementIndex {
   element: JSX.Element;
   zIndex: number;
 }
@@ -195,6 +206,63 @@ class Chart extends React.Component<Props, ReactiveChartState> {
       },
     ];
   };
+
+  renderAnnotations = (): ReactiveChartElementIndex[] => {
+    const {
+      annotationDimensions,
+      annotationSpecs,
+      chartDimensions,
+      globalSettings: { debug },
+    } = this.props;
+    console.log({ annotationDimensions, annotationSpecs });
+    const annotationElements: ReactiveChartElementIndex[] = [];
+    annotationDimensions.forEach((annotation: AnnotationDimensions, id: AnnotationId) => {
+      const spec = annotationSpecs.find((spec) => spec.id === id);
+
+      if (!spec) {
+        return;
+      }
+
+      const zIndex = spec.zIndex || 0;
+      let element;
+      console.log({ spec });
+      if (isLineAnnotation(spec)) {
+        console.log({ lineAnnotatio: spec });
+        const lineStyle = spec.style as LineAnnotationStyle;
+
+        element = (
+          <LineAnnotation
+            key={`annotation-${id}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            lines={annotation as AnnotationLineProps[]}
+            lineStyle={lineStyle}
+          />
+        );
+      } else if (isRectAnnotation(spec)) {
+        console.log('is rect annotation');
+        const rectStyle = spec.style as RectAnnotationStyle;
+
+        element = (
+          <RectAnnotation
+            key={`annotation-${id}`}
+            chartDimensions={chartDimensions}
+            debug={debug}
+            rects={annotation as AnnotationRectProps[]}
+            rectStyle={rectStyle}
+          />
+        );
+      }
+
+      if (element) {
+        annotationElements.push({
+          element,
+          zIndex,
+        });
+      }
+    });
+    return annotationElements;
+  };
   // renderBrushTool = () => {
   //   const { brushing, brushStart, brushEnd } = this.state;
   //   const { chartDimensions, chartRotation, chartTransform } = this.props.chartStore!;
@@ -270,15 +338,9 @@ class Chart extends React.Component<Props, ReactiveChartState> {
     const areas = this.renderAreaSeries(clippings);
     const lines = this.renderLineSeries(clippings);
     const arcs = this.renderArcSeries();
-    // const annotations = this.renderAnnotations();
+    const annotations = this.renderAnnotations();
 
-    return [
-      ...bars,
-      ...areas,
-      ...lines,
-      ...arcs,
-      // ...annotations
-    ]
+    return [...bars, ...areas, ...lines, ...arcs, ...annotations]
       .sort((elemIdxA, elemIdxB) => elemIdxA.zIndex - elemIdxB.zIndex)
       .map((elemIdx) => elemIdx.element);
   }
@@ -408,6 +470,8 @@ const mapStateToProps = (state: IChartState) => {
       },
       isChartAnimatable: false,
       isChartEmpty: true,
+      annotationDimensions: new Map(),
+      annotationSpecs: [],
     };
   }
   return {
@@ -420,6 +484,8 @@ const mapStateToProps = (state: IChartState) => {
     chartTransform: computeChartTransformSelector(state),
     isChartAnimatable: isChartAnimatableSelector(state),
     isChartEmpty: isChartEmptySelector(state),
+    annotationDimensions: computeAnnotationDimensionsSelector(state),
+    annotationSpecs: getAnnotationSpecsSelector(state),
   };
 };
 

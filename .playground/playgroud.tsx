@@ -14,14 +14,25 @@ import {
 
 export class Playground extends React.Component {
   render() {
-    const pieSpec = {
-      data: [[10],[20], [30]],
-      accessor: 0,
-    }
-    const theme: RecursivePartial<Theme> ={
-      barSeriesStyle: {displayValue:{offsetX: -15}}
-    }
+
+    const data1 = [
+      {x: 7, y:5},
+      {x: 10, y:5},
+      {x: 20, y:5},
+      {x: 22, y:10},
+    ]
+
+    const data2 = [
+      {x: 1, y:10},
+      {x: 17, y:9},
+      {x: 22, y:2},
+    ]
     
+
+    const data3 = [
+      {x: 8, y:5},
+    ]
+    const data =KIBANA_METRICS.metrics.kibana_os_load[0].data.slice(0, 10);
     return (
       <Fragment>
         <div className="chart">

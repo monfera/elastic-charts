@@ -488,7 +488,7 @@ export function computeAnnotationDimensions(
   const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);
 
   annotations.forEach((annotationSpec) => {
-    const { annotationId } = annotationSpec;
+    const { id } = annotationSpec;
     if (isLineAnnotation(annotationSpec)) {
       const { groupId, domainType } = annotationSpec;
       const annotationAxisPosition = getAnnotationAxis(axesSpecs, groupId, domainType);
@@ -509,7 +509,7 @@ export function computeAnnotationDimensions(
       );
 
       if (dimensions) {
-        annotationDimensions.set(annotationId, dimensions);
+        annotationDimensions.set(id, dimensions);
       }
     } else if (isRectAnnotation(annotationSpec)) {
       const dimensions = computeRectAnnotationDimensions(
@@ -521,7 +521,7 @@ export function computeAnnotationDimensions(
       );
 
       if (dimensions) {
-        annotationDimensions.set(annotationId, dimensions);
+        annotationDimensions.set(id, dimensions);
       }
     }
   });
@@ -950,13 +950,13 @@ export function computeRectAnnotationTooltipState(
 export function computeAnnotationTooltipState(
   cursorPosition: Point,
   annotationDimensions: Map<AnnotationId, any>,
-  annotationSpecs: Map<AnnotationId, AnnotationSpec>,
+  annotationSpecs: AnnotationSpec[],
   chartRotation: Rotation,
   axesSpecs: AxisSpec[],
   chartDimensions: Dimensions,
 ): AnnotationTooltipState | null {
   for (const [annotationId, annotationDimension] of annotationDimensions) {
-    const spec = annotationSpecs.get(annotationId);
+    const spec = annotationSpecs.find((spec) => spec.id === annotationId);
 
     if (!spec || spec.hideTooltips) {
       continue;

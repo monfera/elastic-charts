@@ -1,7 +1,7 @@
 import React from 'react';
 import { Group, Rect, Text } from 'react-konva';
 import { Rotation } from '../../utils/specs';
-import { DisplayValueStyle, Theme } from 'utils/themes/theme';
+import { Theme } from 'utils/themes/theme';
 import { Dimensions } from 'utils/dimensions';
 import { BarGeometry } from 'utils/geometry';
 import { buildBarValueProps } from './bar_values_utils';

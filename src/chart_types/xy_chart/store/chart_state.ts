@@ -147,21 +147,20 @@ export class ChartStore {
 
   chartRotation: Rotation = 0; // updated from jsx
   chartRendering: Rendering = 'canvas'; // updated from jsx
-  chartTheme: Theme = LIGHT_THEME;
-  axesSpecs: Map<AxisId, AxisSpec> = new Map(); // readed from jsx
+  chartTheme: Theme = LIGHT_THEME; // updated from jsx
+  axesSpecs: AxisSpec[] = []; // readed from jsx
   axesTicksDimensions: Map<AxisId, AxisTicksDimensions> = new Map(); // computed
   axesPositions: Map<AxisId, Dimensions> = new Map(); // computed
   axesVisibleTicks: Map<AxisId, AxisTick[]> = new Map(); // computed
   axesTicks: Map<AxisId, AxisTick[]> = new Map(); // computed
   axesGridLinesPositions: Map<AxisId, AxisLinePosition[]> = new Map(); // computed
 
-  annotationSpecs = new Map<AnnotationId, AnnotationSpec>(); // read from jsx
+  annotationSpecs: AnnotationSpec[] = []; // read from jsx
 
   annotationDimensions = observable.map<AnnotationId, AnnotationDimensions>(new Map());
 
-  seriesSpecs: Map<SpecId, BasicSeriesSpec> = new Map(); // readed from jsx
-  isChartEmpty = observable.box(false);
-  activeChartId?: string;
+  seriesSpecs: BasicSeriesSpec[] = []; // readed from jsx
+  isChartEmpty: boolean = true;
   seriesDomainsAndData?: SeriesDomainsAndData; // computed
   xScale?: Scale;
   yScales?: Map<GroupId, Scale>;
@@ -644,7 +643,7 @@ export class ChartStore {
     if (legendItem) {
       const { specId } = legendItem.value;
 
-      const spec = this.seriesSpecs.get(specId);
+      const spec = this.seriesSpecs.find((spec) => spec.id === specId);
       if (spec) {
         if (spec.customSeriesColors) {
           spec.customSeriesColors.set(legendItem.value, color);

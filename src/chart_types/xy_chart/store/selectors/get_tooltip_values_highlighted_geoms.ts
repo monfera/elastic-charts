@@ -113,7 +113,7 @@ function getTooltipValues(
 
 export const getTooltipValuesSelector = createSelector(
   [getTooltipValuesAndGeometriesSelector],
-  (values) => {
+  (values): TooltipValue[] => {
     return values.tooltipValues;
   },
 );

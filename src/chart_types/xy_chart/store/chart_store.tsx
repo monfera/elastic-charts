@@ -10,6 +10,7 @@ import { Crosshair } from '../renderer/dom/crosshair';
 import { Axes } from '../renderer/canvas/axis';
 import { BarValues } from '../renderer/canvas/bar_values';
 import { Grid } from '../renderer/canvas/grid';
+import { AnnotationTooltip } from '../renderer/dom/annotation_tooltips';
 
 export class XYAxisChartStore implements IChartStore {
   chartType = ChartTypes.XYAxis;
@@ -42,7 +43,7 @@ function getDomComponents(zIndex: number) {
   return (
     <React.Fragment>
       <Tooltips />
-      {/* <AnnotationTooltip /> */}
+      <AnnotationTooltip />
       <Highlighter />
     </React.Fragment>
   );
