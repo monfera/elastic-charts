@@ -11,6 +11,8 @@ import { Axes } from '../renderer/canvas/axis';
 import { BarValues } from '../renderer/canvas/bar_values';
 import { Grid } from '../renderer/canvas/grid';
 import { AnnotationTooltip } from '../renderer/dom/annotation_tooltips';
+import { Legend } from 'components/legend/legend';
+import { LegendButton } from 'components/legend/legend_button';
 
 export class XYAxisChartStore implements IChartStore {
   chartType = ChartTypes.XYAxis;
@@ -27,7 +29,7 @@ export class XYAxisChartStore implements IChartStore {
   getCustomChartComponents(zIndex: number, type: 'dom' | 'svg' | 'canvas') {
     switch (type) {
       case 'dom':
-        return getDomComponents(zIndex);
+        return getDomComponents(zIndex, this.legendId);
       case 'canvas':
         return getCanvasComponents(zIndex);
       default:
@@ -36,7 +38,7 @@ export class XYAxisChartStore implements IChartStore {
   }
 }
 
-function getDomComponents(zIndex: number) {
+function getDomComponents(zIndex: number, legendId: string) {
   if (zIndex === -1) {
     return <Crosshair />;
   }
@@ -45,6 +47,8 @@ function getDomComponents(zIndex: number) {
       <Tooltips />
       <AnnotationTooltip />
       <Highlighter />
+      <Legend legendId={legendId} />
+      <LegendButton legendId={legendId} />
     </React.Fragment>
   );
 }

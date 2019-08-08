@@ -9,6 +9,7 @@ export function chartSettingsReducer(state: GlobalSettings, action: UpdateParent
         ...state,
         parentDimensions: action.dimensions,
       };
+
     default:
       return state;
   }

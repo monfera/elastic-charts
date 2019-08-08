@@ -288,7 +288,7 @@ export function getRawDataSeries(
  */
 export function getSplittedSeries(
   seriesSpecs: BasicSeriesSpec[],
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  deselectedDataSeries: DataSeriesColorsValues[],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesColors: Map<string, DataSeriesColorsValues>;
@@ -300,7 +300,7 @@ export function getSplittedSeries(
   for (const spec of seriesSpecs) {
     const dataSeries = splitSeries(spec.data, spec, spec.id);
     let currentRawDataSeries = dataSeries.rawDataSeries;
-    if (deselectedDataSeries) {
+    if (deselectedDataSeries.length > 0) {
       currentRawDataSeries = dataSeries.rawDataSeries.filter(
         (series): boolean => {
           const seriesValues = {

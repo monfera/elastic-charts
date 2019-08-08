@@ -12,11 +12,10 @@ import { connect } from 'react-redux';
 import { Point } from '../../chart_types/xy_chart/store/chart_state';
 import { ContainerConfig } from 'konva';
 import { getRenderedGeometriesSelector } from '../../store/selectors/get_rendered_geometries';
-import { getChartDimensionsSelector } from '../../store/selectors/get_chart_dimensions';
-import { Dimensions } from '../../utils/dimensions';
-import { isChartAnimatableSelector } from '../../chart_types/xy_chart/store/selectors/is_chart_animatable';
-import { isInitialized } from '../../store/selectors/is_initialized';
-import { isChartEmptySelector } from '../../chart_types/xy_chart/store/selectors/is_chart_empty';
+import { getChartDimensionsSelector } from 'store/selectors/get_chart_dimensions';
+import { Dimensions } from 'utils/dimensions';
+import { isChartAnimatableSelector } from 'chart_types/xy_chart/store/selectors/is_chart_animatable';
+import { isInitialized } from 'store/selectors/is_initialized';
 import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
 import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
 import { Theme, LineAnnotationStyle, RectAnnotationStyle } from 'utils/themes/theme';
@@ -34,6 +33,7 @@ import { LineAnnotation } from 'chart_types/xy_chart/renderer/canvas/line_annota
 import { RectAnnotation } from 'chart_types/xy_chart/renderer/canvas/rect_annotation';
 import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
 import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
+import { isChartEmptySelector } from 'chart_types/xy_chart/store/selectors/is_chart_empty';
 
 interface Props {
   initialized: boolean;

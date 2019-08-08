@@ -8,6 +8,7 @@ import { chartSettingsReducer } from './reducers/chart_settings';
 import { interactionsReducer } from './reducers/interactions';
 import { Dimensions } from '../utils/dimensions';
 import { XYAxisChartStore } from 'chart_types/xy_chart/store/chart_store';
+import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
 
 export interface IChartStore {
   chartType: ChartType;
@@ -22,7 +23,6 @@ export interface SpecList {
 export interface GlobalSettings {
   debug: boolean;
   parentDimensions: Dimensions;
-  legendCollapsed: boolean;
 }
 
 export interface InteractionsStore {
@@ -31,6 +31,10 @@ export interface InteractionsStore {
     y: number;
   };
   isBrushing: boolean;
+  highlightedLegendItemKey: string | null;
+  legendCollapsed: boolean;
+  invertDeselect: boolean;
+  deselectedDataSeries: DataSeriesColorsValues[];
 }
 export interface GeometriesList {
   points?: PointGeometry[];
@@ -70,6 +74,10 @@ const initialState: IChartState = {
       y: -1,
     },
     isBrushing: false,
+    legendCollapsed: false,
+    highlightedLegendItemKey: null,
+    deselectedDataSeries: [],
+    invertDeselect: false,
   },
   settings: {
     debug: false,
@@ -79,10 +87,8 @@ const initialState: IChartState = {
       left: 0,
       top: 0,
     },
-    legendCollapsed: false,
   },
 };
-console.log({ initialState });
 
 export function chartStoreReducer(state = initialState, action: any) {
   console.log(`dispatch: ${action.type}`);

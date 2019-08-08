@@ -7,7 +7,6 @@ import { computeXScale, computeYScales, countBarsInCluster } from '../utils/scal
 import {
   DataSeries,
   DataSeriesColorsValues,
-  findDataSeriesByColorValues,
   FormattedDataSeries,
   getColorValuesAsString,
   getFormattedDataseries,
@@ -76,20 +75,20 @@ export interface ComputedGeometries {
   geometriesIndex: Map<any, IndexedGeometry[]>;
   geometriesCounts: GeometriesCounts;
 }
-export function updateDeselectedDataSeries(
-  series: DataSeriesColorsValues[] | null,
-  value: DataSeriesColorsValues,
-): DataSeriesColorsValues[] {
-  const seriesIndex = findDataSeriesByColorValues(series, value);
-  const updatedSeries = series ? [...series] : [];
+// export function updateDeselectedDataSeries(
+//   series: DataSeriesColorsValues[] | null,
+//   value: DataSeriesColorsValues,
+// ): DataSeriesColorsValues[] {
+//   const seriesIndex = findDataSeriesByColorValues(series, value);
+//   const updatedSeries = series ? [...series] : [];
 
-  if (seriesIndex > -1) {
-    updatedSeries.splice(seriesIndex, 1);
-  } else {
-    updatedSeries.push(value);
-  }
-  return updatedSeries;
-}
+//   if (seriesIndex > -1) {
+//     updatedSeries.splice(seriesIndex, 1);
+//   } else {
+//     updatedSeries.push(value);
+//   }
+//   return updatedSeries;
+// }
 
 export function getUpdatedCustomSeriesColors(seriesSpecs: BasicSeriesSpec[]): Map<string, string> {
   const updatedCustomSeriesColors = new Map();
@@ -148,8 +147,8 @@ export function getLastValues(formattedDataSeries: {
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
   customYDomainsByGroupId: Map<GroupId, DomainRange>,
+  deselectedDataSeries: DataSeriesColorsValues[],
   customXDomain?: DomainRange | Domain,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
 ): SeriesDomainsAndData {
   const { splittedSeries, xValues, seriesColors } = getSplittedSeries(seriesSpecs, deselectedDataSeries);
 
