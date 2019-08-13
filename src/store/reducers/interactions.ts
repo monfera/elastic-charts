@@ -12,6 +12,7 @@ import {
   ON_INVERT_DESELECT_SERIES,
   InvertDeselectSeriesAction,
 } from 'store/actions/legend';
+import { ON_MOUSE_DOWN, ON_MOUSE_UP, MouseDownAction, MouseUpAction } from '../actions/mouse';
 import { DataSeriesColorsValues, findDataSeriesByColorValues } from 'chart_types/xy_chart/utils/series';
 
 export function interactionsReducer(
@@ -22,12 +23,18 @@ export function interactionsReducer(
     | LegendItemOutAction
     | LegendItemOverAction
     | ToggleDeselectSeriesAction
-    | InvertDeselectSeriesAction,
+    | InvertDeselectSeriesAction
+    | MouseDownAction
+    | MouseUpAction,
 ): InteractionsStore {
   switch (action.type) {
     case ON_CURSOR_POSITION_CHANGE:
       const { x, y } = action;
-      console.log('update cursor', action);
+
+      // allow going outside container if mouse down is pressed
+      if (Boolean(state.mouseDownPosition) && x === -1 && y === -1) {
+        return state;
+      }
       return {
         ...state,
         rawCursorPosition: {
@@ -35,20 +42,28 @@ export function interactionsReducer(
           y,
         },
       };
+    case ON_MOUSE_DOWN:
+      return {
+        ...state,
+        mouseDownPosition: action.point,
+      };
+    case ON_MOUSE_UP: {
+      return {
+        ...state,
+        mouseDownPosition: null,
+      };
+    }
     case ON_TOGGLE_LEGEND:
-      console.log('toggling legend');
       return {
         ...state,
         legendCollapsed: !state.legendCollapsed,
       };
     case ON_LEGEND_ITEM_OUT:
-      console.log('toggling legend');
       return {
         ...state,
         highlightedLegendItemKey: null,
       };
     case ON_LEGEND_ITEM_OVER:
-      console.log('toggling legend');
       return {
         ...state,
         highlightedLegendItemKey: action.legendItemKey,
@@ -74,7 +89,6 @@ function toggleDeselectedDataSeries(
   deselectedDataSeries: DataSeriesColorsValues[],
 ) {
   const index = findDataSeriesByColorValues(deselectedDataSeries, legendItem);
-  console.log({ index, legendItem, deselectedDataSeries });
   if (index > -1) {
     return [...deselectedDataSeries.slice(0, index), ...deselectedDataSeries.slice(index + 1)];
   } else {

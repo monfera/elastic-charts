@@ -9,7 +9,6 @@ const getRawCursorPosition = (state: IChartState) => state.interactions.rawCurso
 export const computeCursorPositionSelector = createSelector(
   [getRawCursorPosition, computeChartDimensionsSelector],
   (rawCursorPosition, chartDimensions): Point => {
-    console.log('--- 7 computeChartTransformSelector ---');
     return computeCursorPosition(rawCursorPosition, chartDimensions);
   },
 );

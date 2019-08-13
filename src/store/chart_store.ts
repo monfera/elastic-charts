@@ -15,6 +15,7 @@ export interface IChartStore {
   render(state: IChartState): GeometriesList;
   getChartDimensions(state: IChartState): Dimensions;
   getCustomChartComponents(zIndex: number, componentType: 'dom' | 'svg' | 'canvas'): JSX.Element | null;
+  isBrushAvailable(state: IChartState): boolean;
 }
 
 export interface SpecList {
@@ -30,7 +31,10 @@ export interface InteractionsStore {
     x: number;
     y: number;
   };
-  isBrushing: boolean;
+  mouseDownPosition: {
+    x: number;
+    y: number;
+  } | null;
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
@@ -73,7 +77,7 @@ const initialState: IChartState = {
       x: -1,
       y: -1,
     },
-    isBrushing: false,
+    mouseDownPosition: null,
     legendCollapsed: false,
     highlightedLegendItemKey: null,
     deselectedDataSeries: [],
@@ -91,11 +95,9 @@ const initialState: IChartState = {
 };
 
 export function chartStoreReducer(state = initialState, action: any) {
-  console.log(`dispatch: ${action.type}`);
   switch (action.type) {
     case SPEC_PARSED:
       const chartType = findMainChartType(state.specs);
-      console.log('spec parsed', chartType);
       if (isChartTypeChanged(state, chartType)) {
         const chartStore = intializeChartStore(chartType);
         return {

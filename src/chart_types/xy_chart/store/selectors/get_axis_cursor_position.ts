@@ -12,7 +12,7 @@ export const getAxisCursorPositionSelector = createSelector(
   getAxisCursorPosition,
 );
 
-function getAxisCursorPosition(cursorPosition: Point, chartDimensions: Dimensions, settingsSpec: SettingsSpec) {
+function getAxisCursorPosition(cursorPosition: Point, chartDimensions: Dimensions, settingsSpec: SettingsSpec): Point {
   const xPos = cursorPosition.x;
   const yPos = cursorPosition.y;
   // get the cursor position depending on the chart rotation

@@ -13,14 +13,14 @@ import { Grid } from '../renderer/canvas/grid';
 import { AnnotationTooltip } from '../renderer/dom/annotation_tooltips';
 import { Legend } from 'components/legend/legend';
 import { LegendButton } from 'components/legend/legend_button';
+import { isBrushAvailableSelector } from './selectors/is_brush_available';
+import { BrushTool } from '../renderer/dom/brush';
 
 export class XYAxisChartStore implements IChartStore {
   chartType = ChartTypes.XYAxis;
   legendId: string = htmlIdGenerator()('legend');
   render(state: IChartState) {
-    console.log('---- rendering xyaxis geometries ----');
     const geoms = computeSeriesGeometriesSelector(state);
-    console.log('geoms', { geoms });
     return geoms.geometries;
   }
   getChartDimensions(state: IChartState) {
@@ -36,11 +36,18 @@ export class XYAxisChartStore implements IChartStore {
         return null;
     }
   }
+  isBrushAvailable(state: IChartState) {
+    return isBrushAvailableSelector(state);
+  }
 }
 
 function getDomComponents(zIndex: number, legendId: string) {
   if (zIndex === -1) {
-    return <Crosshair />;
+    return (
+      <React.Fragment>
+        <Crosshair />
+      </React.Fragment>
+    );
   }
   return (
     <React.Fragment>
@@ -49,6 +56,7 @@ function getDomComponents(zIndex: number, legendId: string) {
       <Highlighter />
       <Legend legendId={legendId} />
       <LegendButton legendId={legendId} />
+      <BrushTool />
     </React.Fragment>
   );
 }

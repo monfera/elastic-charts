@@ -12,4 +12,7 @@ export class PieChartStore implements IChartStore {
   getCustomChartComponents() {
     return null;
   }
+  isBrushAvailable() {
+    return false;
+  }
 }

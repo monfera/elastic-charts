@@ -5,8 +5,7 @@ import { IChartState } from 'store/chart_store';
 import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { getTooltipValuesSelector } from './get_tooltip_values_highlighted_geoms';
-
-const isBrushing = (state: IChartState) => state.interactions.isBrushing;
+import { isBrushingSelector } from './is_brushing';
 
 const getTooltipType = (state: IChartState): TooltipType | undefined => {
   const tooltip = getSettingsSpecSelector(state).tooltip;
@@ -22,7 +21,7 @@ const getTooltipType = (state: IChartState): TooltipType | undefined => {
 };
 
 export const isTooltipVisibleSelector = createSelector(
-  [isBrushing, getTooltipType, computeCursorPositionSelector, getTooltipValuesSelector],
+  [isBrushingSelector, getTooltipType, computeCursorPositionSelector, getTooltipValuesSelector],
   isTooltipVisible,
 );
 
