@@ -9,14 +9,18 @@ import {
   LegendItemListener,
   CursorUpdateListener,
 } from '../chart_types/xy_chart/store/chart_state';
-import { ChartTypes } from '../store/chart_store';
+import { ScaleTypes } from '../utils/scales/scales';
 import { getConnect, specComponentFactory } from '../store/spec_factory';
 import { Spec } from '.';
-import { LIGHT_THEME } from '../utils/themes/light_theme';
-import { ScaleTypes } from '../utils/scales/scales';
+import { LIGHT_THEME } from 'utils/themes/light_theme';
+import { ChartTypes } from 'chart_types';
+import { GeometryValue } from 'utils/geometry';
+import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
 
-export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
-export const DEFAULT_TOOLTIP_SNAP = true;
+export type ElementClickListener = (values: GeometryValue[]) => void;
+export type ElementOverListener = (values: GeometryValue[]) => void;
+export type BrushEndListener = (min: number, max: number) => void;
+export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
 
 /**
  * Event used to syncronize cursors between Charts.
@@ -97,12 +101,15 @@ export type DefaultSettingsProps =
   | 'showLegendDisplayValue'
   | 'theme';
 
-export const DEFAULT_SETTINGS: Pick<SettingsSpec, DefaultSettingsProps> = {
+export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
+export const DEFAULT_TOOLTIP_SNAP = true;
+
+export const DEFAULT_SETTINGS_SPEC = {
   id: '__global__settings___',
   chartType: ChartTypes.Global,
   specType: 'settings',
-  rendering: 'canvas',
-  rotation: 0,
+  rendering: 'canvas' as 'canvas',
+  rotation: 0 as 0,
   animateData: true,
   showLegend: false,
   resizeDebounce: 10,
@@ -115,4 +122,4 @@ export const DEFAULT_SETTINGS: Pick<SettingsSpec, DefaultSettingsProps> = {
   showLegendDisplayValue: true,
   theme: LIGHT_THEME,
 };
-export const Settings = getConnect()(specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS));
+export const Settings = getConnect()(specComponentFactory<SettingsSpec, DefaultSettingsProps>(DEFAULT_SETTINGS_SPEC));

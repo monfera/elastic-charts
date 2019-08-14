@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import { IChartState, ChartTypes } from '../chart_store';
+import { IChartState } from '../chart_store';
+import { ChartTypes } from 'chart_types';
 import { getSpecsFromStore } from '../utils';
 import { SettingsSpec } from '../../specs/settings';
 

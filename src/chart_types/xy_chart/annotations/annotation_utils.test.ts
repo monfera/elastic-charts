@@ -42,7 +42,7 @@ import {
   scaleAndValidateDatum,
   toTransformString,
 } from './annotation_utils';
-import { Point } from '../store/chart_state';
+import { Point } from 'utils/point';
 
 describe('annotation utils', () => {
   const minRange = 0;

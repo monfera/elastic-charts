@@ -1,6 +1,6 @@
 import { AxisSpec, Position, DEFAULT_GLOBAL_ID } from '../utils/specs';
-import { ChartTypes } from '../../../store/chart_store';
-import { specComponentFactory, getConnect } from '../../../store/spec_factory';
+import { ChartTypes } from 'chart_types';
+import { specComponentFactory, getConnect } from 'store/spec_factory';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,

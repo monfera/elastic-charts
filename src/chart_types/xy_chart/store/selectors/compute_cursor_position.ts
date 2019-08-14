@@ -2,7 +2,7 @@ import { Dimensions } from 'utils/dimensions';
 import { createSelector } from 'reselect';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { IChartState } from 'store/chart_store';
-import { Point } from '../chart_state';
+import { Point } from 'utils/point';
 
 const getRawCursorPosition = (state: IChartState) => state.interactions.rawCursorPosition;
 

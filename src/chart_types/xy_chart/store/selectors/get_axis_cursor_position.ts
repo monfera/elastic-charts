@@ -1,7 +1,7 @@
 import { Dimensions } from 'utils/dimensions';
 import { createSelector } from 'reselect';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { Point } from '../chart_state';
+import { Point } from 'utils/point';
 import { getValidXPosition, getValidYPosition } from '../../utils/interactions';
 import { SettingsSpec } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';

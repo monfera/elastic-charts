@@ -21,20 +21,16 @@ export function specComponentFactory<U extends Spec, D extends keyof U>(
   defaultProps: Pick<U, D | 'chartType' | 'specType'>,
 ) {
   const spec = (props: U & DispatchFromProps) => {
-    // console.log('*** component start ***', { props, defaultProps });
     const prevId = usePrevious(props.id);
     const { removeSpec, upsertSpec, ...spec } = props;
     useEffect(() => {
-      // console.log(`*** mount/update ${props.id} ***`);
       if (prevId && prevId !== props.id) {
-        // console.log('--- removing previous ID', prevId, props.id);
         removeSpec(prevId);
       }
       upsertSpec(spec);
     });
     useEffect(
       () => () => {
-        // console.log(`*** unmount ${props.id} ***`);
         removeSpec(props.id);
       },
       [],

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../../utils/interactions';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { Point } from '../chart_state';
+import { Point } from 'utils/point';
 import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
 import { ComputedScales, getAxesSpecForSpecId } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';

@@ -26,10 +26,4 @@ export {
   RectAnnotationSpec,
 } from './chart_types/xy_chart/utils/specs';
 export { AnnotationTooltipFormatter } from './chart_types/xy_chart/annotations/annotation_utils';
-export {
-  BrushEndListener,
-  ElementClickListener,
-  ElementOverListener,
-  LegendItemListener,
-} from './chart_types/xy_chart/store/chart_state';
 export { GeometryValue } from './utils/geometry';

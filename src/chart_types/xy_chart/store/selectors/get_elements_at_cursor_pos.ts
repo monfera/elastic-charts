@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { Point } from '../chart_state';
+import { Point } from 'utils/point';
 import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
 import { ComputedScales } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';

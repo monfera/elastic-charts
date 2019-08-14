@@ -1,7 +1,7 @@
 import { RectAnnotationSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
-import { ChartTypes } from '../../../store/chart_store';
 import { specComponentFactory, getConnect } from '../../../store/spec_factory';
 import { DEFAULT_ANNOTATION_RECT_STYLE } from 'utils/themes/theme';
+import { ChartTypes } from '../../index';
 
 const defaultProps = {
   chartType: ChartTypes.XYAxis,

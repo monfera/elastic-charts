@@ -1,6 +1,6 @@
 import { Dimensions } from 'utils/dimensions';
 import { createSelector } from 'reselect';
-import { Point } from '../chart_state';
+import { Point } from 'utils/point';
 import { Scale } from '../../../../utils/scales/scales';
 import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';

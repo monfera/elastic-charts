@@ -8,7 +8,7 @@ import {
 } from '../../../utils/themes/theme';
 import { Accessor } from '../../../utils/accessor';
 import { Omit, RecursivePartial } from '../../../utils/commons';
-import { AnnotationId, AxisId, GroupId } from '../../../utils/ids';
+import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { RawDataSeriesDatum } from './series';

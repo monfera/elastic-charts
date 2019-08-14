@@ -1,14 +1,12 @@
 import { createSelector } from 'reselect';
 import { TooltipType, isCrosshairTooltipType } from '../../utils/interactions';
-import { Point } from '../chart_state';
-import { IChartState } from 'store/chart_store';
+import { Point } from 'utils/point';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { getTooltipTypeSelector } from './get_tooltip_type';
-
-const isBrushing = (state: IChartState) => state.interactions.isBrushing;
+import { isBrushingSelector } from './is_brushing';
 
 export const isCrosshairVisibleSelector = createSelector(
-  [isBrushing, getTooltipTypeSelector, computeCursorPositionSelector],
+  [isBrushingSelector, getTooltipTypeSelector, computeCursorPositionSelector],
   isCrosshairVisible,
 );
 

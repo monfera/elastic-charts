@@ -11,6 +11,7 @@ import {
   getColorValuesAsString,
   getFormattedDataseries,
   getSplittedSeries,
+  RawDataSeries,
 } from '../utils/series';
 import {
   AreaSeriesSpec,
@@ -31,7 +32,6 @@ import { Dimensions } from '../../../utils/dimensions';
 import { Domain } from '../../../utils/domain';
 import { GroupId, SpecId } from '../../../utils/ids';
 import { Scale } from '../../../utils/scales/scales';
-import { SeriesDomainsAndData } from './chart_state';
 import { LegendItem } from '../legend/legend';
 import { PointGeometry, BarGeometry, AreaGeometry, LineGeometry, IndexedGeometry } from '../../../utils/geometry';
 
@@ -75,6 +75,18 @@ export interface ComputedGeometries {
   geometriesIndex: Map<any, IndexedGeometry[]>;
   geometriesCounts: GeometriesCounts;
 }
+
+export interface SeriesDomainsAndData {
+  xDomain: XDomain;
+  yDomain: YDomain[];
+  splittedDataSeries: RawDataSeries[][];
+  formattedDataSeries: {
+    stacked: FormattedDataSeries[];
+    nonStacked: FormattedDataSeries[];
+  };
+  seriesColors: Map<string, DataSeriesColorsValues>;
+}
+
 // export function updateDeselectedDataSeries(
 //   series: DataSeriesColorsValues[] | null,
 //   value: DataSeriesColorsValues,

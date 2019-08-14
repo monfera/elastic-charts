@@ -1,10 +1,8 @@
 import { Dimensions } from 'utils/dimensions';
 import { createSelector } from 'reselect';
 import { computeCursorPositionSelector } from './compute_cursor_position';
-import { Point } from '../chart_state';
-import { getValidXPosition, getValidYPosition, TooltipValue } from '../../utils/interactions';
-import { SettingsSpec } from '../../../../specs/settings';
-import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
+import { Point } from 'utils/point';
+import { TooltipValue } from '../../utils/interactions';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { getAxisSpecsSelector, getAnnotationSpecsSelector } from './get_specs';
 import { AxisSpec, AnnotationSpec, Rotation, AnnotationTypes } from '../../utils/specs';

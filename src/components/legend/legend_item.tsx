@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React from 'react';
 import { Icon } from '../icons/icon';
 import { LegendItem as SeriesLegendItem } from '../../chart_types/xy_chart/legend/legend';
-import { LegendItemListener } from 'chart_types/xy_chart/store/chart_state';
+import { LegendItemListener } from 'specs/settings';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { IChartState } from 'store/chart_store';
@@ -30,7 +30,7 @@ interface LegendItemDispatchProps {
 interface LegendItemStateProps {
   legendPosition: Position;
   showLegendDisplayValue: boolean;
-  selectedLegendItem: SeriesLegendItem | null;
+  selectedLegendItem?: SeriesLegendItem | null;
   onLegendItemClickListener?: LegendItemListener;
   isLegendItemVisible?: boolean;
 }

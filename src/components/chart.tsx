@@ -32,7 +32,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
   private chartStore: any;
   constructor(props: any) {
     super(props);
-    console.log('instanciate Chart');
     this.chartStore = createStore(chartStoreReducer);
     this.state = {
       legendPosition: this.chartSpecStore.legendPosition.get(),
@@ -80,7 +79,6 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     const chartClassNames = classNames('echChart', className, {
       'echChart--column': Horizontal,
     });
-
     return (
       <Provider store={this.chartStore}>
         <div style={containerStyle} className={chartClassNames}>

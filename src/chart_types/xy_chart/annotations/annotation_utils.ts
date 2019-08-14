@@ -20,8 +20,8 @@ import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { Point } from '../store/chart_state';
 import { computeXScaleOffset, getAxesSpecForSpecId, isHorizontalRotation } from '../store/utils';
+import { Point } from 'utils/point';
 
 export type AnnotationTooltipFormatter = (details?: string) => JSX.Element | null;
 export interface AnnotationTooltipState {

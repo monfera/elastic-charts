@@ -12,7 +12,7 @@ import {
   DEFAULT_LINE_OVERFLOW,
   isWithinLineBounds,
 } from './annotation_utils';
-import { Point } from '../store/chart_state';
+import { Point } from 'utils/point';
 
 describe('annotation marker', () => {
   const groupId = getGroupId('foo-group');

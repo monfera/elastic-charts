@@ -3,10 +3,9 @@ import { useEffect } from 'react';
 import { specParsed } from '../store/actions/specs';
 import { bindActionCreators, Dispatch } from 'redux';
 
-const SpecsSpecComponent: React.FunctionComponent<{}> = (props) => {
+export const SpecsRootComponent: React.FunctionComponent<{}> = (props) => {
   const injected = props as DispatchProps;
   useEffect(() => {
-    console.log('*** spec parser mounted ***', props);
     injected.specParsed();
   });
   return props.children ? (props.children as React.ReactElement) : null;
@@ -29,4 +28,6 @@ const mapStateToProps = () => ({});
 export const SpecsParser = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(SpecsSpecComponent);
+)(SpecsRootComponent);
+
+export const CIAO_TEST = 'ccc';

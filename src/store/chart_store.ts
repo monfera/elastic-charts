@@ -9,7 +9,9 @@ import { interactionsReducer } from './reducers/interactions';
 import { Dimensions } from '../utils/dimensions';
 import { XYAxisChartStore } from 'chart_types/xy_chart/store/chart_store';
 import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
-
+import { ChartTypes } from '../chart_types';
+import { DEFAULT_SETTINGS_SPEC } from 'specs/settings';
+import { Point } from 'utils/point';
 export interface IChartStore {
   chartType: ChartType;
   render(state: IChartState): GeometriesList;
@@ -27,14 +29,8 @@ export interface GlobalSettings {
 }
 
 export interface InteractionsStore {
-  rawCursorPosition: {
-    x: number;
-    y: number;
-  };
-  mouseDownPosition: {
-    x: number;
-    y: number;
-  } | null;
+  rawCursorPosition: Point;
+  mouseDownPosition: Point | null;
   highlightedLegendItemKey: string | null;
   legendCollapsed: boolean;
   invertDeselect: boolean;
@@ -57,18 +53,12 @@ export interface IChartState {
   interactions: InteractionsStore;
 }
 
-export const ChartTypes = Object.freeze({
-  Global: 'global' as 'global',
-  Pie: 'pie' as 'pie',
-  XYAxis: 'xy_axis' as 'xy_axis',
-});
-
 export type ChartType = typeof ChartTypes.Pie | typeof ChartTypes.XYAxis | typeof ChartTypes.Global;
 
 const initialState: IChartState = {
   initialized: false,
   specs: {
-    // [DEFAULT_SETTINGS.id]: DEFAULT_SETTINGS,
+    [DEFAULT_SETTINGS_SPEC.id]: DEFAULT_SETTINGS_SPEC,
   },
   chartType: null,
   chartStore: null,
@@ -95,6 +85,7 @@ const initialState: IChartState = {
 };
 
 export function chartStoreReducer(state = initialState, action: any) {
+  console.log({ DEFAULT_SETTINGS: DEFAULT_SETTINGS_SPEC });
   switch (action.type) {
     case SPEC_PARSED:
       const chartType = findMainChartType(state.specs);

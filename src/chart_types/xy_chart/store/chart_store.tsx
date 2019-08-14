@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layer } from 'react-konva';
-import { IChartStore, ChartTypes, IChartState } from 'store/chart_store';
+import { IChartStore, IChartState } from 'store/chart_store';
+import { ChartTypes } from 'chart_types';
 import { computeSeriesGeometriesSelector } from './selectors/compute_series_geometries';
 import { computeChartDimensionsSelector } from './selectors/compute_chart_dimensions';
 import { Tooltips } from '../renderer/dom/tooltips';
