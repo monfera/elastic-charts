@@ -11,6 +11,7 @@ import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
 import { onLegendItemClick, onToggleDeselectSeries } from 'store/actions/legend';
 import { isEqualSeriesKey } from 'chart_types/xy_chart/utils/series_utils';
 import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
+import { Position } from 'chart_types/xy_chart/utils/specs';
 
 interface LegendItemOwnProps {
   legendItem: SeriesLegendItem;
@@ -32,7 +33,6 @@ interface LegendItemStateProps {
   showLegendDisplayValue: boolean;
   selectedLegendItem?: SeriesLegendItem | null;
   onLegendItemClickListener?: LegendItemListener;
-  isLegendItemVisible?: boolean;
 }
 
 type LegendItemProps = LegendItemOwnProps & LegendItemDispatchProps & LegendItemStateProps;
@@ -60,8 +60,8 @@ class LegendItemComponent extends React.Component<LegendItemProps, LegendItemSta
   };
 
   render() {
-    const { legendItem, displayValue, onMouseEnter, onMouseLeave, isLegendItemVisible, legendPosition } = this.props;
-    const { color, label, isSeriesVisible, value } = legendItem;
+    const { displayValue, legendItem, onMouseEnter, onMouseLeave, legendPosition } = this.props;
+    const { color, label, isSeriesVisible, value, isLegendItemVisible } = legendItem;
     const onTitleClick = this.onVisibilityClick(legendItem.value);
 
     const { showLegendDisplayValue, selectedLegendItem, onLegendItemClickListener } = this.props;
@@ -199,11 +199,12 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 
-const mapStateToProps = (state: IChartState) => {
+const mapStateToProps = (state: IChartState): LegendItemStateProps => {
   if (!isInitialized(state)) {
     return {
       showLegendDisplayValue: false,
-      selectedLegendItemKey: null,
+      selectedLegendItem: null,
+      legendPosition: Position.Right,
     };
   }
   const settingsSpec = getSettingsSpecSelector(state);
@@ -211,8 +212,9 @@ const mapStateToProps = (state: IChartState) => {
     showLegendDisplayValue: settingsSpec.showLegendDisplayValue,
     // Disabling the select until we implement the right contextual menu
     // with extend possibility
-    selectedLegendItemKey: null,
+    selectedLegendItem: null,
     onLegendItemClickListener: settingsSpec.onLegendItemClick,
+    legendPosition: settingsSpec.legendPosition,
   };
 };
 

@@ -48,7 +48,7 @@ export class GridComponent extends React.PureComponent<GridProps> {
 const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: IChartState): GridProps => {
   return {
-    chartDimensions: computeChartDimensionsSelector(state),
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     axesSpecs: getAxisSpecsSelector(state),
     axesGridLinesPositions: computeAxisVisibleTicksSelector(state).axisGridLinesPositions,
   };

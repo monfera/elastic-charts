@@ -38,7 +38,7 @@ export const computeSeriesGeometriesSelector = createSelector(
       formattedDataSeries,
       seriesColorMap,
       chartTheme,
-      chartDimensions,
+      chartDimensions.chartDimensions,
       settingsSpec.rotation,
       axesSpecs,
       isHistogramMode,

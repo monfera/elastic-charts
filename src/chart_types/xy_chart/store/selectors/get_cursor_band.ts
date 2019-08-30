@@ -6,7 +6,6 @@ import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
 import { SettingsSpec } from '../../../../specs/settings';
 import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
-import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 import { computeChartDimensionsSelector } from './compute_chart_dimensions';
 import { BasicSeriesSpec } from 'chart_types/xy_chart/utils/specs';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
@@ -21,7 +20,6 @@ export const getCursorBandPositionSelector = createSelector(
     computeChartDimensionsSelector,
     getSettingsSpecSelector,
     computeSeriesGeometriesSelector,
-    getGeometriesIndexKeysSelector,
     getSeriesSpecsSelector,
     countBarsInClusterSelector,
     isTooltipSnapEnableSelector,
@@ -31,17 +29,15 @@ export const getCursorBandPositionSelector = createSelector(
     chartDimensions,
     settingsSpec,
     seriesGeometries,
-    geometriesIndexKeys,
     seriesSpec,
     totalBarsInCluster,
     isTooltipSnapEnabled,
   ) => {
     return getCursorBand(
       axisCursorPosition,
-      chartDimensions,
+      chartDimensions.chartDimensions,
       settingsSpec,
       seriesGeometries.scales.xScale,
-      geometriesIndexKeys,
       seriesSpec,
       totalBarsInCluster,
       isTooltipSnapEnabled,
@@ -54,7 +50,6 @@ function getCursorBand(
   chartDimensions: Dimensions,
   settingsSpec: SettingsSpec,
   xScale: Scale | undefined,
-  geometriesIndexKeys: any[],
   seriesSpecs: BasicSeriesSpec[],
   totalBarsInCluster: number,
   isTooltipSnapEnabled: boolean,
@@ -68,9 +63,12 @@ function getCursorBand(
     settingsSpec.rotation,
     chartDimensions,
     axisCursorPosition,
+    {
+      value: 0,
+      withinBandwidth: true,
+    },
     isTooltipSnapEnabled,
     xScale,
-    geometriesIndexKeys,
     isLineAreaOnly ? 1 : totalBarsInCluster,
   );
 }

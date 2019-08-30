@@ -7,7 +7,7 @@ import { Legend } from './legend/legend';
 import { ChartContainer } from './react_canvas/chart_container';
 import { isHorizontal } from '../chart_types/xy_chart/utils/axis_utils';
 import { Position } from '../chart_types/xy_chart/utils/specs';
-import { CursorEvent } from '../specs/settings';
+// import { CursorEvent } from '../specs/settings';
 import { ChartSize, getChartSize } from '../utils/chart_size';
 import { chartStoreReducer } from '../store/chart_store';
 import { createStore } from 'redux';
@@ -34,14 +34,15 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     super(props);
     this.chartStore = createStore(chartStoreReducer);
     this.state = {
-      legendPosition: this.chartSpecStore.legendPosition.get(),
+      legendPosition: Position.Right,
     };
     // value is set to chart_store in settings so need to watch the value
-    this.chartSpecStore.legendPosition.observe(({ newValue: legendPosition }) => {
-      this.setState({
-        legendPosition,
-      });
-    });
+    //TODO
+    // this.chartSpecStore.legendPosition.observe(({ newValue: legendPosition }) => {
+    //   this.setState({
+    //     legendPosition,
+    //   });
+    // });
   }
 
   static getContainerStyle = (size: any): CSSProperties => {
@@ -54,22 +55,22 @@ export class Chart extends React.Component<ChartProps, ChartState> {
     return {};
   };
 
-  dispatchExternalCursorEvent(event?: CursorEvent) {
-    this.chartSpecStore.setActiveChartId(event && event.chartId);
-    const isActiveChart = this.chartSpecStore.isActiveChart.get();
-
-    if (!event) {
-      this.chartSpecStore.externalCursorShown.set(false);
-      this.chartSpecStore.isCursorOnChart.set(false);
-    } else {
-      if (
-        !isActiveChart &&
-        this.chartSpecStore.xScale!.type === event.scale &&
-        (event.unit === undefined || event.unit === this.chartSpecStore.xScale!.unit)
-      ) {
-        this.chartSpecStore.setCursorValue(event.value);
-      }
-    }
+  dispatchExternalCursorEvent() {
+    // dispatchExternalCursorEvent(event?: CursorEvent) {
+    // this.chartSpecStore.setActiveChartId(event && event.chartId);
+    // const isActiveChart = this.chartSpecStore.isActiveChart.get();
+    // if (!event) {
+    //   this.chartSpecStore.externalCursorShown.set(false);
+    //   this.chartSpecStore.isCursorOnChart.set(false);
+    // } else {
+    //   if (
+    //     !isActiveChart &&
+    //     this.chartSpecStore.xScale!.type === event.scale &&
+    //     (event.unit === undefined || event.unit === this.chartSpecStore.xScale!.unit)
+    //   ) {
+    //     this.chartSpecStore.setCursorValue(event.value);
+    //   }
+    // }
   }
 
   render() {

@@ -2,26 +2,19 @@ import { DomainRange, Position, Rendering, Rotation } from '../chart_types/xy_ch
 import { PartialTheme, Theme } from '../utils/themes/theme';
 import { Domain } from '../utils/domain';
 import { TooltipType, TooltipValueFormatter } from '../chart_types/xy_chart/utils/interactions';
-import {
-  BrushEndListener,
-  ElementClickListener,
-  ElementOverListener,
-  LegendItemListener,
-  CursorUpdateListener,
-} from '../chart_types/xy_chart/store/chart_state';
 import { ScaleTypes } from '../utils/scales/scales';
 import { getConnect, specComponentFactory } from '../store/spec_factory';
 import { Spec } from '.';
-import { LIGHT_THEME } from 'utils/themes/light_theme';
-import { ChartTypes } from 'chart_types';
-import { GeometryValue } from 'utils/geometry';
-import { DataSeriesColorsValues } from 'chart_types/xy_chart/utils/series';
+import { LIGHT_THEME } from '../utils/themes/light_theme';
+import { ChartTypes } from '../chart_types';
+import { GeometryValue } from '../utils/geometry';
+import { DataSeriesColorsValues } from '../chart_types/xy_chart/utils/series';
 
 export type ElementClickListener = (values: GeometryValue[]) => void;
 export type ElementOverListener = (values: GeometryValue[]) => void;
 export type BrushEndListener = (min: number, max: number) => void;
 export type LegendItemListener = (dataSeriesIdentifiers: DataSeriesColorsValues | null) => void;
-
+export type CursorUpdateListener = (event?: CursorEvent) => void;
 /**
  * Event used to syncronize cursors between Charts.
  *
@@ -43,7 +36,6 @@ interface TooltipProps {
   snap?: boolean;
   headerFormatter?: TooltipValueFormatter;
   unit?: string;
-  value: number | string;
 }
 
 export interface SettingsSpec extends Spec {
@@ -71,7 +63,7 @@ export interface SettingsSpec extends Spec {
   /** Either a TooltipType or an object with configuration of type, snap, and/or headerFormatter */
   tooltip: TooltipType | TooltipProps;
   debug: boolean;
-  legendPosition?: Position;
+  legendPosition: Position;
   showLegendDisplayValue: boolean;
   onElementClick?: ElementClickListener;
   onElementOver?: ElementOverListener;
@@ -99,7 +91,8 @@ export type DefaultSettingsProps =
   | 'debug'
   | 'tooltip'
   | 'showLegendDisplayValue'
-  | 'theme';
+  | 'theme'
+  | 'legendPosition';
 
 export const DEFAULT_TOOLTIP_TYPE = TooltipType.VerticalCursor;
 export const DEFAULT_TOOLTIP_SNAP = true;
@@ -119,6 +112,7 @@ export const DEFAULT_SETTINGS_SPEC = {
     snap: DEFAULT_TOOLTIP_SNAP,
     value: '',
   },
+  legendPosition: Position.Right,
   showLegendDisplayValue: true,
   theme: LIGHT_THEME,
 };

@@ -12,12 +12,16 @@ export const getAxisCursorPositionSelector = createSelector(
   getAxisCursorPosition,
 );
 
-function getAxisCursorPosition(cursorPosition: Point, chartDimensions: Dimensions, settingsSpec: SettingsSpec): Point {
+function getAxisCursorPosition(
+  cursorPosition: Point,
+  chartDimensions: { chartDimensions: Dimensions },
+  settingsSpec: SettingsSpec,
+): Point {
   const xPos = cursorPosition.x;
   const yPos = cursorPosition.y;
   // get the cursor position depending on the chart rotation
-  const x = getValidXPosition(xPos, yPos, settingsSpec.rotation, chartDimensions);
-  const y = getValidYPosition(xPos, yPos, settingsSpec.rotation, chartDimensions);
+  const x = getValidXPosition(xPos, yPos, settingsSpec.rotation, chartDimensions.chartDimensions);
+  const y = getValidYPosition(xPos, yPos, settingsSpec.rotation, chartDimensions.chartDimensions);
   return {
     x,
     y,

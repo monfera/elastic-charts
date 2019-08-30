@@ -75,7 +75,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <Settings showLegend debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
-          annotationId={getAnnotationId('anno_1')}
+          id={getAnnotationId('anno_1')}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           style={style}
@@ -112,7 +112,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
-          annotationId={getAnnotationId('anno_1')}
+          id={getAnnotationId('anno_1')}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           marker={<Icon type="alert" />}
@@ -154,7 +154,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
-          annotationId={getAnnotationId('anno_')}
+          id={getAnnotationId('anno_')}
           domainType={AnnotationDomainTypes.YDomain}
           dataValues={dataValues}
           marker={<Icon type="alert" />}
@@ -196,7 +196,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
-          annotationId={getAnnotationId('anno_1')}
+          id={getAnnotationId('anno_1')}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           marker={<Icon type="alert" />}
@@ -265,7 +265,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <LineAnnotation
-          annotationId={getAnnotationId('anno_1')}
+          id={getAnnotationId('anno_1')}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           style={style}
@@ -312,7 +312,7 @@ storiesOf('Annotations', module)
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <RectAnnotation dataValues={dataValues} annotationId={getAnnotationId('rect')} />
+        <RectAnnotation dataValues={dataValues} id={getAnnotationId('rect')} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} />
         <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
         <BarSeries
@@ -351,7 +351,7 @@ storiesOf('Annotations', module)
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <RectAnnotation dataValues={dataValues} annotationId={getAnnotationId('rect')} />
+        <RectAnnotation dataValues={dataValues} id={getAnnotationId('rect')} />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} />
         <Axis id={getAxisId('left')} title={'y-domain axis'} position={Position.Left} />
         <BarSeries
@@ -429,7 +429,7 @@ storiesOf('Annotations', module)
     return (
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
-        <RectAnnotation dataValues={dataValues} annotationId={getAnnotationId('rect')} />
+        <RectAnnotation dataValues={dataValues} id={getAnnotationId('rect')} />
         <Axis id={getAxisId('bottom')} position={xAxisPosition} title={xAxisTitle} />
         <Axis id={getAxisId('left')} title={yAxisTitle} position={yAxisPosition} />
         <LineSeries
@@ -531,7 +531,7 @@ storiesOf('Annotations', module)
         <Settings debug={boolean('debug', false)} rotation={chartRotation} />
         <RectAnnotation
           dataValues={dataValues}
-          annotationId={getAnnotationId('rect')}
+          id={getAnnotationId('rect')}
           style={style}
           renderTooltip={renderTooltip}
           zIndex={zIndex}
@@ -591,7 +591,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <Settings debug={boolean('debug', false)} rotation={chartRotation} xDomain={xDomain} />
         <LineAnnotation
-          annotationId={getAnnotationId('anno_1')}
+          id={getAnnotationId('anno_1')}
           domainType={AnnotationDomainTypes.XDomain}
           dataValues={dataValues}
           style={style}
@@ -649,7 +649,7 @@ storiesOf('Annotations', module)
       <Chart className={'story-chart'}>
         <RectAnnotation
           dataValues={dataValues}
-          annotationId={getAnnotationId('rect')}
+          id={getAnnotationId('rect')}
           renderTooltip={isCustomTooltip ? tooltipFormatter : undefined}
         />
         <Axis id={getAxisId('bottom')} position={Position.Bottom} title={'x-domain axis'} />

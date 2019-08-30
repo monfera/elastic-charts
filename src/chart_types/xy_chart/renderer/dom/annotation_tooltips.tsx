@@ -15,8 +15,10 @@ import { getChartDimensionsSelector } from 'store/selectors/get_chart_dimensions
 import { computeAnnotationDimensionsSelector } from 'chart_types/xy_chart/store/selectors/compute_annotations';
 import { getAnnotationSpecsSelector } from 'chart_types/xy_chart/store/selectors/get_specs';
 import { getAnnotationTooltipStateSelector } from 'chart_types/xy_chart/store/selectors/get_annotation_tooltip_state';
+import { isChartEmptySelector } from 'chart_types/xy_chart/store/selectors/is_chart_empty';
 
 interface AnnotationTooltipProps {
+  isChartEmpty: boolean;
   tooltipState: AnnotationTooltipState | null;
   chartDimensions: Dimensions;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
@@ -112,9 +114,9 @@ class AnnotationTooltipComponent extends React.Component<AnnotationTooltipProps>
   }
 
   render() {
-    const { chartStore } = this.props;
+    const { isChartEmpty } = this.props;
 
-    if (chartStore!.isChartEmpty.get()) {
+    if (isChartEmpty) {
       return null;
     }
 
@@ -166,6 +168,7 @@ const mapDispatchToProps = () => ({});
 const mapStateToProps = (state: IChartState): AnnotationTooltipProps => {
   if (!isInitialized(state)) {
     return {
+      isChartEmpty: true,
       chartDimensions: { top: 0, left: 0, width: 0, height: 0 },
       annotationDimensions: new Map(),
       annotationSpecs: [],
@@ -173,6 +176,7 @@ const mapStateToProps = (state: IChartState): AnnotationTooltipProps => {
     };
   }
   return {
+    isChartEmpty: isChartEmptySelector(state),
     chartDimensions: getChartDimensionsSelector(state),
     annotationDimensions: computeAnnotationDimensionsSelector(state),
     annotationSpecs: getAnnotationSpecsSelector(state),

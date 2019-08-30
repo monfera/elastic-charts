@@ -34,7 +34,7 @@ export const getAnnotationTooltipStateSelector = createSelector(
 
 function getAnnotationTooltipState(
   cursorPosition: Point,
-  chartDimensions: Dimensions,
+  chartDimensions: { chartDimensions: Dimensions },
   geometries: ComputedGeometries,
   chartRotation: Rotation,
   annotationSpecs: AnnotationSpec[],
@@ -58,7 +58,7 @@ function getAnnotationTooltipState(
     annotationSpecs,
     chartRotation,
     axesSpecs,
-    chartDimensions,
+    chartDimensions.chartDimensions,
   );
 
   // If there's a highlighted chart element tooltip value, don't show annotation tooltip

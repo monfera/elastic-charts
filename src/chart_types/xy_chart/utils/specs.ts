@@ -77,7 +77,7 @@ export interface SeriesSpec extends Spec {
   /** when using a different groupId this option will allow compute in the same domain of the global domain */
   useDefaultGroupDomain?: boolean;
   /** An array of data */
-  data: Datum[];
+  data: Datum[] | number[][];
   /** the type of series */
   seriesType: 'bar' | 'line' | 'area';
   /** Custom colors for series */

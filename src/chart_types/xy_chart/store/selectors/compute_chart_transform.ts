@@ -7,6 +7,6 @@ export const computeChartTransformSelector = createSelector(
   [computeChartDimensionsSelector, getSettingsSpecSelector],
   (chartDimensions, settingsSpecs): Transform => {
     console.log('--- 7 computeChartTransformSelector ---');
-    return computeChartTransform(chartDimensions, settingsSpecs.rotation);
+    return computeChartTransform(chartDimensions.chartDimensions, settingsSpecs.rotation);
   },
 );

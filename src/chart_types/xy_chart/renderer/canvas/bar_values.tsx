@@ -78,7 +78,7 @@ const mapStateToProps = (state: IChartState): BarValuesProps => {
   const geometries = computeSeriesGeometriesSelector(state);
   return {
     theme: getChartThemeSelector(state),
-    chartDimensions: computeChartDimensionsSelector(state),
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     chartRotation: getChartRotationSelector(state),
     debug: state.settings.debug,
     bars: geometries.geometries.bars,

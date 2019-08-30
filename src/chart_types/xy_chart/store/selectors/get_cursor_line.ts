@@ -7,6 +7,6 @@ import { computeCursorPositionSelector } from './compute_cursor_position';
 export const getCursorLinePositionSelector = createSelector(
   [computeChartDimensionsSelector, getSettingsSpecSelector, computeCursorPositionSelector],
   (chartDimensions, settingsSpec, cursorPosition) => {
-    return getCursorLinePosition(settingsSpec.rotation, chartDimensions, cursorPosition);
+    return getCursorLinePosition(settingsSpec.rotation, chartDimensions.chartDimensions, cursorPosition);
   },
 );

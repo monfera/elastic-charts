@@ -8,6 +8,6 @@ export const computeBrushExtentSelector = createSelector(
   [computeChartDimensionsSelector, computeChartTransformSelector, getSettingsSpecSelector],
   (chartDimensions, chartTransform, settingsSpecs): BrushExtent => {
     console.log('--- 8 computeBrushExtentSelector ---');
-    return computeBrushExtent(chartDimensions, settingsSpecs.rotation, chartTransform);
+    return computeBrushExtent(chartDimensions.chartDimensions, settingsSpecs.rotation, chartTransform);
   },
 );

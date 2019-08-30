@@ -5,8 +5,11 @@ import { Dimensions } from '../utils/dimensions';
 import { UpdateParentDimensionAction, updateParentDimensions } from '../store/actions/chart_settings';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
+import { getSettingsSpecSelector } from 'store/selectors/get_settings_specs';
+import { IChartState } from 'store/chart_store';
 
 interface ResizerProps {
+  resizeDebounce: number;
   updateParentDimensions(dimension: Dimensions): void;
 }
 class Resizer extends React.Component<ResizerProps> {
@@ -22,7 +25,7 @@ class Resizer extends React.Component<ResizerProps> {
   }
 
   componentDidMount() {
-    this.onResizeDebounced = debounce(this.onResize, this.props.chartStore!.resizeDebounce);
+    this.onResizeDebounced = debounce(this.onResize, this.props.resizeDebounce);
     this.ro.observe(this.containerRef.current as Element);
   }
 
@@ -58,8 +61,10 @@ const mapDispatchToProps = (dispatch: Dispatch<UpdateParentDimensionAction>) => 
   };
 };
 
-const mapStateToProps = () => {
-  return {};
+const mapStateToProps = (state: IChartState) => {
+  return {
+    resizeDebounce: getSettingsSpecSelector(state).resizeDebounce || 10,
+  };
 };
 
 export const ChartResizer = connect(

@@ -12,8 +12,6 @@ import { Axes } from '../renderer/canvas/axis';
 import { BarValues } from '../renderer/canvas/bar_values';
 import { Grid } from '../renderer/canvas/grid';
 import { AnnotationTooltip } from '../renderer/dom/annotation_tooltips';
-import { Legend } from 'components/legend/legend';
-import { LegendButton } from 'components/legend/legend_button';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { BrushTool } from '../renderer/dom/brush';
 
@@ -25,12 +23,12 @@ export class XYAxisChartStore implements IChartStore {
     return geoms.geometries;
   }
   getChartDimensions(state: IChartState) {
-    return computeChartDimensionsSelector(state);
+    return computeChartDimensionsSelector(state).chartDimensions;
   }
   getCustomChartComponents(zIndex: number, type: 'dom' | 'svg' | 'canvas') {
     switch (type) {
       case 'dom':
-        return getDomComponents(zIndex, this.legendId);
+        return getDomComponents(zIndex);
       case 'canvas':
         return getCanvasComponents(zIndex);
       default:
@@ -42,7 +40,7 @@ export class XYAxisChartStore implements IChartStore {
   }
 }
 
-function getDomComponents(zIndex: number, legendId: string) {
+function getDomComponents(zIndex: number) {
   if (zIndex === -1) {
     return (
       <React.Fragment>
@@ -55,8 +53,6 @@ function getDomComponents(zIndex: number, legendId: string) {
       <Tooltips />
       <AnnotationTooltip />
       <Highlighter />
-      <Legend legendId={legendId} />
-      <LegendButton legendId={legendId} />
       <BrushTool />
     </React.Fragment>
   );

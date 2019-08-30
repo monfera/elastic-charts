@@ -32,7 +32,7 @@ export const computeAnnotationDimensionsSelector = createSelector(
     const { yScales, xScale } = seriesGeometries.scales;
     return computeAnnotationDimensions(
       annotationSpecs,
-      chartDimensions,
+      chartDimensions.chartDimensions,
       settingsSpec.rotation,
       yScales,
       xScale,

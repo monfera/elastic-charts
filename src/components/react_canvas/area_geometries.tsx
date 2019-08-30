@@ -11,7 +11,7 @@ import {
   PointStyleProps,
   buildLineRenderProps,
 } from './utils/rendering_props_utils';
-import { AreaGeometry, PointGeometry } from '../../utils/geometry';
+import { AreaGeometry, PointGeometry, GeometryId } from '../../utils/geometry';
 
 interface AreaGeometriesDataProps {
   animated?: boolean;

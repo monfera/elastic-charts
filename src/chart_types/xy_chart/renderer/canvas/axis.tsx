@@ -276,7 +276,7 @@ const mapStateToProps = (state: IChartState): AxesProps => {
   const axisTickPositions = computeAxisVisibleTicksSelector(state);
   return {
     theme: getChartThemeSelector(state),
-    chartDimensions: computeChartDimensionsSelector(state),
+    chartDimensions: computeChartDimensionsSelector(state).chartDimensions,
     debug: state.settings.debug,
     axesPositions: axisTickPositions.axisPositions,
     axesSpecs: getAxisSpecsSelector(state),

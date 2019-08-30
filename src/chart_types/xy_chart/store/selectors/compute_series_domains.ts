@@ -11,7 +11,7 @@ const getDeselectedSeriesSelector = (state: IChartState) => state.interactions.d
 export const computeSeriesDomainsSelector = createSelector(
   [getSeriesSpecsSelector, mergeYCustomDomainsByGroupIdSelector, getDeselectedSeriesSelector, getSettingsSpecSelector],
   (seriesSpecs, customYDomainsByGroupId, deselectedDataSeries, settingsSpec): SeriesDomainsAndData => {
-    console.log('--- 1 computeSeriesDomainsSelector ---');
+    console.log('--- 1 computeSeriesDomainsSelector ---', seriesSpecs);
     const domains = computeSeriesDomains(
       seriesSpecs,
       customYDomainsByGroupId,

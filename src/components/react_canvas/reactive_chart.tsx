@@ -9,21 +9,20 @@ import { onCursorPositionChange, CursorPositionChangeAction } from '../../store/
 import { onMouseDown, onMouseUp } from '../../store/actions/mouse';
 import { bindActionCreators, Dispatch } from 'redux';
 import { connect } from 'react-redux';
-import { Point } from '../../chart_types/xy_chart/store/chart_state';
 import { ContainerConfig } from 'konva';
 import { getRenderedGeometriesSelector } from '../../store/selectors/get_rendered_geometries';
-import { getChartDimensionsSelector } from 'store/selectors/get_chart_dimensions';
-import { Dimensions } from 'utils/dimensions';
+import { getChartDimensionsSelector } from '../../store/selectors/get_chart_dimensions';
+import { Dimensions } from '../../utils/dimensions';
 import { isChartAnimatableSelector } from 'chart_types/xy_chart/store/selectors/is_chart_animatable';
-import { isInitialized } from 'store/selectors/is_initialized';
-import { getChartRotationSelector } from 'store/selectors/get_chart_rotation';
-import { getChartThemeSelector } from 'store/selectors/get_chart_theme';
-import { Theme, LineAnnotationStyle, RectAnnotationStyle } from 'utils/themes/theme';
-import { LIGHT_THEME } from 'utils/themes/light_theme';
-import { computeChartTransformSelector } from 'chart_types/xy_chart/store/selectors/compute_chart_transform';
-import { Transform } from 'chart_types/xy_chart/store/utils';
-import { Rotation, isLineAnnotation, isRectAnnotation, AnnotationSpec } from 'chart_types/xy_chart/utils/specs';
-import { AnnotationId } from 'utils/ids';
+import { isInitialized } from '../../store/selectors/is_initialized';
+import { getChartRotationSelector } from '../../store/selectors/get_chart_rotation';
+import { getChartThemeSelector } from '../../store/selectors/get_chart_theme';
+import { Theme, LineAnnotationStyle, RectAnnotationStyle } from '../../utils/themes/theme';
+import { LIGHT_THEME } from '../../utils/themes/light_theme';
+import { computeChartTransformSelector } from '../../chart_types/xy_chart/store/selectors/compute_chart_transform';
+import { Transform } from '../../chart_types/xy_chart/store/utils';
+import { Rotation, isLineAnnotation, isRectAnnotation, AnnotationSpec } from '../../chart_types/xy_chart/utils/specs';
+import { AnnotationId } from '../../utils/ids';
 import {
   AnnotationDimensions,
   AnnotationLineProps,
@@ -48,8 +47,6 @@ interface Props {
   theme: Theme;
   isChartAnimatable: boolean;
   onCursorPositionChange(x: number, y: number): CursorPositionChangeAction;
-  onBrushEnd(start: Point, end: Point): void;
-  onBrushStart(): void;
   isChartEmpty: boolean;
   annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
   annotationSpecs: AnnotationSpec[];

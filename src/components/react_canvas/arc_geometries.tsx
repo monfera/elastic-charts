@@ -46,8 +46,7 @@ export class ArcGeometries extends React.PureComponent<ArcGeometriesDataProps, A
       if (!seriesArcStyle.visible) {
         return;
       }
-      const customOpacity = seriesArcStyle ? seriesArcStyle.opacity : undefined;
-      const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle, customOpacity);
+      const geometryStyle = getGeometryStyle(geometryId, this.props.highlightedLegendItem, sharedStyle);
       const key = `arc-${i}`;
       if (this.props.animated) {
         arcsToRender.push(

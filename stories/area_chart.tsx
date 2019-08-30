@@ -173,6 +173,7 @@ storiesOf('Area Chart', module)
           tickFormat={dateFormatter}
         />
         <Axis
+          id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
@@ -211,6 +212,7 @@ storiesOf('Area Chart', module)
           tickFormat={dateFormatter}
         />
         <Axis
+          id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
@@ -276,6 +278,7 @@ storiesOf('Area Chart', module)
           tickFormat={dateFormatter}
         />
         <Axis
+          id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
@@ -325,6 +328,7 @@ storiesOf('Area Chart', module)
           tickFormat={dateFormatter}
         />
         <Axis
+          id="left"
           title={KIBANA_METRICS.metrics.kibana_os_load[0].metric.title}
           position={Position.Left}
           tickFormat={(d) => Number(d).toFixed(2)}
