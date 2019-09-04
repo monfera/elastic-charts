@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
+    "rootDirs": [
+      "./src",
+      "./stories",
+      "./.storybook",
+      "./.playground",
+    ],
     "declaration": true,
     "outDir": "./dist/",
     "noImplicitAny": true,
@@ -15,7 +22,7 @@
     "jsx": "react",
     "allowJs": false,
     "skipLibCheck": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
   },
-  "include": ["src/**/*", "stories/**/*"]
+  "include": ["src/**/*", "stories/**/*", ".playground/**/*", ".storybook/**/*"]
 }

@@ -3,12 +3,10 @@ import { area, line } from 'd3-shape';
 import { CanvasTextBBoxCalculator } from '../../../utils/bbox/canvas_text_bbox_calculator';
 import {
   AreaSeriesStyle,
-  AreaStyle,
   LineSeriesStyle,
-  LineStyle,
-  PointStyle,
   SharedGeometryStyle,
   BarSeriesStyle,
+  GeometryStyle,
 } from '../../../utils/themes/theme';
 import { SpecId } from '../../../utils/ids';
 import { isLogarithmicScale } from '../../../utils/scales/scale_continuous';
@@ -18,94 +16,16 @@ import { LegendItem } from '../legend/legend';
 import { DataSeriesDatum } from '../utils/series';
 import { belongsToDataSeries } from '../utils/series_utils';
 import { DisplayValueSpec, StyleAccessor } from '../utils/specs';
+import {
+  IndexedGeometry,
+  PointGeometry,
+  BarGeometry,
+  AreaGeometry,
+  LineGeometry,
+  GeometryId,
+  isPointGeometry,
+} from '../../../utils/geometry';
 import { mergePartial } from '../../../utils/commons';
-
-export interface GeometryId {
-  specId: SpecId;
-  seriesKey: any[];
-}
-
-export interface GeometryValue {
-  y: any;
-  x: any;
-  accessor: 'y1' | 'y0';
-}
-
-/** Shared style properties for varies geometries */
-export interface GeometryStyle {
-  /**
-   * Opacity multiplier
-   *
-   * if set to `0.5` all given opacities will be halfed
-   */
-  opacity: number;
-}
-
-export type IndexedGeometry = PointGeometry | BarGeometry;
-
-export interface PointGeometry {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-  transform: {
-    x: number;
-    y: number;
-  };
-  geometryId: GeometryId;
-  value: GeometryValue;
-}
-export interface BarGeometry {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-  displayValue?: {
-    text: any;
-    width: number;
-    height: number;
-    hideClippedValue?: boolean;
-    isValueContainedInElement?: boolean;
-  };
-  geometryId: GeometryId;
-  value: GeometryValue;
-  seriesStyle: BarSeriesStyle;
-}
-export interface LineGeometry {
-  line: string;
-  points: PointGeometry[];
-  color: string;
-  transform: {
-    x: number;
-    y: number;
-  };
-  geometryId: GeometryId;
-  seriesLineStyle: LineStyle;
-  seriesPointStyle: PointStyle;
-}
-export interface AreaGeometry {
-  area: string;
-  lines: string[];
-  points: PointGeometry[];
-  color: string;
-  transform: {
-    x: number;
-    y: number;
-  };
-  geometryId: GeometryId;
-  seriesAreaStyle: AreaStyle;
-  seriesAreaLineStyle: LineStyle;
-  seriesPointStyle: PointStyle;
-  isStacked: boolean;
-}
-
-export function isPointGeometry(ig: IndexedGeometry): ig is PointGeometry {
-  return ig.hasOwnProperty('radius');
-}
-export function isBarGeometry(ig: IndexedGeometry): ig is BarGeometry {
-  return ig.hasOwnProperty('width') && ig.hasOwnProperty('height');
-}
 
 export function mutableIndexedGeometryMapUpsert(
   mutableGeometriesIndex: Map<any, IndexedGeometry[]>,

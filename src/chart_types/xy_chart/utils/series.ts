@@ -287,8 +287,8 @@ export function getRawDataSeries(
  * @param deselectedDataSeries the array of deselected/hidden data series
  */
 export function getSplittedSeries(
-  seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  seriesSpecs: BasicSeriesSpec[],
+  deselectedDataSeries: DataSeriesColorsValues[],
 ): {
   splittedSeries: Map<SpecId, RawDataSeries[]>;
   seriesColors: Map<string, DataSeriesColorsValues>;
@@ -297,14 +297,14 @@ export function getSplittedSeries(
   const splittedSeries = new Map<SpecId, RawDataSeries[]>();
   const seriesColors = new Map<string, DataSeriesColorsValues>();
   const xValues: Set<any> = new Set();
-  for (const [specId, spec] of seriesSpecs) {
-    const dataSeries = splitSeries(spec.data, spec, specId);
+  for (const spec of seriesSpecs) {
+    const dataSeries = splitSeries(spec.data, spec, spec.id);
     let currentRawDataSeries = dataSeries.rawDataSeries;
-    if (deselectedDataSeries) {
+    if (deselectedDataSeries.length > 0) {
       currentRawDataSeries = dataSeries.rawDataSeries.filter(
         (series): boolean => {
           const seriesValues = {
-            specId,
+            specId: spec.id,
             colorValues: series.key,
           };
 
@@ -313,11 +313,11 @@ export function getSplittedSeries(
       );
     }
 
-    splittedSeries.set(specId, currentRawDataSeries);
+    splittedSeries.set(spec.id, currentRawDataSeries);
 
     dataSeries.colorsValues.forEach((colorValues, key) => {
       seriesColors.set(key, {
-        specId,
+        specId: spec.id,
         specSortIndex: spec.sortIndex,
         colorValues,
       });

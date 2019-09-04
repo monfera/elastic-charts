@@ -4,7 +4,6 @@
     "downlevelIteration": true,
     "target": "es5"
   },
-  "exclude": [
-    "../**/*.test.*"
-  ]
+  "include": ["../src/**/*"],
+  "exclude": ["../src/**/*.test.*"]
 }

@@ -1,5 +1,4 @@
 import { LegendItem } from '../legend/legend';
-import { GeometryValue, IndexedGeometry } from '../rendering/rendering';
 import {
   AnnotationDomainTypes,
   AnnotationSpec,
@@ -17,6 +16,7 @@ import { ScaleBand } from '../../../utils/scales/scale_band';
 import { ScaleContinuous } from '../../../utils/scales/scale_continuous';
 import { ScaleType } from '../../../utils/scales/scales';
 import { ChartStore } from './chart_state';
+import { IndexedGeometry, GeometryValue } from '../../../utils/geometry';
 
 describe('Chart Store', () => {
   let store = new ChartStore();
@@ -26,6 +26,8 @@ describe('Chart Store', () => {
   const GROUP_ID = getGroupId('group_1');
 
   const spec: BarSeriesSpec = {
+    chartType: 'xy_axis',
+    specType: 'series',
     id: SPEC_ID,
     groupId: GROUP_ID,
     seriesType: 'bar',
@@ -961,6 +963,8 @@ describe('Chart Store', () => {
   });
   test('should set tooltip type to follow when single value x scale', () => {
     const singleValueSpec: BarSeriesSpec = {
+      chartType: 'xy_axis',
+      specType: 'series',
       id: SPEC_ID,
       groupId: GROUP_ID,
       seriesType: 'bar',

@@ -1,10 +1,9 @@
 import { getAxesSpecForSpecId } from '../store/utils';
 import { identity } from '../../../utils/commons';
-import { AxisId, SpecId } from '../../../utils/ids';
 import {
   DataSeriesColorsValues,
-  findDataSeriesByColorValues,
   getSortedDataSeriesColorsValuesMap,
+  findDataSeriesByColorValues,
 } from '../utils/series';
 import { AxisSpec, BasicSeriesSpec } from '../utils/specs';
 
@@ -24,20 +23,21 @@ export interface LegendItem {
 export function computeLegend(
   seriesColor: Map<string, DataSeriesColorsValues>,
   seriesColorMap: Map<string, string>,
-  specs: Map<SpecId, BasicSeriesSpec>,
+  specs: BasicSeriesSpec[],
   defaultColor: string,
-  axesSpecs: Map<AxisId, AxisSpec>,
-  deselectedDataSeries?: DataSeriesColorsValues[] | null,
+  axesSpecs: AxisSpec[],
+  deselectedDataSeries: DataSeriesColorsValues[],
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
   const sortedSeriesColors = getSortedDataSeriesColorsValuesMap(seriesColor);
 
   sortedSeriesColors.forEach((series, key) => {
-    const spec = specs.get(series.specId);
+    const spec = specs.find((spec) => spec.id === series.specId);
     const color = seriesColorMap.get(key) || defaultColor;
     const hasSingleSeries = seriesColor.size === 1;
     const label = getSeriesColorLabel(series.colorValues, hasSingleSeries, spec);
-    const isSeriesVisible = deselectedDataSeries ? findDataSeriesByColorValues(deselectedDataSeries, series) < 0 : true;
+    const index = findDataSeriesByColorValues(deselectedDataSeries, series);
+    const isSeriesVisible = index === -1;
 
     if (!label || !spec) {
       return;

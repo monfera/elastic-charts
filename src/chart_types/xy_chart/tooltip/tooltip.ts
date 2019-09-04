@@ -1,11 +1,12 @@
 import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../utils/interactions';
-import { IndexedGeometry, isPointOnGeometry } from '../rendering/rendering';
-import { getColorValuesAsString } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Rotation } from '../utils/specs';
-import { SpecId, AxisId, GroupId } from '../../../utils/ids';
+import { SpecId, GroupId } from '../../../utils/ids';
 import { getAxesSpecForSpecId } from '../store/utils';
 import { Scale } from '../../../utils/scales/scales';
-import { Point } from '../store/chart_state';
+import { getColorValuesAsString } from '../utils/series';
+import { AxisSpec, BasicSeriesSpec, Rotation } from '../utils/specs';
+import { IndexedGeometry } from '../../../utils/geometry';
+import { isPointOnGeometry } from '../rendering/rendering';
+import { Point } from 'utils/point';
 
 export function getSeriesTooltipValues(tooltipValues: TooltipValue[], defaultValue?: string): Map<string, any> {
   // map from seriesKey to tooltipValue
@@ -64,7 +65,7 @@ function emptyFormatter<T>(value: T): T {
 export function getTooltipAndHighlightFromXValue(
   axisCursorPosition: Point,
   seriesSpecs: Map<SpecId, BasicSeriesSpec>,
-  axesSpecs: Map<AxisId, AxisSpec>,
+  axesSpecs: AxisSpec[],
   geometriesIndex: Map<any, IndexedGeometry[]>,
   xValue: {
     value: any;

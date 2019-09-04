@@ -1,5 +1,4 @@
 import { mergePartial, RecursivePartial } from '../commons';
-import { GeometryStyle } from '../../chart_types/xy_chart/rendering/rendering';
 import { Margins } from '../dimensions';
 import { LIGHT_THEME } from './light_theme';
 
@@ -15,10 +14,12 @@ export interface TextStyle {
   padding: number;
 }
 export interface GeometryStyle {
-  stroke: string;
-  strokeWidth: number;
-  fill?: string;
-  opacity?: number;
+  /**
+   * Opacity multiplier
+   *
+   * if set to `0.5` all given opacities will be halfed
+   */
+  opacity: number;
 }
 
 export interface SharedGeometryStyle {
@@ -108,6 +109,7 @@ export interface Theme {
   lineSeriesStyle: LineSeriesStyle;
   areaSeriesStyle: AreaSeriesStyle;
   barSeriesStyle: BarSeriesStyle;
+  arcSeriesStyle: ArcSeriesStyle;
   sharedStyle: SharedGeometryStyle;
   axes: AxisConfig;
   scales: ScalesConfig;
@@ -158,6 +160,19 @@ export interface AreaStyle {
   opacity: number;
 }
 
+export interface ArcStyle {
+  /** is the arc is visible or hidden ? */
+  visible: boolean;
+  /** a static fill color if defined, if not it will use the color of the series */
+  fill?: string;
+  /** a static stroke color if defined, if not it will use the color of the series */
+  stroke?: string;
+  /** the stroke width of the line */
+  strokeWidth: number;
+  /** the opacity of each arc on the theme/series */
+  opacity: number;
+}
+
 export interface RectStyle {
   /** a static fill color if defined, if not it will use the color of the series */
   fill?: string;
@@ -198,6 +213,10 @@ export interface AreaSeriesStyle {
   area: AreaStyle;
   line: LineStyle;
   point: PointStyle;
+}
+
+export interface ArcSeriesStyle {
+  arc: ArcStyle;
 }
 
 export interface CrosshairStyle {

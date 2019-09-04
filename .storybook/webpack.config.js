@@ -2,6 +2,8 @@
 const path = require('path');
 
 const nonce = 'Pk1rZ1XDlMuYe8ubWV3Lh0BzwrTigJQ=';
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+
 const scssLoaders = [
   {
     loader: 'css-loader',
@@ -91,6 +93,10 @@ module.exports = async ({ config, mode }) => {
   });
 
   config.resolve.extensions.push('.ts', '.tsx');
+  if (!config.resolve.plugins) {
+    config.resolve.plugins = [];
+  }
+  config.resolve.plugins.push(new TsconfigPathsPlugin({}));
 
   return config;
 };
