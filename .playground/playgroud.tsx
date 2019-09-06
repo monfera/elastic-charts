@@ -14,23 +14,18 @@ import {
 
 export class Playground extends React.Component {
   render() {
-
     return (
-      <Fragment>
-        <div className="chart">
-          <Chart>
-            <Settings showLegend={true}/>
-            <BarSeries
-              id={getSpecId('bar')}
-              yScaleType={ScaleType.Linear}
-              xScaleType={ScaleType.Linear}
-              xAccessor={0}
-              yAccessors={[1]}
-              data={[[0, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
-            />
-          </Chart>
-        </div>
-      </Fragment>
+      <Chart>
+        <Settings showLegend={true} />
+        <BarSeries
+          id={getSpecId('bar')}
+          yScaleType={ScaleType.Linear}
+          xScaleType={ScaleType.Linear}
+          xAccessor={0}
+          yAccessors={[1]}
+          data={[[0, 100], [1, 50], [3, 400], [4, 250], [5, 235]]}
+        />
+      </Chart>
     );
   }
 }
