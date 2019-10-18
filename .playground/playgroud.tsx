@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, BarSeries } from '../src';
+import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Circline } from '../src';
 
 export class Playground extends React.Component {
   render() {
@@ -16,7 +16,7 @@ export class Playground extends React.Component {
               tickFormat={(d: any) => Number(d).toFixed(2)}
             />
 
-            <BarSeries
+            <Circline
               id={getSpecId('bars')}
               xScaleType={ScaleType.Linear}
               yScaleType={ScaleType.Linear}
