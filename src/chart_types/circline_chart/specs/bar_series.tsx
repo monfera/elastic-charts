@@ -17,7 +17,7 @@ const defaultProps = {
   enableHistogramMode: false,
 };
 
-export const BarSeries = getConnect()(
+export const Circline = getConnect()(
   specComponentFactory<
     BarSeriesSpec,
     | 'seriesType'
