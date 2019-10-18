@@ -313,22 +313,6 @@ function mouseOverTestSuite(scaleType: ScaleType) {
   //     width: 50,
   //   });
   // });
-  // test('can determine which tooltip to display if chart & annotation tooltips possible', () => {
-  //   const annotationDimensions = [{ rect: { x: 49, y: -1, width: 3, height: 99 } }];
-  //   const rectAnnotationSpec: RectAnnotationSpec = {
-  //     id: 'rect',
-  //     groupId: GROUP_ID,
-  //     annotationType: 'rectangle',
-  //     dataValues: [{ coordinates: { x0: 1, x1: 1.5, y0: 0.5, y1: 10 } }],
-  //   };
-
-  //   store.annotationSpecs.set(rectAnnotationSpec.annotationId, rectAnnotationSpec);
-  //   store.annotationDimensions.set(rectAnnotationSpec.annotationId, annotationDimensions);
-  //   debugger;
-  //   // isHighlighted false, chart tooltip true; should show annotationTooltip only
-  //   store.setCursorPosition(chartLeft + 51, chartTop + 1);
-  //   expect(store.isTooltipVisible.get()).toBe(false);
-  // });
 
   test('can hover top-left corner of the first bar', () => {
     let tooltipData = getTooltipValuesAndGeometriesSelector(store.getState());

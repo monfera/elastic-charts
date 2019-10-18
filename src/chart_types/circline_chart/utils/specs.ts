@@ -1,9 +1,7 @@
 import {
   AreaSeriesStyle,
   GridLineConfig,
-  LineAnnotationStyle,
   LineSeriesStyle,
-  RectAnnotationStyle,
   BarSeriesStyle,
   PointStyle,
 } from '../../../utils/themes/theme';
@@ -13,7 +11,6 @@ import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { RawDataSeriesDatum } from './series';
-import { AnnotationTooltipFormatter } from '../annotations/annotation_utils';
 import { DataSeriesColorsValues } from './series';
 import { Spec } from '../../../specs';
 import { GeometryId } from '../../../utils/geometry';
@@ -303,114 +300,6 @@ export const Position = Object.freeze({
 });
 
 export type Position = typeof Position.Top | typeof Position.Bottom | typeof Position.Left | typeof Position.Right;
-
-export const AnnotationTypes = Object.freeze({
-  Line: 'line' as 'line',
-  Rectangle: 'rectangle' as 'rectangle',
-  Text: 'text' as 'text',
-});
-
-export type AnnotationType =
-  | typeof AnnotationTypes.Line
-  | typeof AnnotationTypes.Rectangle
-  | typeof AnnotationTypes.Text;
-
-export const AnnotationDomainTypes = Object.freeze({
-  XDomain: 'xDomain' as 'xDomain',
-  YDomain: 'yDomain' as 'yDomain',
-});
-
-export type AnnotationDomainType = typeof AnnotationDomainTypes.XDomain | typeof AnnotationDomainTypes.YDomain;
-
-export interface LineAnnotationDatum {
-  dataValue: any;
-  details?: string;
-  header?: string;
-}
-
-export type LineAnnotationSpec = BaseAnnotationSpec & {
-  annotationType: 'line';
-  domainType: AnnotationDomainType;
-  /** Data values defined with value, details, and header */
-  dataValues: LineAnnotationDatum[];
-  /** Custom line styles */
-  style?: Partial<LineAnnotationStyle>;
-  /** Custom marker */
-  marker?: JSX.Element;
-  /**
-   * Custom marker dimensions; will be computed internally
-   * Any user-supplied values will be overwritten
-   */
-  markerDimensions?: {
-    width: number;
-    height: number;
-  };
-  /** Annotation lines are hidden */
-  hideLines?: boolean;
-  /** Hide tooltip when hovering over the line */
-  hideLinesTooltips?: boolean;
-  /** z-index of the annotation relative to other elements in the chart
-   * @default 1
-   */
-  zIndex?: number;
-};
-
-export interface RectAnnotationDatum {
-  coordinates: {
-    x0?: any;
-    x1?: any;
-    y0?: any;
-    y1?: any;
-  };
-  details?: string;
-}
-
-export type RectAnnotationSpec = BaseAnnotationSpec & {
-  annotationType: 'rectangle';
-  /** Custom rendering function for tooltip */
-  renderTooltip?: AnnotationTooltipFormatter;
-  /** Data values defined with coordinates and details */
-  dataValues: RectAnnotationDatum[];
-  /** Custom annotation style */
-  style?: Partial<RectAnnotationStyle>;
-  /** z-index of the annotation relative to other elements in the chart
-   * @default -1
-   */
-  zIndex?: number;
-};
-
-export interface BaseAnnotationSpec extends Spec {
-  chartType: 'xy_axis';
-  specType: 'annotation';
-  /** Annotation type: line, rectangle, text */
-  annotationType: AnnotationType;
-  /** The ID of the axis group, generated via getGroupId method
-   * @default __global__
-   */
-  groupId: GroupId; // defaults to __global__; needed for yDomain position
-  /** Data values defined with coordinates and details */
-  dataValues: AnnotationDatum[];
-  /** Toggles tooltip annotation visibility */
-  hideTooltips?: boolean;
-  /** z-index of the annotation relative to other elements in the chart
-   * Default specified per specific annotation spec.
-   */
-  zIndex?: number;
-}
-
-export type AnnotationDatum = LineAnnotationDatum | RectAnnotationDatum;
-export type AnnotationStyle = LineAnnotationStyle | RectAnnotationStyle;
-
-// TODO:  TextAnnotationSpec
-export type AnnotationSpec = LineAnnotationSpec | RectAnnotationSpec;
-
-export function isLineAnnotation(spec: AnnotationSpec): spec is LineAnnotationSpec {
-  return spec.annotationType === AnnotationTypes.Line;
-}
-
-export function isRectAnnotation(spec: AnnotationSpec): spec is RectAnnotationSpec {
-  return spec.annotationType === AnnotationTypes.Rectangle;
-}
 
 export function isBarSeriesSpec(spec: BasicSeriesSpec): spec is BarSeriesSpec {
   return spec.seriesType === 'bar';

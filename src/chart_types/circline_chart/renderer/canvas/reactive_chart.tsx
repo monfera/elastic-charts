@@ -5,23 +5,19 @@ import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
 import { BarGeometries } from './bar_geometries';
 import { BarValues } from './bar_values';
-import { AnnotationDimensions } from '../../annotations/annotation_utils';
-import { computeAnnotationDimensionsSelector } from '../../state/selectors/compute_annotations';
 import { computeChartTransformSelector } from '../../state/selectors/compute_chart_transform';
-import { getAnnotationSpecsSelector } from '../../state/selectors/get_specs';
 import { getHighlightedSeriesSelector } from '../../state/selectors/get_highlighted_series';
 import { isChartEmptySelector } from '../../state/selectors/is_chart_empty';
 import { isChartAnimatableSelector } from '../../state/selectors/is_chart_animatable';
 import { isBrushAvailableSelector } from '../../state/selectors/is_brush_available';
 import { Transform } from '../../state/utils';
-import { Rotation, AnnotationSpec } from '../../utils/specs';
+import { Rotation } from '../../utils/specs';
 import { onChartRendered } from '../../../../state/actions/chart';
 import { isInitialized } from '../../../../state/selectors/is_initialized';
 import { getChartRotationSelector } from '../../../../state/selectors/get_chart_rotation';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { GlobalChartState } from '../../../../state/chart_state';
 import { Dimensions } from '../../../../utils/dimensions';
-import { AnnotationId } from '../../../../utils/ids';
 import { Theme } from '../../../../utils/themes/theme';
 import { LIGHT_THEME } from '../../../../utils/themes/light_theme';
 import { computeSeriesGeometriesSelector } from '../../state/selectors/compute_series_geometries';
@@ -46,8 +42,6 @@ interface Props {
   theme: Theme;
   isChartAnimatable: boolean;
   isChartEmpty: boolean;
-  annotationDimensions: Map<AnnotationId, AnnotationDimensions>;
-  annotationSpecs: AnnotationSpec[];
   isBrushAvailable: boolean;
   highlightedLegendItem?: LegendItem;
   onChartRendered: typeof onChartRendered;
@@ -211,8 +205,6 @@ const DEFAULT_PROPS: Props = {
   },
   isChartAnimatable: false,
   isChartEmpty: true,
-  annotationDimensions: new Map(),
-  annotationSpecs: [],
   isBrushAvailable: false,
   highlightedLegendItem: undefined,
   onChartRendered,
@@ -233,8 +225,6 @@ const mapStateToProps = (state: GlobalChartState) => {
     chartTransform: computeChartTransformSelector(state),
     isChartAnimatable: isChartAnimatableSelector(state),
     isChartEmpty: isChartEmptySelector(state),
-    annotationDimensions: computeAnnotationDimensionsSelector(state),
-    annotationSpecs: getAnnotationSpecsSelector(state),
     isBrushAvailable: isBrushAvailableSelector(state),
     highlightedLegendItem: getHighlightedSeriesSelector(state),
   };

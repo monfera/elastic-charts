@@ -5,7 +5,6 @@ import { Tooltips } from '../renderer/dom/tooltips';
 import { htmlIdGenerator } from '../../../utils/commons';
 import { Highlighter } from '../renderer/dom/highlighter';
 import { Crosshair } from '../renderer/dom/crosshair';
-import { AnnotationTooltip } from '../renderer/dom/annotation_tooltips';
 import { isBrushAvailableSelector } from './selectors/is_brush_available';
 import { BrushTool } from '../renderer/dom/brush';
 import { isChartEmptySelector } from './selectors/is_chart_empty';
@@ -35,7 +34,6 @@ export class XYAxisChartState implements InternalChartState {
         <Crosshair />
         <ReactiveChart />
         <Tooltips />
-        <AnnotationTooltip />
         <Highlighter />
         <BrushTool />
       </React.Fragment>
