@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Axis, Chart, getAxisId, getSpecId, Position, ScaleType, Circline } from '../src';
+import { Chart, getSpecId, Circline } from '../src';
 
 export class Playground extends React.Component {
   render() {
@@ -8,25 +8,7 @@ export class Playground extends React.Component {
       <Fragment>
         <div className="chart">
           <Chart>
-            <Axis id={getAxisId('top')} position={Position.Bottom} title={'Top axis'} />
-            <Axis
-              id={getAxisId('left2')}
-              title={'Left axis'}
-              position={Position.Left}
-              tickFormat={(d: any) => Number(d).toFixed(2)}
-            />
-
-            <Circline
-              id={getSpecId('bars')}
-              xScaleType={ScaleType.Linear}
-              yScaleType={ScaleType.Linear}
-              xAccessor="x"
-              yAccessors={['y']}
-              splitSeriesAccessors={['g']}
-              stackAccessors={['x']}
-              data={data}
-              yScaleToDataExtent={true}
-            />
+            <Circline id={getSpecId('bars')} xAccessor="x" yAccessors={['y']} data={data} />
           </Chart>
         </div>
       </Fragment>
