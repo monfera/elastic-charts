@@ -1,5 +1,4 @@
 import createCachedSelector from 're-reselect';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { getChartThemeSelector } from '../../../../state/selectors/get_chart_theme';
 import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
@@ -17,7 +16,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
     getChartThemeSelector,
     computeChartDimensionsSelector,
     getAxisSpecsSelector,
-    isHistogramModeEnabledSelector,
   ],
   (
     settingsSpec,
@@ -27,7 +25,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
     chartTheme,
     chartDimensions,
     axesSpecs,
-    isHistogramMode,
   ): ComputedGeometries => {
     // console.log('--- 9 computeSeriesGeometriesSelector ---');
     const { xDomain, yDomain, formattedDataSeries } = seriesDomainsAndData;
@@ -41,7 +38,6 @@ export const computeSeriesGeometriesSelector = createCachedSelector(
       chartDimensions.chartDimensions,
       settingsSpec.rotation,
       axesSpecs,
-      isHistogramMode,
     );
   },
 )((state) => state.chartId);

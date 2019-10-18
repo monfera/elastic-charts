@@ -14,7 +14,6 @@ const defaultProps = {
   yAccessors: ['y'],
   yScaleToDataExtent: false,
   hideInLegend: false,
-  enableHistogramMode: false,
 };
 
 export const Circline = getConnect()(
@@ -28,6 +27,5 @@ export const Circline = getConnect()(
     | 'yAccessors'
     | 'yScaleToDataExtent'
     | 'hideInLegend'
-    | 'enableHistogramMode'
   >(defaultProps),
 );

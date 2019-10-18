@@ -1,4 +1,4 @@
-import { LineSeriesSpec, DEFAULT_GLOBAL_ID, HistogramModeAlignments } from '../utils/specs';
+import { LineSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 import { ScaleType } from '../../../utils/scales/scales';
 import { ChartTypes } from '../../../chart_types';
 import { specComponentFactory, getConnect } from '../../../state/spec_factory';
@@ -14,7 +14,6 @@ const defaultProps = {
   yAccessors: ['y'],
   yScaleToDataExtent: false,
   hideInLegend: false,
-  histogramModeAlignment: HistogramModeAlignments.Center,
 };
 
 export const LineSeries = getConnect()(
@@ -28,6 +27,5 @@ export const LineSeries = getConnect()(
     | 'yAccessors'
     | 'yScaleToDataExtent'
     | 'hideInLegend'
-    | 'histogramModeAlignment'
   >(defaultProps),
 );

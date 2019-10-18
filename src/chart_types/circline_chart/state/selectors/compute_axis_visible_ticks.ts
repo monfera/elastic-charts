@@ -8,7 +8,6 @@ import { isLegendVisibleSelector } from './is_legend_visible';
 import { computeAxisTicksDimensionsSelector } from './compute_axis_ticks_dimensions';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { getBarPaddingsSelector } from './get_bar_paddings';
 import { AxisId } from '../../../../utils/ids';
 import { Dimensions } from '../../../../utils/dimensions';
@@ -29,7 +28,6 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
     computeAxisTicksDimensionsSelector,
     computeSeriesDomainsSelector,
     countBarsInClusterSelector,
-    isHistogramModeEnabledSelector,
     getBarPaddingsSelector,
   ],
   (
@@ -41,7 +39,6 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
     axesTicksDimensions,
     seriesDomainsAndData,
     totalBarsInCluster,
-    isHistogramMode,
     barsPadding,
   ): AxisVisibleTicks => {
     // console.log('--- 10 computeAxisVisibleTicksSelector ---');
@@ -55,7 +52,6 @@ export const computeAxisVisibleTicksSelector = createCachedSelector(
       xDomain,
       yDomain,
       totalBarsInCluster,
-      isHistogramMode,
       barsPadding,
     );
   },

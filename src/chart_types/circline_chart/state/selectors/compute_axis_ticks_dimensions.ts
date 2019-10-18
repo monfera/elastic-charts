@@ -1,5 +1,4 @@
 import createCachedSelector from 're-reselect';
-import { isHistogramModeEnabledSelector } from './is_histogram_mode_enabled';
 import { computeSeriesDomainsSelector } from './compute_series_domains';
 import { CanvasTextBBoxCalculator } from '../../../../utils/bbox/canvas_text_bbox_calculator';
 import { computeAxisTicksDimensions, AxisTicksDimensions, isDuplicateAxis } from '../../utils/axis_utils';
@@ -13,7 +12,6 @@ import { getBarPaddingsSelector } from './get_bar_paddings';
 export const computeAxisTicksDimensionsSelector = createCachedSelector(
   [
     getBarPaddingsSelector,
-    isHistogramModeEnabledSelector,
     getAxisSpecsSelector,
     getChartThemeSelector,
     getSettingsSpecSelector,
@@ -22,7 +20,6 @@ export const computeAxisTicksDimensionsSelector = createCachedSelector(
   ],
   (
     barsPadding,
-    isHistogramMode,
     axesSpecs,
     chartTheme,
     settingsSpec,
@@ -44,7 +41,6 @@ export const computeAxisTicksDimensionsSelector = createCachedSelector(
         settingsSpec.rotation,
         chartTheme.axes,
         barsPadding,
-        isHistogramMode,
       );
       if (
         dimensions &&

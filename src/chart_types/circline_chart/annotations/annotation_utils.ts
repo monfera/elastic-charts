@@ -4,7 +4,6 @@ import {
   AnnotationSpec,
   AnnotationType,
   AxisSpec,
-  HistogramModeAlignments,
   isLineAnnotation,
   isRectAnnotation,
   Position,
@@ -14,7 +13,7 @@ import { LineAnnotationStyle } from '../../../utils/themes/theme';
 import { Dimensions } from '../../../utils/dimensions';
 import { AnnotationId, GroupId } from '../../../utils/ids';
 import { Scale, ScaleType } from '../../../utils/scales/scales';
-import { computeXScaleOffset, getAxesSpecForSpecId } from '../state/utils';
+import { getAxesSpecForSpecId } from '../state/utils';
 import { Point } from '../../../utils/point';
 import {
   computeLineAnnotationDimensions,
@@ -64,7 +63,6 @@ export function scaleAndValidateDatum(dataValue: any, scale: Scale, alignWithTic
   if (isContinuous) {
     const [domainStart, domainEnd] = scale.domain;
 
-    // if we're not aligning the ticks, we need to extend the domain by one more tick for histograms
     const domainEndOffset = alignWithTick ? 0 : scale.minInterval;
 
     if (domainStart > dataValue || domainEnd + domainEndOffset < dataValue) {
@@ -104,7 +102,6 @@ export function computeAnnotationDimensions(
   xScale: Scale,
   axesSpecs: AxisSpec[],
   totalBarsInCluster: number,
-  enableHistogramMode: boolean,
 ): Map<AnnotationId, AnnotationDimensions> {
   const annotationDimensions = new Map<AnnotationId, AnnotationDimensions>();
 
@@ -115,8 +112,7 @@ export function computeAnnotationDimensions(
   const barsPadding = halfPadding * totalBarsInCluster;
   const clusterOffset = computeClusterOffset(totalBarsInCluster, barsShift, xScale.bandwidth);
 
-  // Annotations should always align with the axis line in histogram mode
-  const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, HistogramModeAlignments.Start);
+  const xScaleOffset = 0;
 
   annotations.forEach((annotationSpec) => {
     const { id } = annotationSpec;
@@ -136,20 +132,13 @@ export function computeAnnotationDimensions(
         xScale,
         annotationAxisPosition,
         xScaleOffset - clusterOffset,
-        enableHistogramMode,
       );
 
       if (dimensions) {
         annotationDimensions.set(id, dimensions);
       }
     } else if (isRectAnnotation(annotationSpec)) {
-      const dimensions = computeRectAnnotationDimensions(
-        annotationSpec,
-        yScales,
-        xScale,
-        enableHistogramMode,
-        barsPadding,
-      );
+      const dimensions = computeRectAnnotationDimensions(annotationSpec, yScales, xScale, barsPadding);
 
       if (dimensions) {
         annotationDimensions.set(id, dimensions);

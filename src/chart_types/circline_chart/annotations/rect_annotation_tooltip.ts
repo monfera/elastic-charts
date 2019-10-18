@@ -130,7 +130,6 @@ export function computeRectAnnotationDimensions(
   annotationSpec: RectAnnotationSpec,
   yScales: Map<GroupId, Scale>,
   xScale: Scale,
-  enableHistogramMode: boolean,
   barsPadding: number,
 ): AnnotationRectProps[] | null {
   const { dataValues } = annotationSpec;
@@ -144,7 +143,6 @@ export function computeRectAnnotationDimensions(
   const xDomain = xScale.domain;
   const yDomain = yScale.domain;
   const lastX = xDomain[xDomain.length - 1];
-  const xMinInterval = xScale.minInterval;
   const rectsProps: AnnotationRectProps[] = [];
 
   dataValues.forEach((dataValue: RectAnnotationDatum) => {
@@ -157,8 +155,7 @@ export function computeRectAnnotationDimensions(
 
     if (x1 == null) {
       // if x1 is defined, we want the rect to draw to the end of the scale
-      // if we're in histogram mode, extend domain end by min interval
-      x1 = enableHistogramMode && !xScale.isSingleValue() ? lastX + xMinInterval : lastX;
+      x1 = lastX;
     }
 
     if (x0 == null) {
@@ -176,7 +173,7 @@ export function computeRectAnnotationDimensions(
       y1 = yDomain[0];
     }
 
-    const alignWithTick = xScale.bandwidth > 0 && !enableHistogramMode;
+    const alignWithTick = xScale.bandwidth > 0;
 
     let x0Scaled = scaleAndValidateDatum(x0, xScale, alignWithTick);
     let x1Scaled = scaleAndValidateDatum(x1, xScale, alignWithTick);
@@ -190,8 +187,7 @@ export function computeRectAnnotationDimensions(
 
     let xOffset = 0;
     if (xScale.bandwidth > 0) {
-      const xBand = xScale.bandwidth / (1 - xScale.barsPadding);
-      xOffset = enableHistogramMode ? (xBand - xScale.bandwidth) / 2 : barsPadding;
+      xOffset = barsPadding;
     }
 
     x0Scaled = x0Scaled - xOffset;

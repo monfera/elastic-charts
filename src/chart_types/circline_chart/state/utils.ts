@@ -19,8 +19,6 @@ import {
   AxisSpec,
   BasicSeriesSpec,
   DomainRange,
-  HistogramModeAlignment,
-  HistogramModeAlignments,
   isAreaSeriesSpec,
   isBarSeriesSpec,
   isLineSeriesSpec,
@@ -220,10 +218,9 @@ export function computeSeriesGeometries(
   chartDims: Dimensions,
   chartRotation: Rotation,
   axesSpecs: AxisSpec[],
-  enableHistogramMode: boolean,
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
-  const barsPadding = enableHistogramMode ? chartTheme.scales.histogramPadding : chartTheme.scales.barsPadding;
+  const barsPadding = chartTheme.scales.barsPadding;
 
   const width = [0, 180].includes(chartRotation) ? chartDims.width : chartDims.height;
   const height = [0, 180].includes(chartRotation) ? chartDims.height : chartDims.width;
@@ -234,7 +231,7 @@ export function computeSeriesGeometries(
   const { stackedBarsInCluster, totalBarsInCluster } = countBarsInCluster(stacked, nonStacked);
 
   // compute scales
-  const xScale = computeXScale({ xDomain, totalBarsInCluster, range: [0, width], barsPadding, enableHistogramMode });
+  const xScale = computeXScale({ xDomain, totalBarsInCluster, range: [0, width], barsPadding });
   const yScales = computeYScales({ yDomains: yDomain, range: [height, 0] });
 
   // compute colors
@@ -274,7 +271,6 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
-      enableHistogramMode,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
     areas.push(...geometries.areas);
@@ -308,7 +304,6 @@ export function computeSeriesGeometries(
       chartColors.defaultVizColor,
       axesSpecs,
       chartTheme,
-      enableHistogramMode,
     );
 
     areas.push(...geometries.areas);
@@ -342,11 +337,7 @@ export function computeSeriesGeometries(
   };
 }
 
-export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map<SpecId, BasicSeriesSpec>): void {
-  if (!isHistogramMode) {
-    return;
-  }
-
+export function setBarSeriesAccessors(seriesSpecs: Map<SpecId, BasicSeriesSpec>): void {
   for (const [, spec] of seriesSpecs) {
     if (isBarSeriesSpec(spec)) {
       let stackAccessors = spec.stackAccessors ? [...spec.stackAccessors] : spec.yAccessors;
@@ -362,37 +353,6 @@ export function setBarSeriesAccessors(isHistogramMode: boolean, seriesSpecs: Map
   return;
 }
 
-export function isHistogramModeEnabled(seriesSpecs: BasicSeriesSpec[]): boolean {
-  return seriesSpecs.some((spec) => {
-    return isBarSeriesSpec(spec) && spec.enableHistogramMode;
-  });
-}
-
-export function computeXScaleOffset(
-  xScale: Scale,
-  enableHistogramMode: boolean,
-  histogramModeAlignment: HistogramModeAlignment = HistogramModeAlignments.Start,
-): number {
-  if (!enableHistogramMode) {
-    return 0;
-  }
-
-  const { bandwidth, barsPadding } = xScale;
-  const band = bandwidth / (1 - barsPadding);
-  const halfPadding = (band - bandwidth) / 2;
-
-  const startAlignmentOffset = bandwidth / 2 + halfPadding;
-
-  switch (histogramModeAlignment) {
-    case HistogramModeAlignments.Center:
-      return 0;
-    case HistogramModeAlignments.End:
-      return -startAlignmentOffset;
-    default:
-      return startAlignmentOffset;
-  }
-}
-
 export function renderGeometries(
   indexOffset: number,
   clusteredCount: number,
@@ -405,7 +365,6 @@ export function renderGeometries(
   defaultColor: string,
   axesSpecs: AxisSpec[],
   chartTheme: Theme,
-  enableHistogramMode: boolean,
 ): {
   points: PointGeometry[];
   bars: BarGeometry[];
@@ -479,7 +438,7 @@ export function renderGeometries(
         ? mergePartial(chartTheme.lineSeriesStyle, spec.lineSeriesStyle, { mergeOptionalPartialValues: true })
         : chartTheme.lineSeriesStyle;
 
-      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      const xScaleOffset = 0;
 
       const renderedLines = renderLine(
         // move the point on half of the bandwidth if we have mixed bars/lines
@@ -505,7 +464,7 @@ export function renderGeometries(
       const areaSeriesStyle = spec.areaSeriesStyle
         ? mergePartial(chartTheme.areaSeriesStyle, spec.areaSeriesStyle, { mergeOptionalPartialValues: true })
         : chartTheme.areaSeriesStyle;
-      const xScaleOffset = computeXScaleOffset(xScale, enableHistogramMode, spec.histogramModeAlignment);
+      const xScaleOffset = 0;
 
       const renderedAreas = renderArea(
         // move the point on half of the bandwidth if we have mixed bars/lines

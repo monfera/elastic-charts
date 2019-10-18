@@ -144,7 +144,6 @@ export function computeXDomainLineAnnotationDimensions(
   chartDimensions: Dimensions,
   lineColor: string,
   xScaleOffset: number,
-  enableHistogramMode: boolean,
   marker?: JSX.Element,
   markerDimensions?: { width: number; height: number },
 ): AnnotationLineProps[] {
@@ -153,7 +152,7 @@ export function computeXDomainLineAnnotationDimensions(
   const markerOffsets = markerDimensions || { width: 0, height: 0 };
   const lineProps: AnnotationLineProps[] = [];
 
-  const alignWithTick = xScale.bandwidth > 0 && !enableHistogramMode;
+  const alignWithTick = xScale.bandwidth > 0;
   dataValues.forEach((datum: LineAnnotationDatum) => {
     const { dataValue } = datum;
     const details = {
@@ -237,7 +236,6 @@ export function computeLineAnnotationDimensions(
   xScale: Scale,
   axisPosition: Position,
   xScaleOffset: number,
-  enableHistogramMode: boolean,
 ): AnnotationLineProps[] | null {
   const { domainType, dataValues, marker, markerDimensions, hideLines } = annotationSpec;
 
@@ -262,7 +260,6 @@ export function computeLineAnnotationDimensions(
       chartDimensions,
       lineColor,
       xScaleOffset,
-      enableHistogramMode,
       marker,
       markerDimensions,
     );

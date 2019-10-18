@@ -61,23 +61,12 @@ export function computeAxisTicksDimensions(
   chartRotation: Rotation,
   axisConfig: AxisConfig,
   barsPadding?: number,
-  enableHistogramMode?: boolean,
 ): AxisTicksDimensions | null {
   if (axisSpec.hide) {
     return null;
   }
 
-  const scale = getScaleForAxisSpec(
-    axisSpec,
-    xDomain,
-    yDomain,
-    totalBarsInCluster,
-    chartRotation,
-    0,
-    1,
-    barsPadding,
-    enableHistogramMode,
-  );
+  const scale = getScaleForAxisSpec(axisSpec, xDomain, yDomain, totalBarsInCluster, chartRotation, 0, 1, barsPadding);
   if (!scale) {
     throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
   }
@@ -123,7 +112,6 @@ export function getScaleForAxisSpec(
   minRange: number,
   maxRange: number,
   barsPadding?: number,
-  enableHistogramMode?: boolean,
 ): Scale | null {
   const axisIsYDomain = isYDomain(axisSpec.position, chartRotation);
   const range: [number, number] = [minRange, maxRange];
@@ -144,7 +132,6 @@ export function getScaleForAxisSpec(
       totalBarsInCluster,
       range,
       barsPadding,
-      enableHistogramMode,
       ticks: axisSpec.ticks,
       integersOnly: axisSpec.integersOnly,
     });
@@ -399,15 +386,10 @@ export function getLeftAxisMinMaxRange(chartRotation: Rotation, height: number) 
       return { minRange: 0, maxRange: height };
   }
 }
-export function getAvailableTicks(
-  axisSpec: AxisSpec,
-  scale: Scale,
-  totalBarsInCluster: number,
-  enableHistogramMode: boolean,
-): AxisTick[] {
+export function getAvailableTicks(axisSpec: AxisSpec, scale: Scale, totalBarsInCluster: number): AxisTick[] {
   const ticks = scale.ticks();
   const isSingleValueScale = scale.domain[0] - scale.domain[1] === 0;
-  const hasAdditionalTicks = enableHistogramMode && scale.bandwidth > 0;
+  const hasAdditionalTicks = false;
 
   if (hasAdditionalTicks) {
     const lastComputedTick = ticks[ticks.length - 1];
@@ -427,7 +409,7 @@ export function getAvailableTicks(
 
   const band = scale.bandwidth / (1 - scale.barsPadding);
   const halfPadding = (band - scale.bandwidth) / 2;
-  const offset = enableHistogramMode ? -halfPadding : (scale.bandwidth * shift) / 2;
+  const offset = (scale.bandwidth * shift) / 2;
 
   if (isSingleValueScale && hasAdditionalTicks) {
     const firstTickValue = ticks[0];
@@ -566,7 +548,6 @@ export function getAxisTicksPositions(
   xDomain: XDomain,
   yDomain: YDomain[],
   totalGroupsCount: number,
-  enableHistogramMode: boolean,
   barsPadding?: number,
 ): {
   axisPositions: Map<AxisId, Dimensions>;
@@ -604,14 +585,13 @@ export function getAxisTicksPositions(
       minMaxRanges.minRange,
       minMaxRanges.maxRange,
       barsPadding,
-      enableHistogramMode,
     );
 
     if (!scale) {
       throw new Error(`Cannot compute scale for axis spec ${axisSpec.id}`);
     }
 
-    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount, enableHistogramMode);
+    const allTicks = getAvailableTicks(axisSpec, scale, totalGroupsCount);
     const visibleTicks = getVisibleTicks(allTicks, axisSpec, axisDim);
 
     if (axisSpec.showGridLines) {

@@ -17,7 +17,7 @@ export type YDomain = BaseDomain & {
 export type YBasicSeriesSpec = Pick<
   BasicSeriesSpec,
   'id' | 'seriesType' | 'yScaleType' | 'groupId' | 'stackAccessors' | 'yScaleToDataExtent' | 'useDefaultGroupDomain'
-> & { stackAsPercentage?: boolean; enableHistogramMode?: boolean };
+> & { stackAsPercentage?: boolean };
 
 interface GroupSpecs {
   isPercentageStack: boolean;
@@ -180,9 +180,6 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
     GroupId,
     { isPercentageStack: boolean; stacked: YBasicSeriesSpec[]; nonStacked: YBasicSeriesSpec[] }
   >();
-  const isHistogramEnabled = specs.some(({ seriesType, enableHistogramMode }) => {
-    return seriesType === 'bar' && enableHistogramMode;
-  });
   // split each specs by groupId and by stacked or not
   specs.forEach((spec) => {
     const group = specsByGroupIds.get(spec.groupId) || {
@@ -190,9 +187,8 @@ export function splitSpecsByGroupId(specs: YBasicSeriesSpec[]) {
       stacked: [],
       nonStacked: [],
     };
-    // stack every bars if using histogram mode
     // independenyly from lines and areas
-    if ((spec.seriesType === 'bar' && isHistogramEnabled) || (spec.stackAccessors && spec.stackAccessors.length > 0)) {
+    if (spec.stackAccessors && spec.stackAccessors.length > 0) {
       group.stacked.push(spec);
     } else {
       group.nonStacked.push(spec);
