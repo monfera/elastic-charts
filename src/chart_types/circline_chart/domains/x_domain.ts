@@ -1,4 +1,3 @@
-import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_utils';
 import { compareByValueAsc, identity, isNumberArray } from '../../../utils/commons';
 import { computeContinuousDataDomain, computeOrdinalDataDomain, Domain } from '../../../utils/domain';
 import { ScaleType } from '../../../utils/scales/scales';
@@ -57,30 +56,6 @@ export function mergeXDomain(
       }
 
       customMinInterval = customXDomain.minInterval;
-
-      if (customXDomain) {
-        const [computedDomainMin, computedDomainMax] = seriesXComputedDomains;
-
-        if (isCompleteBound(customXDomain)) {
-          if (customXDomain.min > customXDomain.max) {
-            throw new Error('custom xDomain is invalid, min is greater than max');
-          }
-
-          seriesXComputedDomains = [customXDomain.min, customXDomain.max];
-        } else if (isLowerBound(customXDomain)) {
-          if (customXDomain.min > computedDomainMax) {
-            throw new Error('custom xDomain is invalid, custom min is greater than computed max');
-          }
-
-          seriesXComputedDomains = [customXDomain.min, computedDomainMax];
-        } else if (isUpperBound(customXDomain)) {
-          if (computedDomainMin > customXDomain.max) {
-            throw new Error('custom xDomain is invalid, computed min is greater than custom max');
-          }
-
-          seriesXComputedDomains = [computedDomainMin, customXDomain.max];
-        }
-      }
     }
     const computedMinInterval = findMinInterval(values);
     if (customMinInterval != null) {

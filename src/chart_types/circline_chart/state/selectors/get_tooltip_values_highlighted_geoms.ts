@@ -1,14 +1,13 @@
 import createCachedSelector from 're-reselect';
-import { TooltipValue, isFollowTooltipType, TooltipType, TooltipValueFormatter } from '../../utils/interactions';
+import { TooltipValue, isFollowTooltipType, TooltipType } from '../../utils/interactions';
 import { computeCursorPositionSelector } from './compute_cursor_position';
 import { Point } from '../../../../utils/point';
-import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
-import { ComputedScales, getAxesSpecForSpecId } from '../utils';
+import { ComputedScales } from '../utils';
 import { getComputedScalesSelector } from './get_computed_scales';
 import { getElementAtCursorPositionSelector } from './get_elements_at_cursor_pos';
 import { IndexedGeometry } from '../../../../utils/geometry';
-import { getSeriesSpecsSelector, getAxisSpecsSelector } from './get_specs';
-import { BasicSeriesSpec, AxisSpec } from '../../utils/specs';
+import { getSeriesSpecsSelector } from './get_specs';
+import { BasicSeriesSpec } from '../../utils/specs';
 import { getTooltipTypeSelector } from './get_tooltip_type';
 import { formatTooltip } from '../../tooltip/tooltip';
 import { getTooltipHeaderFormatterSelector } from './get_tooltip_header_formatter';
@@ -27,9 +26,7 @@ export interface TooltipAndHighlightedGeoms {
 export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
   [
     getSeriesSpecsSelector,
-    getAxisSpecsSelector,
     computeCursorPositionSelector,
-    getAxisCursorPositionSelector,
     getComputedScalesSelector,
     getElementAtCursorPositionSelector,
     getTooltipTypeSelector,
@@ -42,19 +39,13 @@ export const getTooltipValuesAndGeometriesSelector = createCachedSelector(
 
 function getTooltipValues(
   seriesSpecs: BasicSeriesSpec[],
-  axesSpecs: AxisSpec[],
   cursorPosition: Point,
-  axisCursorPosition: Point,
   scales: ComputedScales,
   xMatchingGeoms: IndexedGeometry[],
   tooltipType: TooltipType,
-  tooltipHeaderFormatter: TooltipValueFormatter | undefined,
 ): TooltipAndHighlightedGeoms {
   const { x, y } = cursorPosition;
   if (x === -1 || y === -1) {
-    return EMPTY_VALUES;
-  }
-  if (axisCursorPosition.x < 0 || !scales.xScale || !scales.yScales) {
     return EMPTY_VALUES;
   }
 
@@ -75,8 +66,6 @@ function getTooltipValues(
     if (!spec) {
       return acc;
     }
-    const { xAxis, yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-
     // yScales is ensured by the enclosing if
     const yScale = scales.yScales.get(spec.groupId);
     if (!yScale) {
@@ -85,7 +74,7 @@ function getTooltipValues(
 
     // check if the pointer is on the geometry
     let isHighlighted = false;
-    if (isPointOnGeometry(axisCursorPosition.x, axisCursorPosition.y, indexedGeometry)) {
+    if (isPointOnGeometry(0, 0, indexedGeometry)) {
       isHighlighted = true;
       highlightedGeometries.push(indexedGeometry);
     }
@@ -97,13 +86,12 @@ function getTooltipValues(
     }
 
     // format the tooltip values
-    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted, yAxis);
+    const formattedTooltip = formatTooltip(indexedGeometry, spec, false, isHighlighted);
 
     // format only one time the x value
     if (!xValueInfo) {
       // if we have a tooltipHeaderFormatter, then don't pass in the xAxis as the user will define a formatter
-      const formatterAxis = tooltipHeaderFormatter ? undefined : xAxis;
-      xValueInfo = formatTooltip(indexedGeometry, spec, true, false, formatterAxis);
+      xValueInfo = formatTooltip(indexedGeometry, spec, true, false);
       return [xValueInfo, ...acc, formattedTooltip];
     }
 

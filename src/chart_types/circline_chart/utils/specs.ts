@@ -1,13 +1,6 @@
-import {
-  AreaSeriesStyle,
-  GridLineConfig,
-  LineSeriesStyle,
-  BarSeriesStyle,
-  PointStyle,
-} from '../../../utils/themes/theme';
+import { AreaSeriesStyle, LineSeriesStyle, BarSeriesStyle, PointStyle } from '../../../utils/themes/theme';
 import { Accessor, AccessorFormat } from '../../../utils/accessor';
 import { RecursivePartial } from '../../../utils/commons';
-import { AxisId, GroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
 import { CurveType } from '../../../utils/curves';
 import { RawDataSeriesDatum } from './series';
@@ -236,56 +229,7 @@ export type AreaSeriesSpec = BasicSeriesSpec &
     pointStyleAccessor?: PointStyleAccessor;
   };
 
-/**
- * This spec describe the configuration for a chart axis.
- */
-export interface AxisSpec extends Spec {
-  specType: 'axis';
-  chartType: 'xy_axis';
-  /** The ID of the spec, generated via getSpecId method */
-  id: AxisId;
-  /** Style options for grid line */
-  gridLineStyle?: GridLineConfig;
-  /** The ID of the axis group, generated via getGroupId method
-   * @default __global__
-   */
-  groupId: GroupId;
-  /** Hide this axis */
-  hide: boolean;
-  /** shows all ticks, also the one from the overlapping labels */
-  showOverlappingTicks: boolean;
-  /** Shows all labels, also the overlapping ones */
-  showOverlappingLabels: boolean;
-  /** Shows grid lines for axis; default false */
-  showGridLines?: boolean;
-  /** Where the axis appear on the chart */
-  position: Position;
-  /** The length of the tick line */
-  tickSize: number;
-  /** The padding between the label and the tick */
-  tickPadding: number;
-  /** A function called to format each single tick label */
-  tickFormat: TickFormatter;
-  /** The degrees of rotation of the tick labels */
-  tickLabelRotation?: number;
-  /** An approximate count of how many ticks will be generated */
-  ticks?: number;
-  /** The axis title */
-  title?: string;
-  /** If specified, it constrains the domain for these values */
-  domain?: DomainRange;
-  /** Object to hold custom styling */
-  style?: AxisStyle;
-  /** Show only integar values **/
-  integersOnly?: boolean;
-}
-
 export type TickFormatter = (value: any) => string;
-
-export interface AxisStyle {
-  /** Specifies the amount of padding on the tick label bounding box */
-  tickLabelPadding?: number;
-}
 
 /**
  * The position of the axis relative to the chart.

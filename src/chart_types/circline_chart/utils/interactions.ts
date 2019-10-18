@@ -5,7 +5,7 @@ import { BarGeometry, PointGeometry, IndexedGeometry, isPointGeometry, isBarGeom
 
 /** The type of tooltip to use */
 export const TooltipType = Object.freeze({
-  /** Vertical cursor parallel to x axis */
+  /** Vertical cursor parallel to x projection */
   VerticalCursor: 'vertical' as 'vertical',
   /** Vertical and horizontal cursors */
   Crosshairs: 'cross' as 'cross',

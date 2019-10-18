@@ -1,4 +1,3 @@
-import { isVerticalAxis } from '../utils/axis_utils';
 import { CurveType } from '../../../utils/curves';
 import { mergeXDomain, XDomain } from '../domains/x_domain';
 import { mergeYDomain, YDomain } from '../domains/y_domain';
@@ -16,7 +15,6 @@ import {
 } from '../utils/series';
 import {
   AreaSeriesSpec,
-  AxisSpec,
   BasicSeriesSpec,
   DomainRange,
   isAreaSeriesSpec,
@@ -170,7 +168,6 @@ export function getLastValues(formattedDataSeries: {
  */
 export function computeSeriesDomains(
   seriesSpecs: BasicSeriesSpec[],
-  customYDomainsByGroupId: Map<GroupId, DomainRange> = new Map(),
   deselectedDataSeries: DataSeriesColorsValues[] = [],
   customXDomain?: DomainRange | Domain,
 ): SeriesDomainsAndData {
@@ -180,7 +177,7 @@ export function computeSeriesDomains(
   const specsArray = [...seriesSpecs.values()];
 
   const xDomain = mergeXDomain(specsArray, xValues, customXDomain);
-  const yDomain = mergeYDomain(splittedSeries, specsArray, customYDomainsByGroupId);
+  const yDomain = mergeYDomain(splittedSeries, specsArray);
 
   const formattedDataSeries = getFormattedDataseries(specsArray, splittedSeries, xValues, xDomain.scaleType);
 
@@ -217,7 +214,6 @@ export function computeSeriesGeometries(
   chartTheme: Theme,
   chartDims: Dimensions,
   chartRotation: Rotation,
-  axesSpecs: AxisSpec[],
 ): ComputedGeometries {
   const chartColors: ColorConfig = chartTheme.colors;
   const barsPadding = chartTheme.scales.barsPadding;
@@ -269,7 +265,6 @@ export function computeSeriesGeometries(
       seriesSpecs,
       seriesColorMap,
       chartColors.defaultVizColor,
-      axesSpecs,
       chartTheme,
     );
     orderIndex = counts.barSeries > 0 ? orderIndex + 1 : orderIndex;
@@ -302,7 +297,6 @@ export function computeSeriesGeometries(
       seriesSpecs,
       seriesColorMap,
       chartColors.defaultVizColor,
-      axesSpecs,
       chartTheme,
     );
 
@@ -363,7 +357,6 @@ export function renderGeometries(
   seriesSpecs: BasicSeriesSpec[],
   seriesColorsMap: Map<string, string>,
   defaultColor: string,
-  axesSpecs: AxisSpec[],
   chartTheme: Theme,
 ): {
   points: PointGeometry[];
@@ -406,8 +399,7 @@ export function renderGeometries(
         mergeOptionalPartialValues: true,
       });
 
-      const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-      const valueFormatter = yAxis && yAxis.tickFormat ? yAxis.tickFormat : identity;
+      const valueFormatter = identity;
 
       const displayValueSettings = spec.displayValueSettings
         ? {
@@ -506,25 +498,6 @@ export function renderGeometries(
 
 export function getSpecById(seriesSpecs: BasicSeriesSpec[], specId: SpecId) {
   return seriesSpecs.find((spec) => spec.id === specId);
-}
-
-export function getAxesSpecForSpecId(axesSpecs: AxisSpec[], groupId: GroupId) {
-  let xAxis;
-  let yAxis;
-  for (const axisSpec of axesSpecs) {
-    if (axisSpec.groupId !== groupId) {
-      continue;
-    }
-    if (isVerticalAxis(axisSpec.position)) {
-      yAxis = axisSpec;
-    } else {
-      xAxis = axisSpec;
-    }
-  }
-  return {
-    xAxis,
-    yAxis,
-  };
 }
 
 export function computeChartTransform(chartDimensions: Dimensions, chartRotation: Rotation): Transform {

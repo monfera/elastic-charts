@@ -1,11 +1,11 @@
-import { getAxesSpecForSpecId, LastValues } from '../state/utils';
+import { LastValues } from '../state/utils';
 import { identity } from '../../../utils/commons';
 import {
   DataSeriesColorsValues,
   getSortedDataSeriesColorsValuesMap,
   findDataSeriesByColorValues,
 } from '../utils/series';
-import { AxisSpec, BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
+import { BasicSeriesSpec, Postfixes, isAreaSeriesSpec, isBarSeriesSpec } from '../utils/specs';
 import { Y0_ACCESSOR_POSTFIX, Y1_ACCESSOR_POSTFIX } from '../tooltip/tooltip';
 
 export interface FormatedLastValues {
@@ -44,7 +44,6 @@ export function computeLegend(
   seriesColorMap: Map<string, string>,
   specs: BasicSeriesSpec[],
   defaultColor: string,
-  axesSpecs: AxisSpec[],
   deselectedDataSeries: DataSeriesColorsValues[] = [],
 ): Map<string, LegendItem> {
   const legendItems: Map<string, LegendItem> = new Map();
@@ -63,8 +62,7 @@ export function computeLegend(
     }
 
     // Use this to get axis spec w/ tick formatter
-    const { yAxis } = getAxesSpecForSpecId(axesSpecs, spec.groupId);
-    const formatter = yAxis ? yAxis.tickFormat : identity;
+    const formatter = identity;
     const { hideInLegend } = spec;
 
     const legendItem: LegendItem = {

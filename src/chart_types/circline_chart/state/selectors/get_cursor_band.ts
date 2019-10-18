@@ -1,6 +1,5 @@
 import { Dimensions } from '../../../../utils/dimensions';
 import createCachedSelector from 're-reselect';
-import { Point } from '../../../../utils/point';
 import { Scale } from '../../../../utils/scales/scales';
 import { isLineAreaOnlyChart } from '../utils';
 import { getCursorBandPosition } from '../../crosshair/crosshair_utils';
@@ -11,13 +10,11 @@ import { BasicSeriesSpec } from '../../utils/specs';
 import { countBarsInClusterSelector } from './count_bars_in_cluster';
 import { getSeriesSpecsSelector } from './get_specs';
 import { computeSeriesGeometriesSelector } from './compute_series_geometries';
-import { getAxisCursorPositionSelector } from './get_axis_cursor_position';
 import { isTooltipSnapEnableSelector } from './is_tooltip_snap_enabled';
 import { getGeometriesIndexKeysSelector } from './get_geometries_index_keys';
 
 export const getCursorBandPositionSelector = createCachedSelector(
   [
-    getAxisCursorPositionSelector,
     computeChartDimensionsSelector,
     getSettingsSpecSelector,
     computeSeriesGeometriesSelector,
@@ -27,7 +24,6 @@ export const getCursorBandPositionSelector = createCachedSelector(
     getGeometriesIndexKeysSelector,
   ],
   (
-    axisCursorPosition,
     chartDimensions,
     settingsSpec,
     seriesGeometries,
@@ -37,7 +33,6 @@ export const getCursorBandPositionSelector = createCachedSelector(
     geometriesIndexKeys,
   ) => {
     return getCursorBand(
-      axisCursorPosition,
       chartDimensions.chartDimensions,
       settingsSpec,
       seriesGeometries.scales.xScale,
@@ -50,7 +45,6 @@ export const getCursorBandPositionSelector = createCachedSelector(
 )((state) => state.chartId);
 
 function getCursorBand(
-  axisCursorPosition: Point,
   chartDimensions: Dimensions,
   settingsSpec: SettingsSpec,
   xScale: Scale | undefined,
@@ -64,11 +58,11 @@ function getCursorBand(
   if (!xScale) {
     return;
   }
-  const xValue = xScale.invertWithStep(axisCursorPosition.x, geometriesIndexKeys);
+  const xValue = xScale.invertWithStep(0, geometriesIndexKeys);
   return getCursorBandPosition(
     settingsSpec.rotation,
     chartDimensions,
-    axisCursorPosition,
+    { x: 0, y: 0 },
     {
       value: xValue.value,
       withinBandwidth: true,

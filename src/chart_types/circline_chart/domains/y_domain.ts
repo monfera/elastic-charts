@@ -1,7 +1,6 @@
-import { BasicSeriesSpec, DomainRange, DEFAULT_GLOBAL_ID } from '../utils/specs';
+import { BasicSeriesSpec, DEFAULT_GLOBAL_ID } from '../utils/specs';
 import { GroupId, SpecId, getGroupId } from '../../../utils/ids';
 import { ScaleContinuousType, ScaleType } from '../../../utils/scales/scales';
-import { isCompleteBound, isLowerBound, isUpperBound } from '../utils/axis_utils';
 import { BaseDomain } from './domain';
 import { RawDataSeries } from '../utils/series';
 import { computeContinuousDataDomain } from '../../../utils/domain';
@@ -25,19 +24,14 @@ interface GroupSpecs {
   nonStacked: YBasicSeriesSpec[];
 }
 
-export function mergeYDomain(
-  dataSeries: Map<SpecId, RawDataSeries[]>,
-  specs: YBasicSeriesSpec[],
-  domainsByGroupId: Map<GroupId, DomainRange>,
-): YDomain[] {
+export function mergeYDomain(dataSeries: Map<SpecId, RawDataSeries[]>, specs: YBasicSeriesSpec[]): YDomain[] {
   // group specs by group ids
   const specsByGroupIds = splitSpecsByGroupId(specs);
   const specsByGroupIdsEntries = [...specsByGroupIds.entries()];
   const globalId = getGroupId(DEFAULT_GLOBAL_ID);
 
   const yDomains = specsByGroupIdsEntries.map<YDomain>(([groupId, groupSpecs]) => {
-    const customDomain = domainsByGroupId.get(groupId);
-    return mergeYDomainForGroup(dataSeries, groupId, groupSpecs, customDomain);
+    return mergeYDomainForGroup(dataSeries, groupId, groupSpecs);
   });
 
   const globalGroupIds: Set<GroupId> = specs.reduce<Set<GroupId>>((acc, { groupId, useDefaultGroupDomain }) => {
@@ -68,7 +62,6 @@ function mergeYDomainForGroup(
   dataSeries: Map<SpecId, RawDataSeries[]>,
   groupId: GroupId,
   groupSpecs: GroupSpecs,
-  customDomain?: DomainRange,
 ): YDomain {
   const groupYScaleType = coerceYScaleTypes([...groupSpecs.stacked, ...groupSpecs.nonStacked]);
   const { isPercentageStack } = groupSpecs;
@@ -97,25 +90,6 @@ function mergeYDomainForGroup(
       identity,
       isStackedScaleToExtent || isNonStackedScaleToExtent,
     );
-
-    const [computedDomainMin, computedDomainMax] = domain;
-
-    if (customDomain && isCompleteBound(customDomain)) {
-      // Don't need to check min > max because this has been validated on axis domain merge
-      domain = [customDomain.min, customDomain.max];
-    } else if (customDomain && isLowerBound(customDomain)) {
-      if (customDomain.min > computedDomainMax) {
-        throw new Error(`custom yDomain for ${groupId} is invalid, custom min is greater than computed max`);
-      }
-
-      domain = [customDomain.min, computedDomainMax];
-    } else if (customDomain && isUpperBound(customDomain)) {
-      if (computedDomainMin > customDomain.max) {
-        throw new Error(`custom yDomain for ${groupId} is invalid, computed min is greater than custom max`);
-      }
-
-      domain = [computedDomainMin, customDomain.max];
-    }
   }
   return {
     type: 'yDomain',
