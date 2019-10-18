@@ -3,7 +3,6 @@ import { bindActionCreators, Dispatch } from 'redux';
 import { connect, ReactReduxContext, Provider } from 'react-redux';
 import { ContainerConfig } from 'konva';
 import { Layer, Rect, Stage } from 'react-konva';
-import { AreaGeometries } from './area_geometries';
 import { BarGeometries } from './bar_geometries';
 import { LineGeometries } from './line_geometries';
 import { LineAnnotation } from './line_annotation';
@@ -124,30 +123,6 @@ class Chart extends React.Component<Props> {
     ];
   };
 
-  renderAreaSeries = (clippings: ContainerConfig): ReactiveChartElementIndex[] => {
-    const { geometries, theme, isChartAnimatable, highlightedLegendItem } = this.props;
-    if (!geometries) {
-      return [];
-    }
-    const element = (
-      <AreaGeometries
-        key={'area-geometries'}
-        animated={isChartAnimatable}
-        areas={geometries.areas || []}
-        sharedStyle={theme.sharedStyle}
-        highlightedLegendItem={highlightedLegendItem}
-        clippings={clippings}
-      />
-    );
-
-    return [
-      {
-        element,
-        zIndex: 0,
-      },
-    ];
-  };
-
   renderAnnotations = (): ReactiveChartElementIndex[] => {
     const { annotationDimensions, annotationSpecs } = this.props;
     const annotationElements: ReactiveChartElementIndex[] = [];
@@ -200,10 +175,9 @@ class Chart extends React.Component<Props> {
     };
 
     const bars = this.renderBarSeries(clippings);
-    const areas = this.renderAreaSeries(clippings);
     const lines = this.renderLineSeries(clippings);
     const annotations: ReactiveChartElementIndex[] = this.renderAnnotations();
-    return [...bars, ...areas, ...lines, ...annotations]
+    return [...bars, ...lines, ...annotations]
       .sort((elemIdxA, elemIdxB) => elemIdxA.zIndex - elemIdxB.zIndex)
       .map((elemIdx) => elemIdx.element);
   }
