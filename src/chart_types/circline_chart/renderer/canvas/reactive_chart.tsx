@@ -8,7 +8,6 @@ import { LineGeometries } from './line_geometries';
 import { LineAnnotation } from './line_annotation';
 import { RectAnnotation } from './rect_annotation';
 import { Grid } from './grid';
-import { Axes } from './axis';
 import { BarValues } from './bar_values';
 import { AnnotationDimensions } from '../../annotations/annotation_utils';
 import { AnnotationLineProps } from '../../annotations/line_annotation_tooltip';
@@ -213,7 +212,6 @@ class Chart extends React.Component<Props> {
               <Provider store={store}>
                 <Layer hitGraphEnabled={false} listening={false}>
                   <Grid />
-                  <Axes />
                 </Layer>
               </Provider>
               <Layer
