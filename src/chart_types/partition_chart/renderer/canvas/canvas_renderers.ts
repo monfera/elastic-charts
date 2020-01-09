@@ -3,13 +3,15 @@ import { addOpacity } from '../../layout/utils/calcs';
 import {
   LinkLabelVM,
   OutsideLinksViewModel,
-  QuadViewModel,
+  // QuadViewModel,
   RowSet,
+  ShapeTreeNode,
   ShapeViewModel,
   TextRow,
 } from '../../layout/types/viewmodel_types';
 import { tau } from '../../layout/utils/math';
 import { PartitionLayouts } from '../../layout/types/config_types';
+import { QM, RowArray, RowAssign } from '../../layout/viewmodel/viewmodel';
 
 // the burnout avoidance in the center of the pie
 const lineWidthMult = 10; // border can be a maximum 1/lineWidthMult - th of the sector angle, otherwise the border would dominate
@@ -67,7 +69,7 @@ function renderRowSets(ctx: CanvasRenderingContext2D, rowSets: RowSet[]) {
 
 function renderTaperedBorder(
   ctx: CanvasRenderingContext2D,
-  { strokeWidth, fillColor, x0, x1, y0px, y1px }: QuadViewModel,
+  { strokeWidth, fillColor, x0, x1, y0px, y1px }: RowAssign<ShapeTreeNode, QM>,
 ) {
   const X0 = x0 - tau / 4;
   const X1 = x1 - tau / 4;
@@ -111,20 +113,20 @@ function renderTaperedBorder(
   }
 }
 
-function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
+function renderSectors(ctx: CanvasRenderingContext2D, quadViewModel: RowArray<RowAssign<ShapeTreeNode, QM>>) {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    quadViewModel.forEach((quad: QuadViewModel) => {
+    quadViewModel.forEach((quad: RowAssign<ShapeTreeNode, QM>) => {
       if (quad.x0 === quad.x1) return; // no slice will be drawn, and it avoids some division by zero as well
       renderTaperedBorder(ctx, quad);
     });
   });
 }
 
-function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: QuadViewModel[]) {
+function renderRectangles(ctx: CanvasRenderingContext2D, quadViewModel: RowArray<RowAssign<ShapeTreeNode, QM>>) {
   withContext(ctx, (ctx) => {
     ctx.scale(1, -1); // D3 and Canvas2d use a left-handed coordinate system (+y = down) but the ViewModel uses +y = up, so we must locally invert Y
-    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }) => {
+    quadViewModel.forEach(({ strokeWidth, fillColor, x0, x1, y0px, y1px }: RowAssign<ShapeTreeNode, QM>) => {
       // only draw a shape if it would show up at all
       if (x1 - x0 >= 1 && y1px - y0px >= 1) {
         ctx.fillStyle = fillColor;

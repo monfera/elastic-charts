@@ -1,4 +1,5 @@
 import { ArrayEntry } from '../utils/group_by_rollup';
+import {KeyedObject} from '../viewmodel/viewmodel';
 
 export type Color = string; // todo refine later (union type)
 
@@ -17,7 +18,7 @@ export type AdditiveAggregation = 'count' | 'sum';
 
 export type Relation = Array<object>;
 
-export interface Origin {
+export interface Origin extends KeyedObject {
   x0: number;
   y0: number;
 }

@@ -1,7 +1,10 @@
 import { Config } from './config_types';
 import { Coordinate, Distance, PointObject, PointTuple, Radian } from './geometry_types';
-import { Color, FontWeight } from './types';
+import { FontWeight } from './types';
 import { config } from '../config/config';
+import { Primitive } from 'utility-types';
+import { KeyedObject, QM, /*Row, */ RowArray, RowAssign } from '../viewmodel/viewmodel';
+import { PrimitiveValue } from '../utils/group_by_rollup';
 
 export type LinkLabelVM = {
   link: [PointTuple, ...PointTuple[]]; // at least one point
@@ -57,7 +60,7 @@ export interface OutsideLinksViewModel {
 
 export type ShapeViewModel = {
   config: Config;
-  quadViewModel: QuadViewModel[];
+  quadViewModel: RowArray<RowAssign<ShapeTreeNode, QM>>;
   rowSets: RowSet[];
   linkLabelViewModels: LinkLabelVM[];
   outsideLinksViewModel: OutsideLinksViewModel[];
@@ -80,11 +83,8 @@ interface AngleFromTo {
 }
 
 export interface TreeNode extends AngleFromTo {
-  x0: Radian;
-  x1: Radian;
   y0: TreeLevel;
   y1: TreeLevel;
-  fill?: Color;
 }
 
 interface SectorGeomSpecY {
@@ -98,7 +98,7 @@ export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
   inRingIndex: number;
-  data: { name: any; value?: any }; // todo remove optionality
+  data: { name: Primitive; value?: PrimitiveValue }; // todo remove optionality
   value: number;
 }
 

@@ -18,7 +18,7 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
   const { width, height } = parentDimensions;
   // eslint-disable-next-line no-console
   console.log(theme);
-  const { layers, data: facts, config: specConfig } = partitionSpec;
+  const { layers, data: facts, config: specConfig, attributes: chartAttributes } = partitionSpec;
   const textMeasurer = document.createElement('canvas');
   const textMeasurerCtx = textMeasurer.getContext('2d');
   const config = { ...specConfig, width, height };
@@ -41,5 +41,6 @@ export function render(partitionSpec: PartitionSpec, parentDimensions: Dimension
     partitionSpec.valueAccessor,
     partitionSpec.valueFormatter,
     [() => null, ...layers.map(({ groupByRollup }) => groupByRollup)],
+    chartAttributes,
   );
 }

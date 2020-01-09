@@ -239,7 +239,7 @@ function fill(
       formatter,
       fillColor,
     } = Object.assign(
-      { fontFamily: config.fontFamily, formatter: valueFormatter, fillColor: node.fill },
+      { fontFamily: config.fontFamily, formatter: valueFormatter },
       fillLabel,
       layers[node.depth - 1] && layers[node.depth - 1].fillLabel,
       layers[node.depth - 1] && layers[node.depth - 1].shape,
