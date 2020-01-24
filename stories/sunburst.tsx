@@ -285,7 +285,7 @@ export const SunburstTwoLayers = () => (
             valueFormatter: (d: number) => `$${config.fillLabel.valueFormatter(Math.round(d / 1000000000000))}\xa0Tn`,
           },
           shape: {
-            fillColor: (d, i, a) => {
+            fillColor: (d) => {
               // pick color from color palette based on mean angle - rather distinct colors in the inner ring
               return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
             },
@@ -295,7 +295,7 @@ export const SunburstTwoLayers = () => (
           groupByRollup: (d: Datum) => d.dest,
           nodeLabel: (d: any) => countryLookup[d].name,
           shape: {
-            fillColor: (d, i, a) => {
+            fillColor: (d) => {
               // pick color from color palette based on mean angle - related yet distinct colors in the outer ring
               return indexInterpolatedFillColor(interpolatorCET2s)(d, (d.x0 + d.x1) / 2 / (2 * Math.PI), []);
             },

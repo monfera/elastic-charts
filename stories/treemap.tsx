@@ -172,7 +172,7 @@ export const TwoLayersStressTest = () => (
           groupByRollup: (d: Datum) => d.sitc1,
           nodeLabel: (d: any) => productLookup[d].name.toUpperCase(),
           fillLabel: {
-            valueFormatter: (d: number) => '',
+            valueFormatter: () => '',
             fontFamily: 'Phosphate-Inline',
             textColor: 'rgba(255,255,0, 0.6)',
             textInvertible: true,

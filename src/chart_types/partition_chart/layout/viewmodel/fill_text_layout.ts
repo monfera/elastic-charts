@@ -2,7 +2,15 @@ import { wrapToTau } from '../geometry';
 import { Coordinate, Distance, Pixels, Radian, Radius, RingSector } from '../types/geometry_types';
 import { Config } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
-import { RawTextGetter, RowBox, RowSet, RowSpace, ShapeTreeNode, ValueFormatter } from '../types/viewmodel_types';
+import {
+  QuadViewModel,
+  RawTextGetter,
+  RowBox,
+  RowSet,
+  RowSpace,
+  ShapeTreeNode,
+  ValueFormatter,
+} from '../types/viewmodel_types';
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { AGGREGATE_KEY } from '../utils/group_by_rollup';
 import { conjunctiveConstraint } from '../circline_geometry';
@@ -228,21 +236,12 @@ function fill(
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
 ) {
-  return (node: ShapeTreeNode, index: number, a: ShapeTreeNode[]) => {
+  return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
-    const {
-      textColor,
-      textInvertible,
-      fontStyle,
-      fontVariant,
-      fontFamily,
-      fontWeight,
-      valueFormatter,
-      fillColor,
-    } = Object.assign(
-      { fontFamily: config.fontFamily, fontWeight: 'normal', fillColor: node.fill },
+    const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
+      { fontFamily: config.fontFamily, fontWeight: 'normal' },
       fillLabel,
       { valueFormatter: formatter },
       layer.fillLabel,
@@ -259,7 +258,7 @@ function fill(
     );
 
     const specifiedTextColorIsDark = colorIsDark(textColor);
-    const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
+    const shapeFillColor = node.fillColor;
     const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
     let fontSizeIndex = fontSizes.length - 1;
     const sizeInvariantFont: Font = {
@@ -396,7 +395,7 @@ export function fillTextLayout(
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueFormatter: (value: number) => string,
-  childNodes: ShapeTreeNode[],
+  childNodes: QuadViewModel[],
   config: Config,
   layers: Layer[],
   textFillOrigins: [number, number][],
