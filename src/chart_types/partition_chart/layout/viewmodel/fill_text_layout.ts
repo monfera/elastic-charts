@@ -260,7 +260,7 @@ function fill(
 
     const specifiedTextColorIsDark = colorIsDark(textColor);
     const shapeFillColor = typeof fillColor === 'function' ? fillColor(node, index, a) : fillColor;
-    const { r: tr, g: tg, b: tb } = stringToRGB(textColor);
+    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
     let fontSizeIndex = fontSizes.length - 1;
     const sizeInvariantFont: Font = {
       fontStyle,
@@ -307,7 +307,11 @@ function fill(
           // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
           // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
           // todo factor out the discretization into a => FontWeight function
-          fillTextColor: inverseForContrast ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})` : textColor,
+          fillTextColor: inverseForContrast
+            ? to === undefined
+              ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+              : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+            : textColor,
           rotation,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],
