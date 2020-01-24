@@ -111,7 +111,7 @@ export const ValueFormattedPieChart2 = () => (
             },
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalPastel12)(d.inRingIndex),
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex),
           },
         },
       ]}
@@ -342,7 +342,7 @@ export const SunburstThreeLayers = () => (
           nodeLabel: (d: any) => productLookup[d].name,
           shape: {
             fillColor: (d: ShapeTreeNode) => {
-              return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.inRingIndex);
+              return categoricalFillColor(colorBrewerCategoricalStark9, 0.7)(d.sortIndex);
             },
           },
         },

@@ -95,7 +95,7 @@ export interface RingSectorGeometry extends AngleFromTo, SectorGeomSpecY {}
 export interface ShapeTreeNode extends TreeNode, SectorGeomSpecY {
   yMidPx: Distance;
   depth: number;
-  inRingIndex: number;
+  sortIndex: number;
   dataName: any;
   value: number;
   parent: ArrayNode;

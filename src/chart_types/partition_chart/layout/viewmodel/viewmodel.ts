@@ -32,6 +32,7 @@ import {
   aggregators,
   ArrayEntry,
   childOrders,
+  childrenAccessor,
   depthAccessor,
   entryKey,
   entryValue,
@@ -82,7 +83,7 @@ export function makeQuadViewModel(
     const layer = layers[node.depth - 1];
     const fillColorSpec = layer && layer.shape && layer.shape.fillColor;
     const fill = fillColorSpec || 'rgba(128,0,0,0.5)';
-    const shapeFillColor = typeof fill === 'function' ? fill(node, node.inRingIndex, node.parent.children) : fill;
+    const shapeFillColor = typeof fill === 'function' ? fill(node, node.sortIndex, node.parent.children) : fill;
     const { r, g, b, opacity } = stringToRGB(shapeFillColor);
     const fillColor = argsToRGBString(r, g, b, opacity * opacityMultiplier);
     const strokeWidth = sectorLineWidth;
@@ -205,8 +206,8 @@ export function shapeViewModel(
           depth: depthAccessor(node),
           value: aggregateAccessor(node),
           parent: parentAccessor(node),
+          sortIndex: sortIndexAccessor(node),
           children: [],
-          inRingIndex: sortIndexAccessor(node),
           x0: n.x0,
           x1: n.x1,
           y0: n.y0,

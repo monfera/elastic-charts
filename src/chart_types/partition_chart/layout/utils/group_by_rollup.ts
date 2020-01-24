@@ -46,7 +46,7 @@ export function childrenAccessor(n: ArrayEntry) {
   return entryValue(n)[CHILDREN_KEY];
 }
 export function sortIndexAccessor(n: ArrayEntry) {
-  return entryValue(n)[SORT_INDEX_KEY] || 0;
+  return entryValue(n)[SORT_INDEX_KEY];
 }
 const ascending: Sorter = (a, b) => a - b;
 const descending: Sorter = (a, b) => b - a;

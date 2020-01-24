@@ -77,7 +77,7 @@ export const OneLayer2 = () => (
             },
           },
           shape: {
-            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalPastel12)(d.inRingIndex),
+            fillColor: (d: ShapeTreeNode) => categoricalFillColor(colorBrewerCategoricalPastel12)(d.sortIndex),
           },
         },
       ]}
@@ -134,7 +134,7 @@ export const MidTwoLayers = () => (
             fillColor: (d: ShapeTreeNode) => {
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
               return interpolatorTurbo(
-                (d.parent.sortIndex + d.inRingIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
+                (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
               );
             },
           },
@@ -180,7 +180,7 @@ export const TwoLayersStressTest = () => (
           shape: {
             fillColor: (d: ShapeTreeNode) => {
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
-              return interpolatorTurbo(d.inRingIndex / (d.parent.children.length + 1));
+              return interpolatorTurbo(d.sortIndex / (d.parent.children.length + 1));
             },
           },
         },
@@ -203,7 +203,7 @@ export const TwoLayersStressTest = () => (
             fillColor: (d: ShapeTreeNode) => {
               // primarily, pick color based on parent's index, but then perturb by the index within the parent
               return interpolatorTurbo(
-                (d.parent.sortIndex + d.inRingIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
+                (d.parent.sortIndex + d.sortIndex / d.parent.children.length) / (d.parent.parent.children.length + 1),
               );
             },
           },
