@@ -74,16 +74,6 @@ export function nodeId(node: ShapeTreeNode): string {
 }
 
 /** @internal */
-export function rectangleConstruction(node: ShapeTreeNode) {
-  return {
-    x0: node.x0,
-    y0: node.y0px,
-    x1: node.x1,
-    y1: node.y1px,
-  };
-}
-
-/** @internal */
 export function ringSectorConstruction(config: Config, innerRadius: Radius, ringThickness: Distance) {
   return (ringSector: ShapeTreeNode): RingSector => {
     const {

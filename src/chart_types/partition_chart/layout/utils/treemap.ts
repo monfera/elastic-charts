@@ -111,20 +111,26 @@ export function treemap(
         }
         const fullWidth = x1 - x0;
         const fullHeight = y1 - y0;
-        const padding = Math.min(
+        const sidePadding = Math.min(
           paddingAccessor(node),
           fullWidth * MAX_PADDING_RATIO * 2,
           fullHeight * MAX_PADDING_RATIO * 2,
         );
-        const width = fullWidth - 2 * padding;
-        const height = fullHeight - 2 * padding;
+        const requestedTopPadding = 10;
+        const topPadding = Math.min(
+          requestedTopPadding,
+          fullWidth * MAX_PADDING_RATIO * 2,
+          fullHeight * MAX_PADDING_RATIO * 2,
+        );
+        const width = fullWidth - 2 * sidePadding;
+        const height = fullHeight - topPadding;
         return treemap(
           childrenNodes,
           (d) => ((width * height) / (fullWidth * fullHeight)) * areaAccessor(d),
           paddingAccessor,
           {
-            x0: x0 + padding,
-            y0: y0 + padding,
+            x0: x0 + sidePadding,
+            y0: y0 + topPadding,
             width,
             height,
           },

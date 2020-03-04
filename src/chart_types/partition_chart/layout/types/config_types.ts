@@ -34,6 +34,7 @@ interface LabelConfig extends Font {
   textOpacity: Ratio;
   valueFormatter: ValueFormatter;
   valueFont: PartialFont;
+  padding: number;
 }
 
 export type FillLabelConfig = LabelConfig;

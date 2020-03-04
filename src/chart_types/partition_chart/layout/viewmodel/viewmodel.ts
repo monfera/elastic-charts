@@ -43,7 +43,6 @@ import {
   getSectorRowGeometry,
   inSectorRotation,
   nodeId,
-  rectangleConstruction,
   ringSectorConstruction,
 } from './fill_text_layout';
 import {
@@ -136,6 +135,24 @@ export function makeOutsideLinksViewModel(
       };
     })
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
+}
+
+function rectangleConstruction(treeHeight: number) {
+  return function(node: ShapeTreeNode) {
+    return treeHeight === node.depth
+      ? {
+          x0: node.x0,
+          y0: node.y0px,
+          x1: node.x1,
+          y1: node.y1px,
+        }
+      : {
+          x0: node.x0,
+          y0: node.y0px + 0 * (node.y0px - node.yMidPx),
+          x1: node.x1,
+          y1: node.y1px + 0 * (node.y0px - node.yMidPx),
+        };
+  };
 }
 
 /** @internal */
@@ -234,7 +251,7 @@ export function shapeViewModel(
     config,
     layers,
     textFillOrigins,
-    treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
+    treemapLayout ? rectangleConstruction(treeHeight) : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
   );
