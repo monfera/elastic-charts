@@ -20,7 +20,8 @@ import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group
 import { Part } from '../types/types';
 import { GOLDEN_RATIO } from './math';
 
-const MAX_PADDING_RATIO = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
+const MAX_U_PADDING_RATIO = 0.0256197; // this limits area distortion to <<10% (which occurs due to pixel padding) with very small rectangles
+const MAX_TOP_PADDING_RATIO = 0.5; // this limits area distortion to ~50%
 
 interface LayoutElement {
   nodes: HierarchyOfArrays;
@@ -111,25 +112,21 @@ export function treemap(
         }
         const fullWidth = x1 - x0;
         const fullHeight = y1 - y0;
-        const sidePadding = Math.min(
+        const uPadding = Math.min(
           paddingAccessor(node),
-          fullWidth * MAX_PADDING_RATIO * 2,
-          fullHeight * MAX_PADDING_RATIO * 2,
+          fullWidth * MAX_U_PADDING_RATIO * 2,
+          fullHeight * MAX_U_PADDING_RATIO * 2,
         );
         const requestedTopPadding = 10;
-        const topPadding = Math.min(
-          requestedTopPadding,
-          fullWidth * MAX_PADDING_RATIO * 2,
-          fullHeight * MAX_PADDING_RATIO * 2,
-        );
-        const width = fullWidth - 2 * sidePadding;
-        const height = fullHeight - topPadding;
+        const topPadding = Math.min(requestedTopPadding, fullHeight * MAX_TOP_PADDING_RATIO);
+        const width = fullWidth - 2 * uPadding;
+        const height = fullHeight - uPadding - topPadding;
         return treemap(
           childrenNodes,
           (d) => ((width * height) / (fullWidth * fullHeight)) * areaAccessor(d),
           paddingAccessor,
           {
-            x0: x0 + sidePadding,
+            x0: x0 + uPadding,
             y0: y0 + topPadding,
             width,
             height,

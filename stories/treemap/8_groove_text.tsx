@@ -53,7 +53,7 @@ export const example = () => (
             fontFamily: 'Phosphate-Inline',
             textColor: 'yellow',
             textInvertible: false,
-            padding: 0,
+            padding: 100,
           },
           shape: { fillColor: 'rgba(0,0,0,0)' },
         },
@@ -69,7 +69,7 @@ export const example = () => (
             fontFamily: 'Helvetica',
             fontVariant: 'small-caps',
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
-            padding: 0,
+            padding: 100,
           },
           shape: {
             fillColor: (d: ShapeTreeNode) => {
