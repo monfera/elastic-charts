@@ -47,10 +47,11 @@ export const example = () => (
       layers={[
         {
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
-          nodeLabel: (d: any) => regionLookup[d].regionName,
+          nodeLabel: (d: any) => regionLookup[d].regionName.toUpperCase(),
           fillLabel: {
             valueFormatter: (d: number) => ``,
             fontFamily: 'Helvetica',
+            // fontVariant: 'small-caps',
             textColor: 'black',
             textInvertible: false,
             padding: 100,
@@ -67,7 +68,6 @@ export const example = () => (
             fontWeight: 200,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
-            fontVariant: 'small-caps',
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
             padding: 100,
           },
