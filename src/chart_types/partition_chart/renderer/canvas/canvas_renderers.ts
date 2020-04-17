@@ -44,13 +44,14 @@ function renderTextRow(ctx: CanvasRenderingContext2D, { fontSize, fillTextColor,
       ? currentRow.rowCentroidX - currentRow.maximumLength / 2
       : currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
     const cry = -currentRow.rowCentroidY + (Math.sin(rotation) * currentRow.length) / 2;
-    debugger;
     withContext(ctx, (ctx) => {
       ctx.scale(1, -1);
       ctx.translate(crx, cry);
       ctx.rotate(-rotation);
       ctx.fillStyle = fillTextColor;
-      if (topAlign) ctx.textBaseline = 'bottom';
+      if (topAlign) {
+        ctx.textBaseline = 'bottom';
+      }
       currentRow.rowWords.forEach((box) => {
         ctx.font = cssFontShorthand(box, fontSize);
         ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0);

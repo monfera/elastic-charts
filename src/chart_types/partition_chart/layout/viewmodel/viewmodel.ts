@@ -59,20 +59,19 @@ import {
 import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
 
-const topGroove = 10;
+const topGroove = 20;
 
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
 }
 
-function topPaddingAccessor(n: ArrayEntry) {
-  return paddingAccessor(n) + (entryValue(n).depth === 1 ? topGroove : 0);
+function topPaddingAccessor(topGroovePx: Pixels) {
+  return (n: ArrayEntry) => (entryValue(n).depth === 1 ? topGroovePx : paddingAccessor(n));
 }
 
-const topAlign = true;
-
-function rectangleFillOrigins(n: ShapeTreeNode): [number, number] {
-  return topAlign ? [(n.x0 + n.x1) / 2, n.y0 - topGroove / 2] : [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
+function rectangleFillOrigins(topAlign: boolean, topGroovePx: Pixels) {
+  return (n: ShapeTreeNode) =>
+    topAlign ? [(n.x0 + n.x1) / 2, n.y0 - topGroovePx / 2] : [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
 
@@ -211,7 +210,7 @@ export function shapeViewModel(
   const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
 
   const rawChildNodes: Array<Part> = treemapLayout
-    ? treemap(tree, treemapAreaAccessor, topPaddingAccessor, paddingAccessor, {
+    ? treemap(tree, treemapAreaAccessor, topPaddingAccessor(topGroove), paddingAccessor, {
         x0: -width / 2,
         y0: -height / 2,
         width,
@@ -239,6 +238,8 @@ export function shapeViewModel(
     config.sectorLineStroke,
   );
 
+  const topAlign = true; // can turn it into config if the need arises later
+
   // fill text
   const roomCondition = (n: ShapeTreeNode) => {
     const diff = n.x1 - n.x0;
@@ -250,7 +251,9 @@ export function shapeViewModel(
   const nodesWithRoom = quadViewModel.filter(roomCondition);
   const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
-  const textFillOrigins = nodesWithRoom.map(treemapLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside));
+  const textFillOrigins = nodesWithRoom.map(
+    treemapLayout ? rectangleFillOrigins(topAlign, topGroove) : sectorFillOrigins(fillOutside),
+  );
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
