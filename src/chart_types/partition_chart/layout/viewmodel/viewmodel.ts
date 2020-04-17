@@ -59,12 +59,14 @@ import {
 import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
 
+const topGroove = 10;
+
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
 }
 
 function topPaddingAccessor(n: ArrayEntry) {
-  return paddingAccessor(n) + (entryValue(n).depth === 1 ? 10 : 0);
+  return paddingAccessor(n) + (entryValue(n).depth === 1 ? topGroove : 0);
 }
 
 const topAlign = true;
@@ -143,8 +145,6 @@ export function makeOutsideLinksViewModel(
     })
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 }
-
-const topGroove = 10;
 
 function rectangleConstruction(node: ShapeTreeNode) {
   return node.depth === 1
