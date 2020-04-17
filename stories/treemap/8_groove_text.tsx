@@ -49,9 +49,9 @@ export const example = () => (
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName,
           fillLabel: {
-            valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
-            fontFamily: 'Phosphate-Inline',
-            textColor: 'yellow',
+            valueFormatter: (d: number) => ``,
+            fontFamily: 'Helvetica',
+            textColor: 'black',
             textInvertible: false,
             padding: 100,
           },
@@ -63,7 +63,7 @@ export const example = () => (
           fillLabel: {
             valueFormatter: (d: number) => `${config.fillLabel.valueFormatter(Math.round(d / 1000000000))}\xa0Bn`,
             textColor: 'black',
-            textInvertible: false,
+            textInvertible: true,
             fontWeight: 200,
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
@@ -85,8 +85,8 @@ export const example = () => (
         partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
-        maxFontSize: 14,
-        idealFontSizeJump: 1.15,
+        maxFontSize: 114,
+        idealFontSizeJump: 1.01,
         outerSizeRatio: 1,
       }}
     />

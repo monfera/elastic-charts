@@ -67,8 +67,10 @@ function topPaddingAccessor(n: ArrayEntry) {
   return paddingAccessor(n) + (entryValue(n).depth === 1 ? 10 : 0);
 }
 
+const topAlign = true;
+
 function rectangleFillOrigins(n: ShapeTreeNode): [number, number] {
-  return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
+  return topAlign ? [(n.x0 + n.x1) / 2, n.y0 - topGroove / 2] : [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
 
@@ -142,20 +144,22 @@ export function makeOutsideLinksViewModel(
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 }
 
+const topGroove = 10;
+
 function rectangleConstruction(treeHeight: number) {
   return function(node: ShapeTreeNode) {
-    return treeHeight === node.depth
+    return node.depth === 1
       ? {
           x0: node.x0,
           y0: node.y0px,
           x1: node.x1,
-          y1: node.y1px,
+          y1: node.y0px + 2.4 * topGroove,
         }
       : {
           x0: node.x0,
-          y0: node.y0px + 0 * (node.y0px - node.yMidPx),
+          y0: node.y0px,
           x1: node.x1,
-          y1: node.y1px + 0 * (node.y0px - node.yMidPx),
+          y1: node.y1px,
         };
   };
 }
@@ -264,6 +268,7 @@ export function shapeViewModel(
     treemapLayout ? rectangleConstruction(treeHeight) : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+    treemapLayout,
   );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius

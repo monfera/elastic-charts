@@ -35,15 +35,22 @@ import { clearCanvas, renderLayers, withContext } from '../../../../renderers/ca
 const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of the sector angle, otherwise the border would dominate
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
 
+const leftAlign = true;
+const topAlign = true;
+
 function renderTextRow(ctx: CanvasRenderingContext2D, { fontSize, fillTextColor, rotation }: RowSet) {
   return (currentRow: TextRow) => {
-    const crx = currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
+    const crx = leftAlign
+      ? currentRow.rowCentroidX - currentRow.maximumLength / 2
+      : currentRow.rowCentroidX - (Math.cos(rotation) * currentRow.length) / 2;
     const cry = -currentRow.rowCentroidY + (Math.sin(rotation) * currentRow.length) / 2;
+    debugger;
     withContext(ctx, (ctx) => {
       ctx.scale(1, -1);
       ctx.translate(crx, cry);
       ctx.rotate(-rotation);
       ctx.fillStyle = fillTextColor;
+      if (topAlign) ctx.textBaseline = 'bottom';
       currentRow.rowWords.forEach((box) => {
         ctx.font = cssFontShorthand(box, fontSize);
         ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0);

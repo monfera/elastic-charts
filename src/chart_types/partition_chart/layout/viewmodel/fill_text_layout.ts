@@ -180,6 +180,8 @@ export function getRectangleRowGeometry(
   linePitch: Pixels,
   rowIndex: number,
   fontSize: Pixels,
+  _rotation: number,
+  rightAlign: boolean,
 ): RowSpace {
   const wordSpacing = getWordSpacing(fontSize);
   const x0 = container.x0 + wordSpacing;
@@ -238,6 +240,8 @@ function getWordSpacing(fontSize: number) {
   return fontSize / 4;
 }
 
+const topAlign = true;
+
 function fill(
   config: Config,
   layers: Layer[],
@@ -250,6 +254,7 @@ function fill(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  leftAlign: boolean,
 ) {
   return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
@@ -351,6 +356,7 @@ function fill(
             currentRowIndex,
             fontSize,
             rotation,
+            leftAlign,
           );
 
           currentRow.rowCentroidX = rowCentroidX;
@@ -420,6 +426,7 @@ export function fillTextLayout(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  rightAlign: boolean,
 ) {
   const { minFontSize, maxFontSize, idealFontSizeJump } = config;
   const fontSizeMagnification = maxFontSize / minFontSize;
@@ -446,6 +453,7 @@ export function fillTextLayout(
       shapeConstructor,
       getShapeRowGeometry,
       getRotation,
+      rightAlign,
     ),
   );
 }
