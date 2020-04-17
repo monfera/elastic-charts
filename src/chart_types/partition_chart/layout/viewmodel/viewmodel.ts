@@ -62,6 +62,11 @@ import { percentValueGetter } from '../config/config';
 function paddingAccessor(n: ArrayEntry) {
   return entryValue(n).depth > 1 ? 1 : [0, 2][entryValue(n).depth];
 }
+
+function topPaddingAccessor(n: ArrayEntry) {
+  return paddingAccessor(n) + (entryValue(n).depth === 1 ? 10 : 0);
+}
+
 function rectangleFillOrigins(n: ShapeTreeNode): [number, number] {
   return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
@@ -204,7 +209,12 @@ export function shapeViewModel(
   const treemapAreaAccessor = (e: ArrayEntry) => treemapValueToAreaScale * mapEntryValue(e);
 
   const rawChildNodes: Array<Part> = treemapLayout
-    ? treemap(tree, treemapAreaAccessor, paddingAccessor, { x0: -width / 2, y0: -height / 2, width, height })
+    ? treemap(tree, treemapAreaAccessor, topPaddingAccessor, paddingAccessor, {
+        x0: -width / 2,
+        y0: -height / 2,
+        width,
+        height,
+      })
     : sunburst(tree, sunburstAreaAccessor, { x0: 0, y0: -1 }, clockwiseSectors, specialFirstInnermostSector);
 
   const shownChildNodes = rawChildNodes.filter((n: Part) => {

@@ -20,8 +20,8 @@ import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group
 import { Part } from '../types/types';
 import { GOLDEN_RATIO } from './math';
 
-const MAX_U_PADDING_RATIO = 0.0256197; // this limits area distortion to <<10% (which occurs due to pixel padding) with very small rectangles
-const MAX_TOP_PADDING_RATIO = 0.5; // this limits area distortion to ~50%
+const MAX_U_PADDING_RATIO = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
+const MAX_TOP_PADDING_RATIO = 0.33; // this limits further area distortion to ~33%
 
 interface LayoutElement {
   nodes: HierarchyOfArrays;
@@ -93,6 +93,7 @@ function vectorNodeCoordinates(vectorLayout: LayoutElement, x0Base: number, y0Ba
 export function treemap(
   nodes: HierarchyOfArrays,
   areaAccessor: (e: ArrayEntry) => number,
+  topPaddingAccessor: (e: ArrayEntry) => number,
   paddingAccessor: (e: ArrayEntry) => number,
   { x0, y0, width, height }: { x0: number; y0: number; width: number; height: number },
 ): Array<Part> {
@@ -117,13 +118,13 @@ export function treemap(
           fullWidth * MAX_U_PADDING_RATIO * 2,
           fullHeight * MAX_U_PADDING_RATIO * 2,
         );
-        const requestedTopPadding = 10;
-        const topPadding = Math.min(requestedTopPadding, fullHeight * MAX_TOP_PADDING_RATIO);
+        const topPadding = Math.min(topPaddingAccessor(node), fullHeight * MAX_TOP_PADDING_RATIO);
         const width = fullWidth - 2 * uPadding;
         const height = fullHeight - uPadding - topPadding;
         return treemap(
           childrenNodes,
           (d) => ((width * height) / (fullWidth * fullHeight)) * areaAccessor(d),
+          topPaddingAccessor,
           paddingAccessor,
           {
             x0: x0 + uPadding,
@@ -138,6 +139,7 @@ export function treemap(
       treemap(
         nodes.slice(vector.length),
         areaAccessor,
+        topPaddingAccessor,
         paddingAccessor,
         vertical
           ? { x0, y0: y0 + dependentSize, width, height: height - dependentSize }
