@@ -146,22 +146,20 @@ export function makeOutsideLinksViewModel(
 
 const topGroove = 10;
 
-function rectangleConstruction(treeHeight: number) {
-  return function(node: ShapeTreeNode) {
-    return node.depth === 1
-      ? {
-          x0: node.x0,
-          y0: node.y0px,
-          x1: node.x1,
-          y1: node.y0px + 2.4 * topGroove,
-        }
-      : {
-          x0: node.x0,
-          y0: node.y0px,
-          x1: node.x1,
-          y1: node.y1px,
-        };
-  };
+function rectangleConstruction(node: ShapeTreeNode) {
+  return node.depth === 1
+    ? {
+        x0: node.x0,
+        y0: node.y0px,
+        x1: node.x1,
+        y1: node.y0px + 2.4 * topGroove,
+      }
+    : {
+        x0: node.x0,
+        y0: node.y0px,
+        x1: node.x1,
+        y1: node.y1px,
+      };
 }
 
 /** @internal */
@@ -265,10 +263,9 @@ export function shapeViewModel(
     config,
     layers,
     textFillOrigins,
-    treemapLayout ? rectangleConstruction(treeHeight) : ringSectorConstruction(config, innerRadius, ringThickness),
+    treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-    treemapLayout,
   );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius
