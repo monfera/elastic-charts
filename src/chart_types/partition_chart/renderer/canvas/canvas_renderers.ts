@@ -36,9 +36,8 @@ const LINE_WIDTH_MULT = 10; // border can be a maximum 1/LINE_WIDTH_MULT - th of
 const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to avoid burnout in the middle of the pie when there are hundreds of pies
 
 const leftAlign = true;
-const topAlign = true;
 
-function renderTextRow(ctx: CanvasRenderingContext2D, { fontSize, fillTextColor, rotation }: RowSet) {
+function renderTextRow(ctx: CanvasRenderingContext2D, { fontSize, fillTextColor, rotation, topAlign }: RowSet) {
   return (currentRow: TextRow) => {
     const crx = leftAlign
       ? currentRow.rowCentroidX - currentRow.maximumLength / 2

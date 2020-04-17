@@ -70,7 +70,7 @@ function topPaddingAccessor(topGroovePx: Pixels) {
 }
 
 function rectangleFillOrigins(topAlign: boolean, topGroovePx: Pixels) {
-  return (n: ShapeTreeNode) =>
+  return (n: ShapeTreeNode): [Pixels, Pixels] =>
     topAlign ? [(n.x0 + n.x1) / 2, n.y0 - topGroovePx / 2] : [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
@@ -269,6 +269,7 @@ export function shapeViewModel(
     treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+    treemapLayout,
   );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius

@@ -213,6 +213,7 @@ function identityRowSet(): RowSet {
     fontSize: NaN,
     fillTextColor: '',
     rotation: NaN,
+    topAlign: false,
   };
 }
 
@@ -250,6 +251,7 @@ function fill(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  topAlign: boolean,
 ) {
   return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
@@ -327,6 +329,7 @@ function fill(
               : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
             : textColor,
           rotation,
+          topAlign,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],
             rowCentroidX: NaN,
@@ -420,6 +423,7 @@ export function fillTextLayout(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
+  topAlign: boolean,
 ) {
   const { minFontSize, maxFontSize, idealFontSizeJump } = config;
   const fontSizeMagnification = maxFontSize / minFontSize;
@@ -446,6 +450,7 @@ export function fillTextLayout(
       shapeConstructor,
       getShapeRowGeometry,
       getRotation,
+      topAlign,
     ),
   );
 }
