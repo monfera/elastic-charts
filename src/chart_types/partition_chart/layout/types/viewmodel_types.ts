@@ -65,6 +65,7 @@ export interface RowSet {
   fontSize: number;
   rotation: Radian;
   topAlign: boolean; // might be generalized into verticalAlign - if needed
+  leftAlign: boolean; // might be generalized into horizontalAlign - if needed
 }
 
 export interface QuadViewModel extends ShapeTreeNode {
