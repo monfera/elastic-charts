@@ -60,6 +60,7 @@ export interface FillFontSizeRange {
 }
 
 // todo switch to `io-ts` style, generic way of combining static and runtime type info
+/** @internal */
 export interface StaticConfig extends FillFontSizeRange {
   // shape geometry
   width: number;
@@ -95,8 +96,10 @@ export interface StaticConfig extends FillFontSizeRange {
   sectorLineStroke: StrokeStyle;
 }
 
+/** @internal */
 export type EasingFunction = (x: Ratio) => Ratio;
 
+/** @internal */
 export interface AnimKeyframe {
   time: number;
   easingFunction: EasingFunction;
@@ -123,6 +126,7 @@ class Type<A> {
   }
 }
 
+/** @internal */
 export class Numeric extends Type<number> {
   min: number;
   max: number;
