@@ -54,7 +54,9 @@ export const example = () => (
             // fontVariant: 'small-caps',
             textColor: 'black',
             textInvertible: false,
-            padding: 100,
+            // padding: 100,
+            minFontSize: 6,
+            maxFontSize: 6,
           },
           shape: { fillColor: 'rgba(0,0,0,0)' },
         },
@@ -69,7 +71,9 @@ export const example = () => (
             fontStyle: 'normal',
             fontFamily: 'Helvetica',
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
-            padding: 100,
+            // padding: 100,
+            minFontSize: 4,
+            maxFontSize: 114,
           },
           shape: {
             fillColor: (d: ShapeTreeNode) => {
