@@ -243,7 +243,7 @@ function getWordSpacing(fontSize: number) {
 function fill(
   config: Config,
   layers: Layer[],
-  fontSizes: string | any[],
+  allFontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
@@ -258,6 +258,7 @@ function fill(
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
+    const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
     const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
       fillLabel,
@@ -427,23 +428,31 @@ export function fillTextLayout(
   getRotation: Function,
   topLeftAlign: boolean,
 ) {
-  const { minFontSize, maxFontSize, idealFontSizeJump } = config;
-  const fontSizeMagnification = maxFontSize / minFontSize;
-  const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
-  const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
-  const fontSizes: Pixels[] = [];
-  for (let i = 0; i <= fontSizeJumpCount; i++) {
-    const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
-    if (fontSizes.indexOf(fontSize) === -1) {
-      fontSizes.push(fontSize);
+  const allFontSizes: Pixels[][] = [];
+  for (let l = 0; l <= layers.length; l++) {
+    // get font size spec from config, which layer.fillLabel properties can override
+    const { minFontSize, maxFontSize, idealFontSizeJump } = {
+      ...config,
+      ...(l < layers.length && layers[l].fillLabel),
+    };
+    const fontSizeMagnification = maxFontSize / minFontSize;
+    const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
+    const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
+    const fontSizes: Pixels[] = [];
+    for (let i = 0; i <= fontSizeJumpCount; i++) {
+      const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
+      if (fontSizes.indexOf(fontSize) === -1) {
+        fontSizes.push(fontSize);
+      }
     }
+    allFontSizes.push(fontSizes);
   }
 
   return childNodes.map(
     fill(
       config,
       layers,
-      fontSizes,
+      allFontSizes,
       measure,
       rawTextGetter,
       valueGetter,
