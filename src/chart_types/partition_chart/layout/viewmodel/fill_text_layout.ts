@@ -185,7 +185,7 @@ export function getRectangleRowGeometry(
   verticalAlignment: VerticalAlignment,
 ): RowSpace {
   const overhang = 0.05;
-  const padding = Math.max(1, Math.min(2, fontSize / 16)); // taper out padding with small fonts
+  const padding = fontSize < 6 ? 0 : Math.max(1, Math.min(2, fontSize / 16)); // taper out padding with small fonts
   if ((container.y1 - container.y0 - 2 * padding) / totalRowCount < linePitch) {
     return {
       rowCentroidX: NaN,

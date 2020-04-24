@@ -22,7 +22,7 @@ import { Config, PartitionLayout } from '../types/config_types';
 import { TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import { Distance, Pixels, Radius } from '../types/geometry_types';
 import { meanAngle } from '../geometry';
-import { treemap } from '../utils/treemap';
+import { getTopPadding, treemap } from '../utils/treemap';
 import { sunburst } from '../utils/sunburst';
 import { argsToRGBString, stringToRGB } from '../utils/d3_utils';
 import {
@@ -169,7 +169,7 @@ function rectangleConstruction(node: ShapeTreeNode): RectangleConstruction {
         x0: node.x0,
         y0: node.y0px,
         x1: node.x1,
-        y1: node.y0px + topGroove,
+        y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
       }
     : {
         x0: node.x0,

@@ -19,6 +19,7 @@
 import { ArrayEntry, CHILDREN_KEY, entryValue, HierarchyOfArrays } from './group_by_rollup';
 import { Part } from '../types/types';
 import { GOLDEN_RATIO } from './math';
+import { Pixels } from '../types/geometry_types';
 
 const MAX_U_PADDING_RATIO = 0.0256197; // this limits area distortion to <10% (which occurs due to pixel padding) with very small rectangles
 const MAX_TOP_PADDING_RATIO = 0.33; // this limits further area distortion to ~33%
@@ -90,6 +91,10 @@ function vectorNodeCoordinates(vectorLayout: LayoutElement, x0Base: number, y0Ba
 }
 
 /** @internal */
+export const getTopPadding = (requestedTopPadding: number, fullHeight: Pixels) =>
+  Math.min(requestedTopPadding, fullHeight * MAX_TOP_PADDING_RATIO);
+
+/** @internal */
 export function treemap(
   nodes: HierarchyOfArrays,
   areaAccessor: (e: ArrayEntry) => number,
@@ -118,7 +123,7 @@ export function treemap(
           fullWidth * MAX_U_PADDING_RATIO * 2,
           fullHeight * MAX_U_PADDING_RATIO * 2,
         );
-        const topPadding = Math.min(topPaddingAccessor(node), fullHeight * MAX_TOP_PADDING_RATIO);
+        const topPadding = getTopPadding(topPaddingAccessor(node), fullHeight);
         const width = fullWidth - 2 * uPadding;
         const height = fullHeight - uPadding - topPadding;
         return treemap(
