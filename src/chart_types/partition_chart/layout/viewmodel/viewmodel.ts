@@ -58,6 +58,7 @@ import {
 } from '../utils/group_by_rollup';
 import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
+import { $Values } from 'utility-types';
 
 // todo consider turning it into a config option
 const topGroove = 20;
@@ -70,9 +71,17 @@ function topPaddingAccessor(topGroovePx: Pixels) {
   return (n: ArrayEntry) => (entryValue(n).depth === 1 ? topGroovePx : paddingAccessor(n));
 }
 
-function rectangleFillOrigins(topAlign: boolean, topGroovePx: Pixels) {
-  return (n: ShapeTreeNode): [Pixels, Pixels] =>
-    topAlign ? [(n.x0 + n.x1) / 2, n.y0 - topGroovePx / 2] : [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
+export const VerticalAlignments = Object.freeze({
+  top: 'top' as 'top',
+  middle: 'middle' as 'middle',
+  bottom: 'bottom' as 'bottom',
+});
+
+/** @internal */
+export type VerticalAlignment = CanvasTextBaseline & $Values<typeof VerticalAlignments>;
+
+function rectangleFillOrigins(n: ShapeTreeNode): [Pixels, Pixels] {
+  return [(n.x0 + n.x1) / 2, (n.y0 + n.y1) / 2];
 }
 export const ringSectorInnerRadius = (n: ShapeTreeNode): Radius => n.y0px;
 
@@ -247,8 +256,6 @@ export function shapeViewModel(
     config.sectorLineStroke,
   );
 
-  const topAlign = true; // can turn it into config if the need arises later
-
   // fill text
   const roomCondition = (n: ShapeTreeNode) => {
     const diff = n.x1 - n.x0;
@@ -260,9 +267,7 @@ export function shapeViewModel(
   const nodesWithRoom = quadViewModel.filter(roomCondition);
   const outsideFillNodes = fillOutside && !treemapLayout ? nodesWithRoom : [];
 
-  const textFillOrigins = nodesWithRoom.map(
-    treemapLayout ? rectangleFillOrigins(topAlign, topGroove) : sectorFillOrigins(fillOutside),
-  );
+  const textFillOrigins = nodesWithRoom.map(treemapLayout ? rectangleFillOrigins : sectorFillOrigins(fillOutside));
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 

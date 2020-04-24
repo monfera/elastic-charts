@@ -37,7 +37,7 @@ const TAPER_OFF_LIMIT = 50; // taper off within a radius of TAPER_OFF_LIMIT to a
 
 function renderTextRow(
   ctx: CanvasRenderingContext2D,
-  { fontSize, fillTextColor, rotation, topAlign, leftAlign, container }: RowSet,
+  { fontSize, fillTextColor, rotation, verticalAlignment, leftAlign, container }: RowSet,
 ) {
   return (currentRow: TextRow) => {
     const crx = leftAlign
@@ -49,25 +49,23 @@ function renderTextRow(
       ctx.translate(crx, cry);
       ctx.rotate(-rotation);
       ctx.fillStyle = fillTextColor;
-      if (topAlign) {
-        ctx.textBaseline = 'top';
-      }
+      ctx.textBaseline = verticalAlignment;
       currentRow.rowWords.forEach((box) => {
         ctx.font = cssFontShorthand(box, fontSize);
         ctx.fillText(box.text, box.width / 2 + box.wordBeginning, 0);
       });
     });
-if(1)
-    withContext(ctx, (ctx) => {
-      ctx.scale(1, -1);
-      ctx.rotate(-rotation);
-      ctx.beginPath();
-      ctx.strokeStyle = 'magenta';
-      ctx.fillStyle = 'magenta';
-      ctx.lineWidth = 1;
-      ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
-      ctx.stroke();
-    });
+    if (0)
+      withContext(ctx, (ctx) => {
+        ctx.scale(1, -1);
+        ctx.rotate(-rotation);
+        ctx.beginPath();
+        ctx.strokeStyle = 'magenta';
+        ctx.fillStyle = 'magenta';
+        ctx.lineWidth = 1;
+        ctx.rect(container.x0 + 1, container.y0 + 1, container.x1 - container.x0 - 2, container.y1 - container.y0 - 2);
+        ctx.stroke();
+      });
   };
 }
 

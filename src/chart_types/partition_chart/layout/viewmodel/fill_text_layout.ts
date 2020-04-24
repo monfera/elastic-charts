@@ -35,7 +35,7 @@ import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
 import { colorIsDark } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
-import { RectangleConstruction } from './viewmodel';
+import { RectangleConstruction, VerticalAlignment, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
@@ -181,8 +181,11 @@ export function getRectangleRowGeometry(
   linePitch: Pixels,
   rowIndex: number,
   fontSize: Pixels,
+  _rotation: Radian,
+  verticalAlignment: VerticalAlignment,
 ): RowSpace {
-  const padding = 2;
+  const overhang = 0.05;
+  const padding = Math.max(1, Math.min(2, fontSize / 16)); // taper out padding with small fonts
   if ((container.y1 - container.y0 - 2 * padding) / totalRowCount < linePitch) {
     return {
       rowCentroidX: NaN,
@@ -190,11 +193,24 @@ export function getRectangleRowGeometry(
       maximumRowLength: 0,
     };
   }
-  return {
-    rowCentroidX: cx,
-    rowCentroidY: -(container.y0 + linePitch * rowIndex + padding + fontSize * 0.05),
-    maximumRowLength: container.x1 - container.x0 - 2 * padding,
-  };
+  debugger;
+  return verticalAlignment === VerticalAlignments.top
+    ? {
+        rowCentroidX: cx,
+        rowCentroidY: -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang),
+        maximumRowLength: container.x1 - container.x0 - 2 * padding,
+      }
+    : verticalAlignment === VerticalAlignments.bottom
+    ? {
+        rowCentroidX: cx,
+        rowCentroidY: -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang),
+        maximumRowLength: container.x1 - container.x0 - 2 * padding,
+      }
+    : {
+        rowCentroidX: cx,
+        rowCentroidY: -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang),
+        maximumRowLength: container.x1 - container.x0 - 2 * padding,
+      };
 }
 
 function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
@@ -208,7 +224,7 @@ function identityRowSet(): RowSet {
     fontSize: NaN,
     fillTextColor: '',
     rotation: NaN,
-    topAlign: false,
+    verticalAlignment: VerticalAlignments.top,
     leftAlign: false,
   };
 }
@@ -247,12 +263,13 @@ function fill(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
-  topLeftAlign: boolean,
+  leftAlign: boolean,
 ) {
   return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
+    const verticalAlignment = node.depth < layers.length ? VerticalAlignments.bottom : VerticalAlignments.top;
     const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
     const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
@@ -326,8 +343,8 @@ function fill(
               : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
             : textColor,
           rotation,
-          topAlign: topLeftAlign,
-          leftAlign: topLeftAlign,
+          verticalAlignment,
+          leftAlign: leftAlign,
           rows: [...Array(targetRowCount)].map(() => ({
             rowWords: [],
             rowCentroidX: NaN,
@@ -353,6 +370,7 @@ function fill(
             currentRowIndex,
             fontSize,
             rotation,
+            verticalAlignment,
           );
 
           currentRow.rowCentroidX = rowCentroidX;
@@ -423,7 +441,7 @@ export function fillTextLayout(
   shapeConstructor: (n: ShapeTreeNode) => any,
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
-  topLeftAlign: boolean,
+  leftAlign: boolean,
 ) {
   const allFontSizes: Pixels[][] = [];
   for (let l = 0; l <= layers.length; l++) {
@@ -458,7 +476,7 @@ export function fillTextLayout(
       shapeConstructor,
       getShapeRowGeometry,
       getRotation,
-      topLeftAlign,
+      leftAlign,
     ),
   );
 }
