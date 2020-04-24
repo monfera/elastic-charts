@@ -66,6 +66,7 @@ export interface RowSet {
   rotation: Radian;
   topAlign: boolean; // might be generalized into verticalAlign - if needed
   leftAlign: boolean; // might be generalized into horizontalAlign - if needed
+  container?: any;
 }
 
 export interface QuadViewModel extends ShapeTreeNode {

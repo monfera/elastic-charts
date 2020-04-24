@@ -59,6 +59,7 @@ import {
 import { StrokeStyle, ValueFormatter } from '../../../../utils/commons';
 import { percentValueGetter } from '../config/config';
 
+// todo consider turning it into a config option
 const topGroove = 20;
 
 function paddingAccessor(n: ArrayEntry) {
@@ -145,13 +146,21 @@ export function makeOutsideLinksViewModel(
     .filter(({ points }: OutsideLinksViewModel) => points.length > 1);
 }
 
-function rectangleConstruction(node: ShapeTreeNode) {
+/** @internal */
+export interface RectangleConstruction {
+  x0: Pixels;
+  x1: Pixels;
+  y0: Pixels;
+  y1: Pixels;
+}
+
+function rectangleConstruction(node: ShapeTreeNode): RectangleConstruction {
   return node.depth === 1
     ? {
         x0: node.x0,
         y0: node.y0px,
         x1: node.x1,
-        y1: node.y0px + 2.4 * topGroove,
+        y1: node.y0px + topGroove,
       }
     : {
         x0: node.x0,

@@ -35,7 +35,7 @@ export const example = () => (
     className="story-chart"
     size={
       {
-        /*height: 800*/
+       /* height: 800*/
       }
     }
   >
@@ -55,9 +55,9 @@ export const example = () => (
             textColor: 'black',
             textInvertible: false,
             // padding: 100,
-            minFontSize: 2,
-            maxFontSize: 40,
-            idealFontSizeJump: 1.01,
+            minFontSize: 4,
+            maxFontSize: 132,
+            idealFontSizeJump: 1.005,
           },
           shape: { fillColor: 'rgba(0,0,0,0)' },
         },
@@ -73,8 +73,8 @@ export const example = () => (
             fontFamily: 'Helvetica',
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
             // padding: 100,
-            minFontSize: 4,
-            maxFontSize: 114,
+            minFontSize: 8,
+            maxFontSize: 132,
           },
           shape: {
             fillColor: (d: ShapeTreeNode) => {

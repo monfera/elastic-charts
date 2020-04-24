@@ -35,6 +35,7 @@ import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
 import { colorIsDark } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
+import { RectangleConstruction } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
 
@@ -173,7 +174,7 @@ export function getSectorRowGeometry(
 
 /** @internal */
 export function getRectangleRowGeometry(
-  container: any,
+  container: RectangleConstruction,
   cx: number,
   cy: number,
   totalRowCount: number,
@@ -181,24 +182,18 @@ export function getRectangleRowGeometry(
   rowIndex: number,
   fontSize: Pixels,
 ): RowSpace {
-  const wordSpacing = getWordSpacing(fontSize);
-  const x0 = container.x0 + wordSpacing;
-  const y0 = container.y0 + linePitch / 2;
-  const x1 = container.x1 - wordSpacing;
-  const y1 = container.y1 - linePitch / 2;
-
-  // prettier-ignore
-  const offset =
-      (totalRowCount / 2) * fontSize
-    + fontSize / 2
-    - linePitch * rowIndex
-
-  const rowCentroidX = cx;
-  const rowCentroidY = cy - offset;
+  const padding = 2;
+  if ((container.y1 - container.y0 - 2 * padding) / totalRowCount < linePitch) {
+    return {
+      rowCentroidX: NaN,
+      rowCentroidY: NaN,
+      maximumRowLength: 0,
+    };
+  }
   return {
-    rowCentroidX,
-    rowCentroidY: -rowCentroidY,
-    maximumRowLength: rowCentroidY - linePitch / 2 < y0 || rowCentroidY + linePitch / 2 > y1 ? 0 : x1 - x0,
+    rowCentroidX: cx,
+    rowCentroidY: -(container.y0 + linePitch * rowIndex + padding + fontSize * 0.05),
+    maximumRowLength: container.x1 - container.x0 - 2 * padding,
   };
 }
 
@@ -340,6 +335,7 @@ function fill(
             maximumLength: NaN,
             length: NaN,
           })),
+          container,
         };
 
         let currentRowIndex = 0;
@@ -398,6 +394,7 @@ function fill(
       }
     }
     rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
+    // if (rowSet.rows.some((r) => r.rowWords.some((w) => w.text === 'Germany'))) debugger;
     return rowSet;
   };
 }
