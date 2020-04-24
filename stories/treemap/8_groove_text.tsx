@@ -52,11 +52,12 @@ export const example = () => (
             valueFormatter: (d: number) => ``,
             fontFamily: 'Helvetica',
             // fontVariant: 'small-caps',
-            textColor: 'black',
+            textColor: '#555',
             textInvertible: false,
+            fontWeight: 100,
             // padding: 100,
             minFontSize: 4,
-            maxFontSize: 132,
+            maxFontSize: 14,
             idealFontSizeJump: 1.005,
           },
           shape: { fillColor: 'rgba(0,0,0,0)' },
@@ -74,7 +75,7 @@ export const example = () => (
             valueFont: { fontWeight: 400, fontStyle: 'italic' },
             // padding: 100,
             minFontSize: 8,
-            maxFontSize: 132,
+            maxFontSize: 18,
           },
           shape: {
             fillColor: (d: ShapeTreeNode) => {
