@@ -193,24 +193,17 @@ export function getRectangleRowGeometry(
       maximumRowLength: 0,
     };
   }
-  debugger;
-  return verticalAlignment === VerticalAlignments.top
-    ? {
-        rowCentroidX: cx,
-        rowCentroidY: -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang),
-        maximumRowLength: container.x1 - container.x0 - 2 * padding,
-      }
-    : verticalAlignment === VerticalAlignments.bottom
-    ? {
-        rowCentroidX: cx,
-        rowCentroidY: -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang),
-        maximumRowLength: container.x1 - container.x0 - 2 * padding,
-      }
-    : {
-        rowCentroidX: cx,
-        rowCentroidY: -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang),
-        maximumRowLength: container.x1 - container.x0 - 2 * padding,
-      };
+  const rowCentroidY =
+    verticalAlignment === VerticalAlignments.top
+      ? -(container.y0 + linePitch * rowIndex + padding + fontSize * overhang)
+      : verticalAlignment === VerticalAlignments.bottom
+      ? -(container.y1 - linePitch * (totalRowCount - 1 - rowIndex) - fontSize * overhang)
+      : -((container.y0 + container.y1) / 2 + (linePitch * (rowIndex - totalRowCount)) / 2);
+  return {
+    rowCentroidX: cx,
+    rowCentroidY,
+    maximumRowLength: container.x1 - container.x0 - 2 * padding,
+  };
 }
 
 function rowSetComplete(rowSet: RowSet, measuredBoxes: RowBox[]) {
