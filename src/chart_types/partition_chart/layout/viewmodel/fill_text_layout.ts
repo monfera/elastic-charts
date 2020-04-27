@@ -217,7 +217,7 @@ function identityRowSet(): RowSet {
     fontSize: NaN,
     fillTextColor: '',
     rotation: NaN,
-    verticalAlignment: VerticalAlignments.top,
+    verticalAlignment: VerticalAlignments.middle,
     leftAlign: false,
   };
 }
@@ -257,12 +257,17 @@ function fill(
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
   leftAlign: boolean,
+  middleAlign: boolean,
 ) {
   return (node: QuadViewModel, index: number) => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
-    const verticalAlignment = node.depth < layers.length ? VerticalAlignments.bottom : VerticalAlignments.top;
+    const verticalAlignment = middleAlign
+      ? VerticalAlignments.middle
+      : node.depth < layers.length
+      ? VerticalAlignments.bottom
+      : VerticalAlignments.top;
     const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
     const { textColor, textInvertible, fontStyle, fontVariant, fontFamily, fontWeight, valueFormatter } = Object.assign(
       { fontFamily: config.fontFamily, fontWeight: 'normal' },
@@ -434,6 +439,7 @@ export function fillTextLayout(
   getShapeRowGeometry: (...args: any[]) => RowSpace,
   getRotation: Function,
   leftAlign: boolean,
+  middleAlign: boolean,
 ) {
   const allFontSizes: Pixels[][] = [];
   for (let l = 0; l <= layers.length; l++) {
@@ -469,6 +475,7 @@ export function fillTextLayout(
       getShapeRowGeometry,
       getRotation,
       leftAlign,
+      middleAlign,
     ),
   );
 }

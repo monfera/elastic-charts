@@ -284,6 +284,7 @@ export function shapeViewModel(
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
     treemapLayout,
+    !treemapLayout,
   );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius
