@@ -405,7 +405,6 @@ function fill(
       }
     }
     rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
-    // if (rowSet.rows.some((r) => r.rowWords.some((w) => w.text === 'Germany'))) debugger;
     return rowSet;
   };
 }
