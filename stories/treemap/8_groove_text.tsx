@@ -35,7 +35,7 @@ export const example = () => (
     className="story-chart"
     size={
       {
-       /* height: 800*/
+        /* height: 800*/
       }
     }
   >
@@ -49,7 +49,7 @@ export const example = () => (
           groupByRollup: (d: Datum) => countryLookup[d.dest].continentCountry.substr(0, 2),
           nodeLabel: (d: any) => regionLookup[d].regionName.toUpperCase(),
           fillLabel: {
-            valueFormatter: (d: number) => ``,
+            valueFormatter: () => ``,
             fontFamily: 'Helvetica',
             // fontVariant: 'small-caps',
             textColor: '#555',

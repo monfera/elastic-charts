@@ -163,20 +163,22 @@ export interface RectangleConstruction {
   y1: Pixels;
 }
 
-function rectangleConstruction(node: ShapeTreeNode): RectangleConstruction {
-  return node.depth === 1
-    ? {
-        x0: node.x0,
-        y0: node.y0px,
-        x1: node.x1,
-        y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
-      }
-    : {
-        x0: node.x0,
-        y0: node.y0px,
-        x1: node.x1,
-        y1: node.y1px,
-      };
+function rectangleConstruction(treeHeight: number) {
+  return function(node: ShapeTreeNode): RectangleConstruction {
+    return node.depth < treeHeight
+      ? {
+          x0: node.x0,
+          y0: node.y0px,
+          x1: node.x1,
+          y1: node.y0px + getTopPadding(topGroove, node.y1px - node.y0px),
+        }
+      : {
+          x0: node.x0,
+          y0: node.y0px,
+          x1: node.x1,
+          y1: node.y1px,
+        };
+  };
 }
 
 /** @internal */
@@ -280,7 +282,7 @@ export function shapeViewModel(
     config,
     layers,
     textFillOrigins,
-    treemapLayout ? rectangleConstruction : ringSectorConstruction(config, innerRadius, ringThickness),
+    treemapLayout ? rectangleConstruction(treeHeight) : ringSectorConstruction(config, innerRadius, ringThickness),
     treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
     treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
     treemapLayout,
