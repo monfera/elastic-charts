@@ -540,19 +540,28 @@ export function fillTextLayout(
     middleAlign,
   );
 
-  return childNodes.reduce(
-    ({ rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] }, childNode: QuadViewModel, index: number) => {
-      const nextRowSet = filler(fontSizes, childNode, index);
-      const result = {
-        rowSets: [...rowSets, nextRowSet],
-        fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-          index === childNode.depth - 1
-            ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
-            : layerFontSizes,
-        ),
-      };
-      return result;
-    },
-    { rowSets: [] as RowSet[], fontSizes: allFontSizes },
-  ).rowSets;
+  return (
+    childNodes
+      .slice()
+      //.sort((a: QuadViewModel, b: QuadViewModel) => b.value - a.value)
+      .reduce(
+        (
+          { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
+          childNode: QuadViewModel,
+          index: number,
+        ) => {
+          const nextRowSet = filler(fontSizes, childNode, index);
+          const result = {
+            rowSets: [...rowSets, nextRowSet],
+            fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
+              index === childNode.depth - 1
+                ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
+                : layerFontSizes,
+            ),
+          };
+          return result;
+        },
+        { rowSets: [] as RowSet[], fontSizes: allFontSizes },
+      ).rowSets
+  );
 }
