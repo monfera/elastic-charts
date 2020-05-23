@@ -492,7 +492,7 @@ function fill<C>(
 
 /** @internal */
 export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextAngleThreshold: number) {
-  return (node: ShapeTreeNode) => {
+  return (node: ShapeTreeNode): Radian => {
     let rotation = trueBearingToStandardPositionAngle((node.x0 + node.x1) / 2);
     if (Math.abs(node.x1 - node.x0) > horizontalTextAngleThreshold && horizontalTextEnforcer > 0)
       rotation = rotation * (1 - horizontalTextEnforcer);
@@ -503,73 +503,76 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
 
 /** @internal */
 export function fillTextLayout<C>(
-  measure: TextMeasure,
-  rawTextGetter: RawTextGetter,
-  valueGetter: ValueGetterFunction,
-  valueFormatter: ValueFormatter,
-  childNodes: QuadViewModel[],
-  config: Config,
-  layers: Layer[],
-  textFillOrigins: PointTuple[],
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
-  getRotation: Function,
-  leftAlign: boolean,
-  middleAlign: boolean,
-): RowSet[] {
-  const allFontSizes: Pixels[][] = [];
-  for (let l = 0; l <= layers.length; l++) {
-    // get font size spec from config, which layer.fillLabel properties can override
-    const { minFontSize, maxFontSize, idealFontSizeJump } = {
-      ...config,
-      ...(l < layers.length && layers[l].fillLabel),
-    };
-    const fontSizeMagnification = maxFontSize / minFontSize;
-    const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
-    const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
-    const fontSizes: Pixels[] = [];
-    for (let i = 0; i <= fontSizeJumpCount; i++) {
-      const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
-      if (fontSizes.indexOf(fontSize) === -1) {
-        fontSizes.push(fontSize);
+  getRotation: (node: ShapeTreeNode) => Radian,
+) {
+  return function(
+    measure: TextMeasure,
+    rawTextGetter: RawTextGetter,
+    valueGetter: ValueGetterFunction,
+    valueFormatter: ValueFormatter,
+    childNodes: QuadViewModel[],
+    config: Config,
+    layers: Layer[],
+    textFillOrigins: PointTuple[],
+    leftAlign: boolean,
+    middleAlign: boolean,
+  ): RowSet[] {
+    const allFontSizes: Pixels[][] = [];
+    for (let l = 0; l <= layers.length; l++) {
+      // get font size spec from config, which layer.fillLabel properties can override
+      const { minFontSize, maxFontSize, idealFontSizeJump } = {
+        ...config,
+        ...(l < layers.length && layers[l].fillLabel),
+      };
+      const fontSizeMagnification = maxFontSize / minFontSize;
+      const fontSizeJumpCount = Math.round(logarithm(idealFontSizeJump, fontSizeMagnification));
+      const realFontSizeJump = Math.pow(fontSizeMagnification, 1 / fontSizeJumpCount);
+      const fontSizes: Pixels[] = [];
+      for (let i = 0; i <= fontSizeJumpCount; i++) {
+        const fontSize = Math.round(minFontSize * Math.pow(realFontSizeJump, i));
+        if (fontSizes.indexOf(fontSize) === -1) {
+          fontSizes.push(fontSize);
+        }
       }
+      allFontSizes.push(fontSizes);
     }
-    allFontSizes.push(fontSizes);
-  }
 
-  const filler = fill(
-    config,
-    layers,
-    measure,
-    rawTextGetter,
-    valueGetter,
-    valueFormatter,
-    shapeConstructor,
-    getShapeRowGeometry,
-    getRotation,
-    leftAlign,
-    middleAlign,
-  );
+    const filler = fill(
+      config,
+      layers,
+      measure,
+      rawTextGetter,
+      valueGetter,
+      valueFormatter,
+      shapeConstructor,
+      getShapeRowGeometry,
+      getRotation,
+      leftAlign,
+      middleAlign,
+    );
 
-  return childNodes
-    .map((node: QuadViewModel, i: number) => ({ node, origin: textFillOrigins[i] }))
-    .sort((a: NodeWithOrigin, b: NodeWithOrigin) => b.node.value - a.node.value)
-    .reduce(
-      (
-        { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
-        { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
-      ) => {
-        const nextRowSet = filler(fontSizes, origin, node);
-        const layerIndex = node.depth - 1;
-        return {
-          rowSets: [...rowSets, nextRowSet],
-          fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-            layers[layerIndex]?.fillLabel?.monotonic && index === layerIndex
-              ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
-              : layerFontSizes,
-          ),
-        };
-      },
-      { rowSets: [] as RowSet[], fontSizes: allFontSizes },
-    ).rowSets;
+    return childNodes
+      .map((node: QuadViewModel, i: number) => ({ node, origin: textFillOrigins[i] }))
+      .sort((a: NodeWithOrigin, b: NodeWithOrigin) => b.node.value - a.node.value)
+      .reduce(
+        (
+          { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
+          { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
+        ) => {
+          const nextRowSet = filler(fontSizes, origin, node);
+          const layerIndex = node.depth - 1;
+          return {
+            rowSets: [...rowSets, nextRowSet],
+            fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
+              layers[layerIndex]?.fillLabel?.monotonic && index === layerIndex
+                ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
+                : layerFontSizes,
+            ),
+          };
+        },
+        { rowSets: [] as RowSet[], fontSizes: allFontSizes },
+      ).rowSets;
+  };
 }

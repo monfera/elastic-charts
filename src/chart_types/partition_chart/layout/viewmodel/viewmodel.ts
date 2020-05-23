@@ -274,34 +274,36 @@ export function shapeViewModel<C>(
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
-  const rowSets: RowSet[] = treemapLayout
-    ? fillTextLayout(
-        textMeasure,
-        rawTextGetter,
-        valueGetter,
-        valueFormatter,
-        nodesWithRoom,
-        config,
-        layers,
-        textFillOrigins,
-        rectangleConstruction(treeHeight, topGroove),
-        getRectangleRowGeometry,
-        () => 0,
-        treemapLayout,
-        !treemapLayout,
-      )
+  const partiallyApplied = treemapLayout
+    ? fillTextLayout(rectangleConstruction(treeHeight, topGroove), getRectangleRowGeometry, () => 0)
     : fillTextLayout(
-        textMeasure,
-        rawTextGetter,
-        valueGetter,
-        valueFormatter,
-        nodesWithRoom,
-        config,
-        layers,
-        textFillOrigins,
         ringSectorConstruction(config, innerRadius, ringThickness),
         getSectorRowGeometry,
         inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+      );
+
+  const rowSets: RowSet[] = treemapLayout
+    ? partiallyApplied(
+        textMeasure,
+        rawTextGetter,
+        valueGetter,
+        valueFormatter,
+        nodesWithRoom,
+        config,
+        layers,
+        textFillOrigins,
+        treemapLayout,
+        !treemapLayout,
+      )
+    : partiallyApplied(
+        textMeasure,
+        rawTextGetter,
+        valueGetter,
+        valueFormatter,
+        nodesWithRoom,
+        config,
+        layers,
+        textFillOrigins,
         treemapLayout,
         !treemapLayout,
       );
