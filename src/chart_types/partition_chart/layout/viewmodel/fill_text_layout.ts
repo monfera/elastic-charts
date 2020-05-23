@@ -526,21 +526,27 @@ export function fillTextLayout(
     allFontSizes.push(fontSizes);
   }
 
-  return childNodes.map((childNode: QuadViewModel, index: number) =>
-    fill(
-      config,
-      layers,
-      allFontSizes,
-      measure,
-      rawTextGetter,
-      valueGetter,
-      valueFormatter,
-      textFillOrigins,
-      shapeConstructor,
-      getShapeRowGeometry,
-      getRotation,
-      leftAlign,
-      middleAlign,
-    )(childNode, index),
-  );
+  return childNodes.reduce(
+    (reduction: { rowSets: RowSet[] }, childNode: QuadViewModel, index: number) => ({
+      rowSets: [
+        ...reduction.rowSets,
+        fill(
+          config,
+          layers,
+          allFontSizes,
+          measure,
+          rawTextGetter,
+          valueGetter,
+          valueFormatter,
+          textFillOrigins,
+          shapeConstructor,
+          getShapeRowGeometry,
+          getRotation,
+          leftAlign,
+          middleAlign,
+        )(childNode, index),
+      ],
+    }),
+    { rowSets: [] as RowSet[] },
+  ).rowSets;
 }
