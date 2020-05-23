@@ -182,7 +182,7 @@ function rectangleConstruction(treeHeight: number, topGroove: number) {
 }
 
 /** @internal */
-export function shapeViewModel(
+export function shapeViewModel<C>(
   textMeasure: TextMeasure,
   config: Config,
   layers: Layer[],
@@ -274,23 +274,41 @@ export function shapeViewModel(
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
-  const rowSets: RowSet[] = fillTextLayout(
-    textMeasure,
-    rawTextGetter,
-    valueGetter,
-    valueFormatter,
-    nodesWithRoom,
-    config,
-    layers,
-    textFillOrigins,
-    treemapLayout
-      ? rectangleConstruction(treeHeight, topGroove)
-      : ringSectorConstruction(config, innerRadius, ringThickness),
-    treemapLayout ? getRectangleRowGeometry : getSectorRowGeometry,
-    treemapLayout ? () => 0 : inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-    treemapLayout,
-    !treemapLayout,
-  );
+  let rowSets: RowSet[];
+
+  if (treemapLayout) {
+    rowSets = fillTextLayout(
+      textMeasure,
+      rawTextGetter,
+      valueGetter,
+      valueFormatter,
+      nodesWithRoom,
+      config,
+      layers,
+      textFillOrigins,
+      rectangleConstruction(treeHeight, topGroove),
+      getRectangleRowGeometry,
+      () => 0,
+      treemapLayout,
+      !treemapLayout,
+    );
+  } else {
+    rowSets = fillTextLayout(
+      textMeasure,
+      rawTextGetter,
+      valueGetter,
+      valueFormatter,
+      nodesWithRoom,
+      config,
+      layers,
+      textFillOrigins,
+      ringSectorConstruction(config, innerRadius, ringThickness),
+      getSectorRowGeometry,
+      inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+      treemapLayout,
+      !treemapLayout,
+    );
+  }
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);

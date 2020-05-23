@@ -312,15 +312,15 @@ type ShapeConstructor<C> = (n: ShapeTreeNode) => C;
 
 type NodeWithOrigin = { node: QuadViewModel; origin: PointTuple };
 
-function fill(
+function fill<C>(
   config: Config,
   layers: Layer[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
   formatter: ValueFormatter,
-  shapeConstructor: ShapeConstructor<RectangleConstruction> | ShapeConstructor<RingSectorConstruction>,
-  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSectorConstruction>,
+  shapeConstructor: ShapeConstructor<C>,
+  getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
@@ -502,7 +502,7 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
 }
 
 /** @internal */
-export function fillTextLayout(
+export function fillTextLayout<C>(
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
@@ -511,8 +511,8 @@ export function fillTextLayout(
   config: Config,
   layers: Layer[],
   textFillOrigins: PointTuple[],
-  shapeConstructor: ShapeConstructor<RectangleConstruction> | ShapeConstructor<RingSectorConstruction>,
-  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSectorConstruction>,
+  shapeConstructor: ShapeConstructor<C>,
+  getShapeRowGeometry: GetShapeRowGeometry<C>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
