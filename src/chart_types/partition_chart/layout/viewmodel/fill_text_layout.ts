@@ -302,7 +302,6 @@ type GetShapeRowGeometry<C> = (
 function fill(
   config: Config,
   layers: Layer[],
-  allFontSizes: string | any[],
   measure: TextMeasure,
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
@@ -314,7 +313,7 @@ function fill(
   leftAlign: boolean,
   middleAlign: boolean,
 ) {
-  return (node: QuadViewModel, index: number): RowSet => {
+  return (allFontSizes: string | any[], node: QuadViewModel, index: number): RowSet => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
@@ -526,26 +525,24 @@ export function fillTextLayout(
     allFontSizes.push(fontSizes);
   }
 
+  const filler = fill(
+    config,
+    layers,
+    measure,
+    rawTextGetter,
+    valueGetter,
+    valueFormatter,
+    textFillOrigins,
+    shapeConstructor,
+    getShapeRowGeometry,
+    getRotation,
+    leftAlign,
+    middleAlign,
+  );
+
   return childNodes.reduce(
     (reduction: { rowSets: RowSet[] }, childNode: QuadViewModel, index: number) => ({
-      rowSets: [
-        ...reduction.rowSets,
-        fill(
-          config,
-          layers,
-          allFontSizes,
-          measure,
-          rawTextGetter,
-          valueGetter,
-          valueFormatter,
-          textFillOrigins,
-          shapeConstructor,
-          getShapeRowGeometry,
-          getRotation,
-          leftAlign,
-          middleAlign,
-        )(childNode, index),
-      ],
+      rowSets: [...reduction.rowSets, filler(allFontSizes, childNode, index)],
     }),
     { rowSets: [] as RowSet[] },
   ).rowSets;
