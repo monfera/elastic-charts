@@ -541,14 +541,14 @@ export function fillTextLayout(
   );
 
   return childNodes.reduce(
-    (
-      { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
-      childNode: QuadViewModel,
-      index: number,
-    ) => ({
-      rowSets: [...rowSets, filler(allFontSizes, childNode, index)],
-      fontSizes,
-    }),
+    ({ rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] }, childNode: QuadViewModel, index: number) => {
+      const nextRowSet = filler(allFontSizes, childNode, index);
+      const result = {
+        rowSets: [...rowSets, nextRowSet],
+        fontSizes,
+      };
+      return result;
+    },
     { rowSets: [] as RowSet[], fontSizes: allFontSizes },
   ).rowSets;
 }
