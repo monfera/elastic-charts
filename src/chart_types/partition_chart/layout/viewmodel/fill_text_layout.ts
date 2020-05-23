@@ -314,7 +314,7 @@ function fill(
   leftAlign: boolean,
   middleAlign: boolean,
 ) {
-  return (node: QuadViewModel, index: number) => {
+  return (node: QuadViewModel, index: number): RowSet => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
@@ -505,7 +505,7 @@ export function fillTextLayout(
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
-) {
+): RowSet[] {
   const allFontSizes: Pixels[][] = [];
   for (let l = 0; l <= layers.length; l++) {
     // get font size spec from config, which layer.fillLabel properties can override
