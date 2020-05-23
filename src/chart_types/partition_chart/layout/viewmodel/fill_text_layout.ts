@@ -17,7 +17,16 @@
  * under the License. */
 
 import { wrapToTau } from '../geometry';
-import { Coordinate, Distance, Pixels, PointTuple, Radian, Radius, Ratio, RingSector } from '../types/geometry_types';
+import {
+  Coordinate,
+  Distance,
+  Pixels,
+  PointTuple,
+  Radian,
+  Radius,
+  Ratio,
+  RingSectorConstruction,
+} from '../types/geometry_types';
 import { Config, Padding } from '../types/config_types';
 import { logarithm, TAU, trueBearingToStandardPositionAngle } from '../utils/math';
 import {
@@ -76,7 +85,7 @@ export function nodeId(node: ShapeTreeNode): string {
 
 /** @internal */
 export function ringSectorConstruction(config: Config, innerRadius: Radius, ringThickness: Distance) {
-  return (ringSector: ShapeTreeNode): RingSector => {
+  return (ringSector: ShapeTreeNode): RingSectorConstruction => {
     const {
       circlePadding,
       radialPadding,
@@ -138,7 +147,7 @@ function makeRowCircline(
 }
 
 /** @internal */
-export const getSectorRowGeometry: GetShapeRowGeometry<RingSector> = (
+export const getSectorRowGeometry: GetShapeRowGeometry<RingSectorConstruction> = (
   ringSector,
   cx,
   cy,
@@ -309,7 +318,7 @@ function fill(
   valueGetter: ValueGetterFunction,
   formatter: ValueFormatter,
   shapeConstructor: (n: ShapeTreeNode) => any,
-  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSector>,
+  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSectorConstruction>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
@@ -501,7 +510,7 @@ export function fillTextLayout(
   layers: Layer[],
   textFillOrigins: PointTuple[],
   shapeConstructor: (n: ShapeTreeNode) => any,
-  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSector>,
+  getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSectorConstruction>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,

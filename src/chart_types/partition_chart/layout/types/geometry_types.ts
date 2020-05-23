@@ -65,6 +65,6 @@ export interface CirclineArc extends Circline {
 type CirclinePredicateSet = CirclinePredicate[];
 
 /* @internal */
-export type RingSector = CirclinePredicateSet;
+export type RingSectorConstruction = CirclinePredicateSet;
 
 export type TimeMs = number;
