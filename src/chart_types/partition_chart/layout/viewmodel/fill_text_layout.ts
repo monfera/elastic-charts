@@ -549,10 +549,11 @@ export function fillTextLayout(
         { node, origin }: { node: QuadViewModel; origin: [Pixels, Pixels] },
       ) => {
         const nextRowSet = filler(fontSizes, origin, node);
+        const layerIndex = node.depth - 1;
         return {
           rowSets: [...rowSets, nextRowSet],
           fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
-            index === node.depth - 1
+            layers[layerIndex]?.fillLabel?.monotonic && index === layerIndex
               ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
               : layerFontSizes,
           ),
