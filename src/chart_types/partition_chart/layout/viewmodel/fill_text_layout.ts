@@ -541,9 +541,14 @@ export function fillTextLayout(
   );
 
   return childNodes.reduce(
-    (reduction: { rowSets: RowSet[] }, childNode: QuadViewModel, index: number) => ({
-      rowSets: [...reduction.rowSets, filler(allFontSizes, childNode, index)],
+    (
+      { rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] },
+      childNode: QuadViewModel,
+      index: number,
+    ) => ({
+      rowSets: [...rowSets, filler(allFontSizes, childNode, index)],
+      fontSizes,
     }),
-    { rowSets: [] as RowSet[] },
+    { rowSets: [] as RowSet[], fontSizes: allFontSizes },
   ).rowSets;
 }
