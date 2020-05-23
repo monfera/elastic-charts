@@ -545,7 +545,11 @@ export function fillTextLayout(
       const nextRowSet = filler(allFontSizes, childNode, index);
       const result = {
         rowSets: [...rowSets, nextRowSet],
-        fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) => layerFontSizes),
+        fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
+          index === childNode.depth - 1
+            ? layerFontSizes//.filter((size: Pixels) => size <= nextRowSet.fontSize)
+            : layerFontSizes,
+        ),
       };
       return result;
     },
