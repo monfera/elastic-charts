@@ -57,7 +57,7 @@ export const example = () => (
             minFontSize: 2,
             maxFontSize: 20,
             idealFontSizeJump: 1.01,
-            monotonic: boolean('Monotonic text size layer 1', true),
+            monotonic: boolean('Monotonic font size layer 1', true),
           },
           shape: { fillColor: 'rgba(0,0,0,0)' },
         },
@@ -75,7 +75,7 @@ export const example = () => (
             minFontSize: 2,
             maxFontSize: 10,
             idealFontSizeJump: 1.01,
-            monotonic: boolean('Monotonic text size layer 2', true),
+            monotonic: boolean('Monotonic font size layer 2', true),
           },
           shape: {
             fillColor: 'rgba(0, 0, 0, 0.07)',
@@ -90,14 +90,14 @@ export const example = () => (
               return interpolator(countries.indexOf(d.dataName) / countryCount);
             },
           },
-          fillLabel: { monotonic: boolean('Monotonic text size layer 3', true) },
+          fillLabel: { monotonic: boolean('Monotonic font size layer 3', true) },
         },
       ]}
       config={{
         partitionLayout: PartitionLayout.treemap,
         margin: { top: 0, bottom: 0, left: 0, right: 0 },
         minFontSize: 4,
-        maxFontSize: 120,
+        maxFontSize: 36,
         idealFontSizeJump: 1.01,
         outerSizeRatio: 1,
       }}
