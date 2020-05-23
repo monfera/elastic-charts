@@ -274,41 +274,37 @@ export function shapeViewModel<C>(
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
-  let rowSets: RowSet[];
-
-  if (treemapLayout) {
-    rowSets = fillTextLayout(
-      textMeasure,
-      rawTextGetter,
-      valueGetter,
-      valueFormatter,
-      nodesWithRoom,
-      config,
-      layers,
-      textFillOrigins,
-      rectangleConstruction(treeHeight, topGroove),
-      getRectangleRowGeometry,
-      () => 0,
-      treemapLayout,
-      !treemapLayout,
-    );
-  } else {
-    rowSets = fillTextLayout(
-      textMeasure,
-      rawTextGetter,
-      valueGetter,
-      valueFormatter,
-      nodesWithRoom,
-      config,
-      layers,
-      textFillOrigins,
-      ringSectorConstruction(config, innerRadius, ringThickness),
-      getSectorRowGeometry,
-      inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
-      treemapLayout,
-      !treemapLayout,
-    );
-  }
+  const rowSets: RowSet[] = treemapLayout
+    ? fillTextLayout(
+        textMeasure,
+        rawTextGetter,
+        valueGetter,
+        valueFormatter,
+        nodesWithRoom,
+        config,
+        layers,
+        textFillOrigins,
+        rectangleConstruction(treeHeight, topGroove),
+        getRectangleRowGeometry,
+        () => 0,
+        treemapLayout,
+        !treemapLayout,
+      )
+    : fillTextLayout(
+        textMeasure,
+        rawTextGetter,
+        valueGetter,
+        valueFormatter,
+        nodesWithRoom,
+        config,
+        layers,
+        textFillOrigins,
+        ringSectorConstruction(config, innerRadius, ringThickness),
+        getSectorRowGeometry,
+        inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
+        treemapLayout,
+        !treemapLayout,
+      );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);
