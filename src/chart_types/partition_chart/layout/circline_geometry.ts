@@ -16,7 +16,14 @@
  * specific language governing permissions and limitations
  * under the License. */
 
-import { CirclineArc, Circline, CirclinePredicate, Distance, PointObject, RingSectorConstruction } from './types/geometry_types';
+import {
+  CirclineArc,
+  Circline,
+  CirclinePredicate,
+  Distance,
+  PointObject,
+  RingSectorConstruction,
+} from './types/geometry_types';
 import { TAU } from './utils/math';
 
 function euclideanDistance({ x: x1, y: y1 }: PointObject, { x: x2, y: y2 }: PointObject): Distance {

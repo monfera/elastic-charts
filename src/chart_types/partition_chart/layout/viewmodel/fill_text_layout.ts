@@ -308,6 +308,8 @@ type GetShapeRowGeometry<C> = (
   padding: Padding,
 ) => RowSpace;
 
+type ShapeConstructor<C> = (n: ShapeTreeNode) => C;
+
 type NodeWithOrigin = { node: QuadViewModel; origin: PointTuple };
 
 function fill(
@@ -317,13 +319,13 @@ function fill(
   rawTextGetter: RawTextGetter,
   valueGetter: ValueGetterFunction,
   formatter: ValueFormatter,
-  shapeConstructor: (n: ShapeTreeNode) => any,
+  shapeConstructor: ShapeConstructor<RectangleConstruction> | ShapeConstructor<RingSectorConstruction>,
   getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSectorConstruction>,
   getRotation: Function,
   leftAlign: boolean,
   middleAlign: boolean,
 ) {
-  return (allFontSizes: string | any[], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
+  return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
     const { maxRowCount, fillLabel } = config;
 
     const layer = layers[node.depth - 1] || {};
@@ -509,7 +511,7 @@ export function fillTextLayout(
   config: Config,
   layers: Layer[],
   textFillOrigins: PointTuple[],
-  shapeConstructor: (n: ShapeTreeNode) => any,
+  shapeConstructor: ShapeConstructor<RectangleConstruction> | ShapeConstructor<RingSectorConstruction>,
   getShapeRowGeometry: GetShapeRowGeometry<RectangleConstruction> | GetShapeRowGeometry<RingSectorConstruction>,
   getRotation: Function,
   leftAlign: boolean,
