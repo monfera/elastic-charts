@@ -526,7 +526,7 @@ export function fillTextLayout(
     allFontSizes.push(fontSizes);
   }
 
-  return childNodes.map(
+  return childNodes.map((childNode: QuadViewModel, index: number) =>
     fill(
       config,
       layers,
@@ -541,6 +541,6 @@ export function fillTextLayout(
       getRotation,
       leftAlign,
       middleAlign,
-    ),
+    )(childNode, index),
   );
 }
