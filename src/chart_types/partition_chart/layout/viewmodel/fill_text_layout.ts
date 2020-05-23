@@ -542,12 +542,12 @@ export function fillTextLayout(
 
   return childNodes.reduce(
     ({ rowSets, fontSizes }: { rowSets: RowSet[]; fontSizes: Pixels[][] }, childNode: QuadViewModel, index: number) => {
-      const nextRowSet = filler(allFontSizes, childNode, index);
+      const nextRowSet = filler(fontSizes, childNode, index);
       const result = {
         rowSets: [...rowSets, nextRowSet],
         fontSizes: fontSizes.map((layerFontSizes: Pixels[], index: number) =>
           index === childNode.depth - 1
-            ? layerFontSizes//.filter((size: Pixels) => size <= nextRowSet.fontSize)
+            ? layerFontSizes.filter((size: Pixels) => size <= nextRowSet.fontSize)
             : layerFontSizes,
         ),
       };
