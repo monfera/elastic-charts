@@ -147,12 +147,6 @@ function fitText(measure: TextMeasure, desiredText: string, allottedWidth: numbe
       },
     ])[0].width;
   const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
-  /*
-  const control = integerRound(monotonicHillClimb0(response, desiredLength, allottedWidth, true));
-  if (response(control) > allottedWidth) debugger;
-  if (desiredLength > control && response(control + 1) <= allottedWidth) debugger;
-  if (control !== visibleLength) debugger;
-  */
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
   const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [
     {
