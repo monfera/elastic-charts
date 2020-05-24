@@ -80,6 +80,7 @@ export function monotonicHillClimb(
   getResponse: (n: number) => number,
   maxVar: number,
   responseUpperConstraint: number,
+  proportionalResponse: boolean = false,
   minVar: number = 0,
   responseForMinVar: number = 0,
 ) {
@@ -97,7 +98,8 @@ export function monotonicHillClimb(
 
   let pivotVar: number = NaN;
   while (loVar < hiVar && pivotVar !== loVar && pivotVar !== hiVar) {
-    const newPivotVar = loVar + ((hiVar - loVar) * (responseUpperConstraint - loResponse)) / (hiResponse - loResponse);
+    const bisectRatio = proportionalResponse ? (responseUpperConstraint - loResponse) / (hiResponse - loResponse) : 0.5;
+    const newPivotVar = loVar + (hiVar - loVar) * bisectRatio;
     if (pivotVar === newPivotVar) {
       return loVar; // early bail if we're not making progress
     }

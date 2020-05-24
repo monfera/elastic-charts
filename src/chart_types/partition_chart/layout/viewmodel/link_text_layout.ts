@@ -141,6 +141,7 @@ function fitText(measure: TextMeasure, desiredText: string, allottedWidth: numbe
       (v: number) => measure(fontSize, [{ ...box, text: box.text.substr(0, integerRound(v)) }])[0].width,
       desiredLength,
       allottedWidth,
+      true,
     ),
   );
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
