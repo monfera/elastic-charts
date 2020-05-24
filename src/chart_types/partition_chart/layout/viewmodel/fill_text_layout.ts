@@ -549,6 +549,8 @@ function getRowSet<C>(
     iteration = tryFunction(iteration.rowSet, fontSizes[fontSizeIndex]);
   }
 
+  iteration = tryFunction(iteration.rowSet, fontSizes[fontSizeIndex]);
+
   iteration.rowSet.rows = iteration.rowSet.rows.filter((r) => iteration.completed && !isNaN(r.length));
   return iteration.rowSet;
 }
