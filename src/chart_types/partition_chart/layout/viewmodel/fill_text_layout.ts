@@ -419,7 +419,7 @@ function fill<C>(
               : textColor,
             rotation,
             verticalAlignment,
-            leftAlign: leftAlign,
+            leftAlign,
             rows: [...Array(targetRowCount)].map(() => ({
               rowWords: [],
               rowAnchorX: NaN,
