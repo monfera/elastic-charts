@@ -274,7 +274,7 @@ export function shapeViewModel<C>(
 
   const valueFormatter = valueGetter === percentValueGetter ? specifiedPercentFormatter : specifiedValueFormatter;
 
-  const partiallyApplied = treemapLayout
+  const getRowSets = treemapLayout
     ? fillTextLayout(rectangleConstruction(treeHeight, topGroove), getRectangleRowGeometry, () => 0)
     : fillTextLayout(
         ringSectorConstruction(config, innerRadius, ringThickness),
@@ -282,7 +282,7 @@ export function shapeViewModel<C>(
         inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
       );
 
-  const rowSets: RowSet[] = partiallyApplied(
+  const rowSets: RowSet[] = getRowSets(
     textMeasure,
     rawTextGetter,
     valueGetter,

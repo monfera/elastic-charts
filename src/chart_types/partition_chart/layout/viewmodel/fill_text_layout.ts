@@ -547,7 +547,7 @@ function getRowSet<C>(
   const largestIndex = fontSizes.length - 1;
   const fontSizeIndex = monotonicHillClimb(
     (fontSizeIndex: number) =>
-      fontSizeIndex + (tryFunction(identityRowSet(), fontSizes[fontSizeIndex]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
+      fontSizeIndex + (tryFunction(identityRowSet(), fontSizes[fontSizeIndex]).completed ? 0 : largestIndex + 1),
     largestIndex,
     largestIndex,
     integerSnap,
