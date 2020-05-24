@@ -43,7 +43,7 @@ import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
 import { stringToRGB } from '../utils/d3_utils';
 import { colorIsDark } from '../utils/calcs';
-import { ValueFormatter } from '../../../../utils/commons';
+import { Color, ValueFormatter } from '../../../../utils/commons';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -366,7 +366,6 @@ function fill<C>(
 
       const specifiedTextColorIsDark = colorIsDark(textColor);
       const shapeFillColor = node.fillColor;
-      const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
       const initialFontSizeIndex = fontSizes.length - 1;
       const sizeInvariantFont: Font = {
         fontStyle,
@@ -376,17 +375,6 @@ function fill<C>(
       };
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
-
-      const color = {
-        shapeFillColor,
-        textInvertible,
-        specifiedTextColorIsDark,
-        textColor,
-        tr,
-        tg,
-        tb,
-        to,
-      };
 
       const { rowSet, completed } = getRowSet(
         allBoxes,
@@ -406,16 +394,26 @@ function fill<C>(
       );
 
       rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
-      const backgroundIsDark = colorIsDark(color.shapeFillColor);
-      const inverseForContrast = color.textInvertible && color.specifiedTextColorIsDark === backgroundIsDark;
-      rowSet.fillTextColor = inverseForContrast
-        ? color.to === undefined
-          ? `rgb(${255 - color.tr}, ${255 - color.tg}, ${255 - color.tb})`
-          : `rgba(${255 - color.tr}, ${255 - color.tg}, ${255 - color.tb}, ${color.to})`
-        : color.textColor;
+      rowSet.fillTextColor = getFillTextColor(shapeFillColor, textColor, textInvertible, specifiedTextColorIsDark);
       return rowSet;
     };
   };
+}
+
+function getFillTextColor(
+  shapeFillColor: Color,
+  textColor: Color,
+  textInvertible: boolean,
+  specifiedTextColorIsDark: boolean,
+) {
+  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+  const backgroundIsDark = colorIsDark(shapeFillColor);
+  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+  return inverseForContrast
+    ? to === undefined
+      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+    : textColor;
 }
 
 function getRowSet<C>(
