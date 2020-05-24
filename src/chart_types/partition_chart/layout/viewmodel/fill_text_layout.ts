@@ -397,7 +397,7 @@ function fill<C>(
 }
 
 function tryFontSize<C>(
-  state: { rowSet: RowSet; completed: boolean; fontSizeIndex: number },
+  state: { rowSet: RowSet; fontSizeIndex: number },
   measure: TextMeasure,
   rotation: Radian,
   verticalAlignment: VerticalAlignments,
@@ -503,13 +503,8 @@ function tryFontSize<C>(
 
     innerCompleted = rowSetComplete(state.rowSet, measuredBoxes);
   }
-  {
-    // row building conditions
-    state.completed = !measuredBoxes.length;
-    if (!state.completed) {
-      state.fontSizeIndex -= 1;
-    }
-  }
+  const completed = !measuredBoxes.length;
+  return completed;
 }
 
 function getRowSet<C>(
@@ -529,13 +524,13 @@ function getRowSet<C>(
 ) {
   const state = {
     rowSet: identityRowSet(),
-    completed: false,
     fontSizeIndex: fontSizes.length - 1,
   };
+  let completed = false;
 
   // iterate through font sizes from largest to smallest
-  while (!state.completed && state.fontSizeIndex >= 0) {
-    tryFontSize(
+  while (!completed && state.fontSizeIndex >= 0) {
+    completed = tryFontSize(
       state,
       measure,
       rotation,
@@ -551,8 +546,11 @@ function getRowSet<C>(
       maxRowCount,
       fontSizes[state.fontSizeIndex],
     );
+    if (!completed) {
+      state.fontSizeIndex -= 1;
+    }
   }
-  state.rowSet.rows = state.rowSet.rows.filter((r) => state.completed && !isNaN(r.length));
+  state.rowSet.rows = state.rowSet.rows.filter((r) => completed && !isNaN(r.length));
   return state.rowSet;
 }
 
