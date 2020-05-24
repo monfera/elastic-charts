@@ -139,21 +139,10 @@ export function linkTextLayout(
 
 function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
   const desiredLength = desiredText.length;
-  const response = (v: number) =>
-    measure(fontSize, [
-      {
-        ...box,
-        text: box.text.substr(0, v),
-      },
-    ])[0].width;
+  const response = (v: number) => measure(fontSize, [{ ...box, text: box.text.substr(0, v) }])[0].width;
   const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
-  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [
-    {
-      ...box,
-      text,
-    },
-  ])[0];
+  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
   return {
     width,
     verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
