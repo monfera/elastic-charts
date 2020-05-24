@@ -355,6 +355,8 @@ function fill<C>(
         layer.shape,
       );
 
+      const fillTextColor = getFillTextColor(node.fillColor, textColor, textInvertible);
+
       const valueFont = Object.assign(
         { fontFamily: configFontFamily, fontWeight: 'normal' },
         fillLabel,
@@ -373,25 +375,25 @@ function fill<C>(
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
 
-      const rowSet = getRowSet(
-        allBoxes,
-        maxRowCount,
-        fontSizes,
-        initialFontSizeIndex,
-        measure,
-        rotation,
-        verticalAlignment,
-        leftAlign,
-        container,
-        getShapeRowGeometry,
-        cx,
-        cy,
-        padding,
-        node,
-      );
-
-      rowSet.fillTextColor = getFillTextColor(node.fillColor, textColor, textInvertible);
-      return rowSet;
+      return {
+        ...getRowSet(
+          allBoxes,
+          maxRowCount,
+          fontSizes,
+          initialFontSizeIndex,
+          measure,
+          rotation,
+          verticalAlignment,
+          leftAlign,
+          container,
+          getShapeRowGeometry,
+          cx,
+          cy,
+          padding,
+          node,
+        ),
+        fillTextColor,
+      };
     };
   };
 }
