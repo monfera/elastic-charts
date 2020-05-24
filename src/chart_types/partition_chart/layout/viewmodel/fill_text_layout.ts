@@ -365,7 +365,6 @@ function fill<C>(
         layer.fillLabel?.valueFont,
       );
 
-      const initialFontSizeIndex = fontSizes.length - 1;
       const sizeInvariantFont: Font = {
         fontStyle,
         fontVariant,
@@ -380,7 +379,6 @@ function fill<C>(
           allBoxes,
           maxRowCount,
           fontSizes,
-          initialFontSizeIndex,
           measure,
           rotation,
           verticalAlignment,
@@ -402,7 +400,6 @@ function getRowSet<C>(
   allBoxes: Box[],
   maxRowCount: number,
   fontSizes: Pixels[],
-  initialFontSizeIndex: number,
   measure: TextMeasure,
   rotation: Radian,
   verticalAlignment: VerticalAlignments,
@@ -416,7 +413,7 @@ function getRowSet<C>(
 ) {
   let rowSet = identityRowSet();
   let completed = false;
-  let fontSizeIndex = initialFontSizeIndex;
+  let fontSizeIndex = fontSizes.length - 1;
 
   // iterate through font sizes from largest to smallest
   while (!completed && fontSizeIndex >= 0) {
