@@ -106,7 +106,7 @@ function sectorFillOrigins(fillOutside: boolean) {
   };
 }
 
-/* @internal */
+/** @internal */
 export function makeQuadViewModel(
   childNodes: ShapeTreeNode[],
   layers: Layer[],

@@ -71,8 +71,43 @@ export function getFillTextColor(shapeFillColor: Color, textColor: Color, textIn
 }
 
 /** @internal */
-export function integerRound(n: number) {
-  return Math.round(n);
+export function integer(n: number) {
+  return Math.floor(n);
+}
+
+/** @internal */
+export function monotonicHillClimb0(
+  getResponse: (n: number) => number,
+  maxVar: number,
+  responseUpperConstraint: number,
+  // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
+  _proportionalResponse: boolean = false,
+  minVar: number = 0,
+) {
+  // Lowers iteration count by weakly assuming that there's eg. a `pixelWidth(text) ~ charLength(text)` relation, ie. instead of pivoting
+  // at the 50% midpoint like a basic binary search would do, it takes proportions into account. Still works if assumption is false.
+  // It's usable for all problems where there's a monotonic relationship between the constrained output and the variable
+  // (eg. can maximize font size etc.)
+  let loVar = minVar;
+
+  const hiVar = maxVar;
+  const hiResponse = getResponse(hiVar);
+
+  if (hiResponse <= responseUpperConstraint) return maxVar; // early bail if maxVar is compliant
+
+  let pivotVar: number = loVar;
+  while (loVar <= hiVar) {
+    const newPivotVar = loVar + 1;
+    pivotVar = newPivotVar;
+    const pivotResponse = getResponse(pivotVar);
+    const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
+    if (pivotIsCompliant) {
+      loVar = pivotVar;
+    } else {
+      return loVar;
+    }
+  }
+  return pivotVar;
 }
 
 /** @internal */
@@ -97,7 +132,7 @@ export function monotonicHillClimb(
   if (hiResponse <= responseUpperConstraint) return maxVar; // early bail if maxVar is compliant
 
   let pivotVar: number = NaN;
-  while (loVar < hiVar && pivotVar !== loVar && pivotVar !== hiVar) {
+  while (loVar < hiVar) {
     const bisectRatio = proportionalResponse ? (responseUpperConstraint - loResponse) / (hiResponse - loResponse) : 0.5;
     const newPivotVar = loVar + (hiVar - loVar) * bisectRatio;
     if (pivotVar === newPivotVar) {

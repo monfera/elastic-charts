@@ -24,7 +24,7 @@ import { meanAngle } from '../geometry';
 import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { ValueFormatter } from '../../../../utils/commons';
 import { Point } from '../../../../utils/point';
-import { integerRound, monotonicHillClimb } from '../utils/calcs';
+import { integer, monotonicHillClimb /*, monotonicHillClimb0*/ } from '../utils/calcs';
 
 function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.substr(0, maxLength - 1)}…`; // ellipsis is one char
@@ -99,10 +99,13 @@ export function linkTextLayout(
       };
       const translateX = stemToX + west * (linkLabel.horizontalStemLength + linkLabel.gap);
       const { width: valueWidth } = measure(linkLabel.fontSize, [{ ...valueFontSpec, text: valueText }])[0];
-      const widthAdjustment = valueWidth + 3 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
-      const allottedLabelWidth = rightSide
-        ? rectWidth - diskCenter.x - translateX - widthAdjustment
-        : diskCenter.x + translateX - widthAdjustment;
+      const widthAdjustment = valueWidth + 2 * linkLabel.fontSize; // gap between label and value, plus possibly 2em wide ellipsis
+      const allottedLabelWidth = Math.max(
+        0,
+        rightSide
+          ? rectWidth - diskCenter.x - translateX - widthAdjustment
+          : diskCenter.x + translateX - widthAdjustment,
+      );
       const { text, width, verticalOffset } =
         linkLabel.fontSize / 2 <= cy + diskCenter.y && cy + diskCenter.y <= rectHeight - linkLabel.fontSize / 2
           ? fitText(measure, labelText, allottedLabelWidth, linkLabel.fontSize, {
@@ -136,16 +139,27 @@ export function linkTextLayout(
 
 function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
   const desiredLength = desiredText.length;
-  const visibleLength = integerRound(
-    monotonicHillClimb(
-      (v: number) => measure(fontSize, [{ ...box, text: box.text.substr(0, integerRound(v)) }])[0].width,
-      desiredLength,
-      allottedWidth,
-      true,
-    ),
-  );
+  const response = (v: number) =>
+    measure(fontSize, [
+      {
+        ...box,
+        text: box.text.substr(0, integer(v)),
+      },
+    ])[0].width;
+  const visibleLength = integer(monotonicHillClimb(response, desiredLength, allottedWidth, true));
+  /*
+  const control = integerRound(monotonicHillClimb0(response, desiredLength, allottedWidth, true));
+  if (response(control) > allottedWidth) debugger;
+  if (desiredLength > control && response(control + 1) <= allottedWidth) debugger;
+  if (control !== visibleLength) debugger;
+  */
   const text = visibleLength < 2 && desiredLength >= 2 ? '' : cutToLength(box.text, visibleLength);
-  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [{ ...box, text }])[0];
+  const { width, emHeightAscent, emHeightDescent } = measure(fontSize, [
+    {
+      ...box,
+      text,
+    },
+  ])[0];
   return {
     width,
     verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`
