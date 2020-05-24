@@ -89,7 +89,7 @@ export function monotonicHillClimb(
   let hiVar = domainSnap(maxVar);
   let hiResponse = getResponse(hiVar);
 
-  if (hiResponse <= responseUpperConstraint) {
+  if (hiResponse <= responseUpperConstraint || loVar >= hiVar) {
     return hiVar; // early bail if maxVar is compliant
   }
 
