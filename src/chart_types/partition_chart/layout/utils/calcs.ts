@@ -69,3 +69,43 @@ export function getFillTextColor(shapeFillColor: Color, textColor: Color, textIn
       : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
     : textColor;
 }
+
+/** @internal */
+export function monotonicHillClimb(
+  getResponse: (n: number) => number,
+  maxVar: number,
+  responseUpperConstraint: number,
+  minVar: number = 0,
+  responseForMinVar: number = 0,
+) {
+  // Lowers iteration count by weakly assuming that there's eg. a `pixelWidth(text) ~ charLength(text)` relation, ie. instead of pivoting
+  // at the 50% midpoint like a basic binary search would do, it takes proportions into account. Still works if assumption is false.
+  // It's usable for all problems where there's a monotonic relationship between the constrained output and the variable
+  // (eg. can maximize font size etc.)
+  let loVar = minVar;
+  let loResponse = responseForMinVar;
+
+  let hiVar = maxVar;
+  let hiResponse = getResponse(hiVar);
+
+  if (hiResponse <= responseUpperConstraint) return maxVar; // early bail if maxVar is compliant
+
+  let pivotVar: number = NaN;
+  while (loVar < hiVar && pivotVar !== loVar && pivotVar !== hiVar) {
+    const newPivotVar = loVar + ((hiVar - loVar) * (responseUpperConstraint - loResponse)) / (hiResponse - loResponse);
+    if (pivotVar === newPivotVar) {
+      return loVar; // early bail if we're not making progress
+    }
+    pivotVar = newPivotVar;
+    const pivotResponse = getResponse(pivotVar);
+    const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
+    if (pivotIsCompliant) {
+      loVar = pivotVar;
+      loResponse = pivotResponse;
+    } else {
+      hiVar = pivotVar;
+      hiResponse = pivotResponse;
+    }
+  }
+  return pivotVar;
+}
