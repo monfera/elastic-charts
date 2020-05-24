@@ -249,7 +249,7 @@ export function shapeViewModel<C>(
   const circleMaximumSize = Math.min(innerWidth, innerHeight);
   const outerRadius: Radius = Math.min(outerSizeRatio * circleMaximumSize, circleMaximumSize - sectorLineWidth) / 2;
   const innerRadius: Radius = outerRadius - (1 - emptySizeRatio) * outerRadius;
-  const treeHeight = shownChildNodes.reduce((p: number, n: any) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
+  const treeHeight = shownChildNodes.reduce((p: number, n: Part) => Math.max(p, entryValue(n.node).depth), 0); // 1: pie, 2: two-ring donut etc.
   const ringThickness = (outerRadius - innerRadius) / treeHeight;
   const partToShapeFn = partToShapeTreeNode(treemapLayout, innerRadius, ringThickness);
   const quadViewModel = makeQuadViewModel(
