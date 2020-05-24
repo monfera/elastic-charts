@@ -397,7 +397,7 @@ function fill<C>(
 }
 
 function tryFontSize<C>(
-  state: { rowSet: RowSet; fontSizeIndex: number },
+  state: { rowSet: RowSet },
   measure: TextMeasure,
   rotation: Radian,
   verticalAlignment: VerticalAlignments,
@@ -522,14 +522,12 @@ function getRowSet<C>(
   padding: number,
   node: ShapeTreeNode,
 ) {
-  const state = {
-    rowSet: identityRowSet(),
-    fontSizeIndex: fontSizes.length - 1,
-  };
+  const state = { rowSet: identityRowSet() };
+  let fontSizeIndex = fontSizes.length;
   let completed = false;
 
   // iterate through font sizes from largest to smallest
-  while (!completed && state.fontSizeIndex >= 0) {
+  while (!completed && --fontSizeIndex >= 0) {
     completed = tryFontSize(
       state,
       measure,
@@ -544,11 +542,8 @@ function getRowSet<C>(
       node,
       boxes,
       maxRowCount,
-      fontSizes[state.fontSizeIndex],
+      fontSizes[fontSizeIndex],
     );
-    if (!completed) {
-      state.fontSizeIndex -= 1;
-    }
   }
   state.rowSet.rows = state.rowSet.rows.filter((r) => completed && !isNaN(r.length));
   return state.rowSet;
