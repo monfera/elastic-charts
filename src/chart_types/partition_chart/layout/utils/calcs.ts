@@ -56,3 +56,16 @@ export function colorIsDark(color: Color) {
   const a = rgba.hasOwnProperty('opacity') ? opacity : 1;
   return r * 0.299 + g * 0.587 + b * 0.114 < a * 150;
 }
+
+/** @internal */
+export function getFillTextColor(shapeFillColor: Color, textColor: Color, textInvertible: boolean) {
+  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+  const backgroundIsDark = colorIsDark(shapeFillColor);
+  const specifiedTextColorIsDark = colorIsDark(textColor);
+  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+  return inverseForContrast
+    ? to === undefined
+      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+    : textColor;
+}

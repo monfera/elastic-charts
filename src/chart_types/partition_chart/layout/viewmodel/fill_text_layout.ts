@@ -41,9 +41,8 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { stringToRGB } from '../utils/d3_utils';
-import { colorIsDark } from '../utils/calcs';
-import { Color, ValueFormatter } from '../../../../utils/commons';
+import { getFillTextColor } from '../utils/calcs';
+import { ValueFormatter } from '../../../../utils/commons';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
 const INFINITY_RADIUS = 1e4; // far enough for a sub-2px precision on a 4k screen, good enough for text bounds; 64 bit floats still work well with it
@@ -364,8 +363,6 @@ function fill<C>(
         layer.fillLabel?.valueFont,
       );
 
-      const specifiedTextColorIsDark = colorIsDark(textColor);
-      const shapeFillColor = node.fillColor;
       const initialFontSizeIndex = fontSizes.length - 1;
       const sizeInvariantFont: Font = {
         fontStyle,
@@ -394,26 +391,10 @@ function fill<C>(
       );
 
       rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
-      rowSet.fillTextColor = getFillTextColor(shapeFillColor, textColor, textInvertible, specifiedTextColorIsDark);
+      rowSet.fillTextColor = getFillTextColor(node.fillColor, textColor, textInvertible);
       return rowSet;
     };
   };
-}
-
-function getFillTextColor(
-  shapeFillColor: Color,
-  textColor: Color,
-  textInvertible: boolean,
-  specifiedTextColorIsDark: boolean,
-) {
-  const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-  const backgroundIsDark = colorIsDark(shapeFillColor);
-  const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
-  return inverseForContrast
-    ? to === undefined
-      ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-      : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-    : textColor;
 }
 
 function getRowSet<C>(
