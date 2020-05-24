@@ -41,7 +41,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { getFillTextColor, monotonicHillClimb, round } from '../utils/calcs';
+import { integerSnap, getFillTextColor, monotonicHillClimb } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
@@ -544,18 +544,12 @@ function getRowSet<C>(
   };
 
   // find largest fitting font size
-  /*
-  while (!iteration.completed && --fontSizeIndex >= 0) {
-    iteration = tryFunction(iteration.rowSet, fontSizes[fontSizeIndex]);
-  }
-*/
   const largestIndex = fontSizes.length - 1;
-  console.log('new one');
-  const fontSizeIndex = round(
+  const fontSizeIndex = integerSnap(
     monotonicHillClimb(
       (fontSizeIndex: number) =>
-        round(fontSizeIndex) +
-        (tryFunction(identityRowSet(), fontSizes[round(fontSizeIndex)]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
+        integerSnap(fontSizeIndex) +
+        (tryFunction(identityRowSet(), fontSizes[integerSnap(fontSizeIndex)]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
       largestIndex,
       largestIndex,
     ),

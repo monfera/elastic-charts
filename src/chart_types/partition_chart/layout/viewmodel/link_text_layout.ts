@@ -24,7 +24,7 @@ import { meanAngle } from '../geometry';
 import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { ValueFormatter } from '../../../../utils/commons';
 import { Point } from '../../../../utils/point';
-import { floor, monotonicHillClimb /*, monotonicHillClimb0*/ } from '../utils/calcs';
+import { integerSnap, monotonicHillClimb /*, monotonicHillClimb0*/ } from '../utils/calcs';
 
 function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.substr(0, maxLength - 1)}…`; // ellipsis is one char
@@ -143,10 +143,10 @@ function fitText(measure: TextMeasure, desiredText: string, allottedWidth: numbe
     measure(fontSize, [
       {
         ...box,
-        text: box.text.substr(0, floor(v)),
+        text: box.text.substr(0, integerSnap(v)),
       },
     ])[0].width;
-  const visibleLength = floor(monotonicHillClimb(response, desiredLength, allottedWidth, true));
+  const visibleLength = integerSnap(monotonicHillClimb(response, desiredLength, allottedWidth, true));
   /*
   const control = integerRound(monotonicHillClimb0(response, desiredLength, allottedWidth, true));
   if (response(control) > allottedWidth) debugger;

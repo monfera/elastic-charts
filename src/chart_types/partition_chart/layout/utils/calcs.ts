@@ -71,13 +71,8 @@ export function getFillTextColor(shapeFillColor: Color, textColor: Color, textIn
 }
 
 /** @internal */
-export function floor(n: number) {
+export function integerSnap(n: number) {
   return Math.floor(n);
-}
-
-/** @internal */
-export function round(n: number) {
-  return Math.round(n);
 }
 
 /** @internal */
@@ -102,7 +97,6 @@ export function monotonicHillClimb0(
 
   let pivotVar: number = loVar;
   while (loVar <= hiVar) {
-    console.log(pivotVar);
     const newPivotVar = loVar + 1;
     pivotVar = newPivotVar;
     const pivotResponse = getResponse(pivotVar);
@@ -139,16 +133,16 @@ export function monotonicHillClimb(
 
   let pivotVar: number = NaN;
   let pivotResponse: number = NaN;
+  let lastPivotResponse: number = NaN;
   while (loVar < hiVar) {
-    console.log(pivotVar);
     const bisectRatio = proportionalResponse ? (responseUpperConstraint - loResponse) / (hiResponse - loResponse) : 0.5;
     const newPivotVar = loVar + (hiVar - loVar) * bisectRatio;
     const newPivotResponse = getResponse(newPivotVar);
-    if (Math.abs(pivotResponse - newPivotResponse) < 1 / 1000 && pivotResponse !== newPivotResponse) debugger;
-    if (pivotResponse === newPivotResponse) {
+    if (newPivotResponse === pivotResponse || newPivotResponse === lastPivotResponse) {
       return loVar; // bail if we're good and not making further progress
     }
     pivotVar = newPivotVar;
+    lastPivotResponse = pivotResponse;
     pivotResponse = newPivotResponse;
     const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
     if (pivotIsCompliant) {
