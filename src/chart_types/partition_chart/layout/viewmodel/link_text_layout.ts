@@ -143,10 +143,10 @@ function fitText(measure: TextMeasure, desiredText: string, allottedWidth: numbe
     measure(fontSize, [
       {
         ...box,
-        text: box.text.substr(0, integerSnap(v)),
+        text: box.text.substr(0, v),
       },
     ])[0].width;
-  const visibleLength = integerSnap(monotonicHillClimb(response, desiredLength, allottedWidth));
+  const visibleLength = monotonicHillClimb(response, desiredLength, allottedWidth, integerSnap);
   /*
   const control = integerRound(monotonicHillClimb0(response, desiredLength, allottedWidth, true));
   if (response(control) > allottedWidth) debugger;

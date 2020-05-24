@@ -545,14 +545,12 @@ function getRowSet<C>(
 
   // find largest fitting font size
   const largestIndex = fontSizes.length - 1;
-  const fontSizeIndex = integerSnap(
-    monotonicHillClimb(
-      (fontSizeIndex: number) =>
-        integerSnap(fontSizeIndex) +
-        (tryFunction(identityRowSet(), fontSizes[integerSnap(fontSizeIndex)]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
-      largestIndex,
-      largestIndex,
-    ),
+  const fontSizeIndex = monotonicHillClimb(
+    (fontSizeIndex: number) =>
+      fontSizeIndex + (tryFunction(identityRowSet(), fontSizes[fontSizeIndex]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
+    largestIndex,
+    largestIndex,
+    integerSnap,
   );
 
   iteration = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]);

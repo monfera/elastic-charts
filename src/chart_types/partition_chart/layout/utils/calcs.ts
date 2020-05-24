@@ -75,66 +75,32 @@ export function integerSnap(n: number) {
   return Math.floor(n);
 }
 
-/** @internal */
-export function monotonicHillClimb0(
-  getResponse: (n: number) => number,
-  maxVar: number,
-  responseUpperConstraint: number,
-  // eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
-  _proportionalResponse: boolean = false,
-  minVar: number = 0,
-) {
-  // Lowers iteration count by weakly assuming that there's eg. a `pixelWidth(text) ~ charLength(text)` relation, ie. instead of pivoting
-  // at the 50% midpoint like a basic binary search would do, it takes proportions into account. Still works if assumption is false.
-  // It's usable for all problems where there's a monotonic relationship between the constrained output and the variable
-  // (eg. can maximize font size etc.)
-  let loVar = minVar;
-
-  const hiVar = maxVar;
-  const hiResponse = getResponse(hiVar);
-
-  if (hiResponse <= responseUpperConstraint) return maxVar; // early bail if maxVar is compliant
-
-  let pivotVar: number = loVar;
-  while (loVar <= hiVar) {
-    const newPivotVar = loVar + 1;
-    pivotVar = newPivotVar;
-    const pivotResponse = getResponse(pivotVar);
-    const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
-    if (pivotIsCompliant) {
-      loVar = pivotVar;
-    } else {
-      return loVar;
-    }
-  }
-  return pivotVar;
-}
+type NumberMap = (n: number) => number;
 
 /** @internal */
 export function monotonicHillClimb(
-  getResponse: (n: number) => number,
+  getResponse: NumberMap,
   maxVar: number,
   responseUpperConstraint: number,
+  domainSnap: NumberMap = (n: number) => n,
   minVar: number = 0,
 ) {
-  // Lowers iteration count by weakly assuming that there's eg. a `pixelWidth(text) ~ charLength(text)` relation, ie. instead of pivoting
-  // at the 50% midpoint like a basic binary search would do, it takes proportions into account. Still works if assumption is false.
-  // It's usable for all problems where there's a monotonic relationship between the constrained output and the variable
-  // (eg. can maximize font size etc.)
-  let loVar = minVar;
-  let hiVar = maxVar;
+  let loVar = domainSnap(minVar);
+  let hiVar = domainSnap(maxVar);
   let hiResponse = getResponse(hiVar);
 
-  if (hiResponse <= responseUpperConstraint) return maxVar; // early bail if maxVar is compliant
+  if (hiResponse <= responseUpperConstraint) {
+    return hiVar; // early bail if maxVar is compliant
+  }
 
   let pivotVar: number = NaN;
   let pivotResponse: number = NaN;
   let lastPivotResponse: number = NaN;
   while (loVar < hiVar) {
     const newPivotVar = (loVar + hiVar) / 2;
-    const newPivotResponse = getResponse(newPivotVar);
+    const newPivotResponse = getResponse(domainSnap(newPivotVar));
     if (newPivotResponse === pivotResponse || newPivotResponse === lastPivotResponse) {
-      return loVar; // bail if we're good and not making further progress
+      return domainSnap(loVar); // bail if we're good and not making further progress
     }
     pivotVar = newPivotVar;
     lastPivotResponse = pivotResponse; // for prevention of bistable oscillation around discretization snap
@@ -147,5 +113,5 @@ export function monotonicHillClimb(
       hiResponse = pivotResponse;
     }
   }
-  return pivotVar;
+  return domainSnap(pivotVar);
 }
