@@ -545,13 +545,9 @@ function getRowSet<C>(
 
   // find largest fitting font size
   const largestIndex = fontSizes.length - 1;
-  const fontSizeIndex = monotonicHillClimb(
-    (fontSizeIndex: number) =>
-      fontSizeIndex + (tryFunction(identityRowSet(), fontSizes[fontSizeIndex]).completed ? 0 : largestIndex + 1),
-    largestIndex,
-    largestIndex,
-    integerSnap,
-  );
+  const response = (index: number) =>
+    index + (tryFunction(identityRowSet(), fontSizes[index]).completed ? 0 : largestIndex + 1);
+  const fontSizeIndex = monotonicHillClimb(response, largestIndex, largestIndex, integerSnap);
 
   if (!(fontSizeIndex >= 0)) {
     return identityRowSet();
