@@ -330,6 +330,9 @@ function fill<C>(
     return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
       const { maxRowCount, fillLabel } = config;
 
+      const container = shapeConstructor(node);
+      const rotation = getRotation(node);
+
       const layer = layers[node.depth - 1] || {};
       const verticalAlignment = middleAlign
         ? VerticalAlignments.middle
@@ -376,8 +379,6 @@ function fill<C>(
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       let rowSet = identityRowSet();
       let completed = false;
-      const rotation = getRotation(node);
-      const container = shapeConstructor(node);
       const [cx, cy] = textFillOrigin;
 
       while (!completed && fontSizeIndex >= 0) {
