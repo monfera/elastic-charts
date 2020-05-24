@@ -373,7 +373,7 @@ function fill<C>(
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
 
-      const { rowSet, completed } = getRowSet(
+      const rowSet = getRowSet(
         allBoxes,
         maxRowCount,
         fontSizes,
@@ -390,7 +390,6 @@ function fill<C>(
         node,
       );
 
-      rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
       rowSet.fillTextColor = getFillTextColor(node.fillColor, textColor, textInvertible);
       return rowSet;
     };
@@ -519,7 +518,8 @@ function getRowSet<C>(
       }
     }
   }
-  return { rowSet, completed };
+  rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
+  return rowSet;
 }
 
 /** @internal */
