@@ -396,6 +396,122 @@ function fill<C>(
   };
 }
 
+function tryFontSize<C>(
+  state: { rowSet: RowSet; completed: boolean; fontSizeIndex: number },
+  measure: TextMeasure,
+  rotation: Radian,
+  verticalAlignment: VerticalAlignments,
+  leftAlign: boolean,
+  container: C,
+  getShapeRowGeometry: GetShapeRowGeometry<C>,
+  cx: Coordinate,
+  cy: Coordinate,
+  padding: number,
+  node: ShapeTreeNode,
+  boxes: Box[],
+  maxRowCount: number,
+  fontSize: Pixels,
+) {
+  const wordSpacing = getWordSpacing(fontSize);
+
+  // model text pieces, obtaining their width at the current font size
+  const measurements = measure(fontSize, boxes);
+  const allMeasuredBoxes: RowBox[] = measurements.map(
+    ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
+      width,
+      verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
+      wordBeginning: NaN,
+      ...boxes[i],
+      fontSize, // iterated fontSize overrides a possible more global fontSize
+    }),
+  );
+  const linePitch = fontSize;
+
+  // rowSet building starts
+  let targetRowCount = 0;
+  let measuredBoxes = allMeasuredBoxes.slice();
+  let innerCompleted = false;
+
+  // iterate through possible target row counts
+  while (++targetRowCount <= maxRowCount && !innerCompleted) {
+    measuredBoxes = allMeasuredBoxes.slice();
+    state.rowSet = {
+      id: nodeId(node),
+      fontSize,
+      fillTextColor: '',
+      rotation,
+      verticalAlignment,
+      leftAlign,
+      rows: [...Array(targetRowCount)].map(() => ({
+        rowWords: [],
+        rowAnchorX: NaN,
+        rowAnchorY: NaN,
+        maximumLength: NaN,
+        length: NaN,
+      })),
+      container,
+    };
+
+    let currentRowIndex = 0;
+
+    // iterate through rows
+    while (currentRowIndex < targetRowCount) {
+      const currentRow = state.rowSet.rows[currentRowIndex];
+      const currentRowWords = currentRow.rowWords;
+
+      // current row geometries
+      const { maximumRowLength, rowAnchorX, rowAnchorY } = getShapeRowGeometry(
+        container,
+        cx,
+        cy,
+        targetRowCount,
+        linePitch,
+        currentRowIndex,
+        fontSize,
+        rotation,
+        verticalAlignment,
+        padding,
+      );
+
+      currentRow.rowAnchorX = rowAnchorX;
+      currentRow.rowAnchorY = rowAnchorY;
+      currentRow.maximumLength = maximumRowLength;
+
+      // row building starts
+      let currentRowLength = 0;
+      let rowHasRoom = true;
+
+      // iterate through words: keep adding words while there's room
+      while (measuredBoxes.length && rowHasRoom) {
+        // adding box to row
+        const currentBox = measuredBoxes[0];
+
+        const wordBeginning = currentRowLength;
+        currentRowLength += currentBox.width + wordSpacing;
+
+        if (currentRowLength <= currentRow.maximumLength) {
+          currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
+          currentRow.length = currentRowLength;
+          measuredBoxes.shift();
+        } else {
+          rowHasRoom = false;
+        }
+      }
+
+      currentRowIndex++;
+    }
+
+    innerCompleted = rowSetComplete(state.rowSet, measuredBoxes);
+  }
+  {
+    // row building conditions
+    state.completed = !measuredBoxes.length;
+    if (!state.completed) {
+      state.fontSizeIndex -= 1;
+    }
+  }
+}
+
 function getRowSet<C>(
   boxes: Box[],
   maxRowCount: number,
@@ -411,114 +527,33 @@ function getRowSet<C>(
   padding: number,
   node: ShapeTreeNode,
 ) {
-  let rowSet = identityRowSet();
-  let completed = false;
-  let fontSizeIndex = fontSizes.length - 1;
+  const state = {
+    rowSet: identityRowSet(),
+    completed: false,
+    fontSizeIndex: fontSizes.length - 1,
+  };
 
   // iterate through font sizes from largest to smallest
-  while (!completed && fontSizeIndex >= 0) {
-    const fontSize = fontSizes[fontSizeIndex];
-    const wordSpacing = getWordSpacing(fontSize);
-
-    // model text pieces, obtaining their width at the current font size
-    const measurements = measure(fontSize, boxes);
-    const allMeasuredBoxes: RowBox[] = measurements.map(
-      ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
-        width,
-        verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
-        wordBeginning: NaN,
-        ...boxes[i],
-        fontSize, // iterated fontSize overrides a possible more global fontSize
-      }),
+  while (!state.completed && state.fontSizeIndex >= 0) {
+    tryFontSize(
+      state,
+      measure,
+      rotation,
+      verticalAlignment,
+      leftAlign,
+      container,
+      getShapeRowGeometry,
+      cx,
+      cy,
+      padding,
+      node,
+      boxes,
+      maxRowCount,
+      fontSizes[state.fontSizeIndex],
     );
-    const linePitch = fontSize;
-
-    // rowSet building starts
-    let targetRowCount = 0;
-    let measuredBoxes = allMeasuredBoxes.slice();
-    let innerCompleted = false;
-
-    // iterate through possible target row counts
-    while (++targetRowCount <= maxRowCount && !innerCompleted) {
-      measuredBoxes = allMeasuredBoxes.slice();
-      rowSet = {
-        id: nodeId(node),
-        fontSize,
-        fillTextColor: '',
-        rotation,
-        verticalAlignment,
-        leftAlign,
-        rows: [...Array(targetRowCount)].map(() => ({
-          rowWords: [],
-          rowAnchorX: NaN,
-          rowAnchorY: NaN,
-          maximumLength: NaN,
-          length: NaN,
-        })),
-        container,
-      };
-
-      let currentRowIndex = 0;
-
-      // iterate through rows
-      while (currentRowIndex < targetRowCount) {
-        const currentRow = rowSet.rows[currentRowIndex];
-        const currentRowWords = currentRow.rowWords;
-
-        // current row geometries
-        const { maximumRowLength, rowAnchorX, rowAnchorY } = getShapeRowGeometry(
-          container,
-          cx,
-          cy,
-          targetRowCount,
-          linePitch,
-          currentRowIndex,
-          fontSize,
-          rotation,
-          verticalAlignment,
-          padding,
-        );
-
-        currentRow.rowAnchorX = rowAnchorX;
-        currentRow.rowAnchorY = rowAnchorY;
-        currentRow.maximumLength = maximumRowLength;
-
-        // row building starts
-        let currentRowLength = 0;
-        let rowHasRoom = true;
-
-        // iterate through words: keep adding words while there's room
-        while (measuredBoxes.length && rowHasRoom) {
-          // adding box to row
-          const currentBox = measuredBoxes[0];
-
-          const wordBeginning = currentRowLength;
-          currentRowLength += currentBox.width + wordSpacing;
-
-          if (currentRowLength <= currentRow.maximumLength) {
-            currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
-            currentRow.length = currentRowLength;
-            measuredBoxes.shift();
-          } else {
-            rowHasRoom = false;
-          }
-        }
-
-        currentRowIndex++;
-      }
-
-      innerCompleted = rowSetComplete(rowSet, measuredBoxes);
-    }
-    {
-      // row building conditions
-      completed = !measuredBoxes.length;
-      if (!completed) {
-        fontSizeIndex -= 1;
-      }
-    }
   }
-  rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
-  return rowSet;
+  state.rowSet.rows = state.rowSet.rows.filter((r) => state.completed && !isNaN(r.length));
+  return state.rowSet;
 }
 
 /** @internal */
