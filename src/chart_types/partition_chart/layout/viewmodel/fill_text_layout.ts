@@ -392,14 +392,16 @@ function fill<C>(
         cy,
         padding,
         node,
-        shapeFillColor,
-        textInvertible,
-        specifiedTextColorIsDark,
-        textColor,
-        tr,
-        tg,
-        tb,
-        to,
+        {
+          shapeFillColor,
+          textInvertible,
+          specifiedTextColorIsDark,
+          textColor,
+          tr,
+          tg,
+          tb,
+          to,
+        },
       );
 
       rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
@@ -423,14 +425,16 @@ function getRowSet<C>(
   cy: Coordinate,
   padding: number,
   node: ShapeTreeNode,
-  shapeFillColor: string,
-  textInvertible: boolean,
-  specifiedTextColorIsDark: boolean,
-  textColor: string,
-  tr: number,
-  tg: number,
-  tb: number,
-  to: number,
+  c: {
+    shapeFillColor: string;
+    textInvertible: boolean;
+    specifiedTextColorIsDark: boolean;
+    textColor: string;
+    tr: number;
+    tg: number;
+    tb: number;
+    to: number;
+  },
 ) {
   let rowSet = identityRowSet();
   let completed = false;
@@ -459,8 +463,8 @@ function getRowSet<C>(
 
     while (++targetRowCount <= maxRowCount && !innerCompleted) {
       measuredBoxes = allMeasuredBoxes.slice();
-      const backgroundIsDark = colorIsDark(shapeFillColor);
-      const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+      const backgroundIsDark = colorIsDark(c.shapeFillColor);
+      const inverseForContrast = c.textInvertible && c.specifiedTextColorIsDark === backgroundIsDark;
       rowSet = {
         id: nodeId(node),
         fontSize,
@@ -468,10 +472,10 @@ function getRowSet<C>(
         // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
         // todo factor out the discretization into a => FontWeight function
         fillTextColor: inverseForContrast
-          ? to === undefined
-            ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-            : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-          : textColor,
+          ? c.to === undefined
+            ? `rgb(${255 - c.tr}, ${255 - c.tg}, ${255 - c.tb})`
+            : `rgba(${255 - c.tr}, ${255 - c.tg}, ${255 - c.tb}, ${c.to})`
+          : c.textColor,
         rotation,
         verticalAlignment,
         leftAlign,
