@@ -397,7 +397,7 @@ function fill<C>(
 }
 
 function tryFontSize<C>(
-  state: { rowSet: RowSet },
+  initialRowSet: RowSet,
   measure: TextMeasure,
   rotation: Radian,
   verticalAlignment: VerticalAlignments,
@@ -412,6 +412,8 @@ function tryFontSize<C>(
   maxRowCount: number,
   fontSize: Pixels,
 ) {
+  let rowSet: RowSet = initialRowSet;
+
   const wordSpacing = getWordSpacing(fontSize);
 
   // model text pieces, obtaining their width at the current font size
@@ -435,7 +437,7 @@ function tryFontSize<C>(
   // iterate through possible target row counts
   while (++targetRowCount <= maxRowCount && !innerCompleted) {
     measuredBoxes = allMeasuredBoxes.slice();
-    state.rowSet = {
+    rowSet = {
       id: nodeId(node),
       fontSize,
       fillTextColor: '',
@@ -456,7 +458,7 @@ function tryFontSize<C>(
 
     // iterate through rows
     while (currentRowIndex < targetRowCount) {
-      const currentRow = state.rowSet.rows[currentRowIndex];
+      const currentRow = rowSet.rows[currentRowIndex];
       const currentRowWords = currentRow.rowWords;
 
       // current row geometries
@@ -501,10 +503,10 @@ function tryFontSize<C>(
       currentRowIndex++;
     }
 
-    innerCompleted = rowSetComplete(state.rowSet, measuredBoxes);
+    innerCompleted = rowSetComplete(rowSet, measuredBoxes);
   }
   const completed = !measuredBoxes.length;
-  return completed;
+  return { rowSet, completed };
 }
 
 function getRowSet<C>(
@@ -522,14 +524,14 @@ function getRowSet<C>(
   padding: number,
   node: ShapeTreeNode,
 ) {
-  const state = { rowSet: identityRowSet() };
   let fontSizeIndex = fontSizes.length;
+  let rowSet = identityRowSet();
   let completed = false;
 
   // iterate through font sizes from largest to smallest
   while (!completed && --fontSizeIndex >= 0) {
-    completed = tryFontSize(
-      state,
+    const result = tryFontSize(
+      rowSet,
       measure,
       rotation,
       verticalAlignment,
@@ -544,9 +546,11 @@ function getRowSet<C>(
       maxRowCount,
       fontSizes[fontSizeIndex],
     );
+    rowSet = result.rowSet;
+    completed = result.completed;
   }
-  state.rowSet.rows = state.rowSet.rows.filter((r) => completed && !isNaN(r.length));
-  return state.rowSet;
+  rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
+  return rowSet;
 }
 
 /** @internal */
