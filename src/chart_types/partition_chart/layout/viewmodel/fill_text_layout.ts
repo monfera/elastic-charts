@@ -538,10 +538,6 @@ function getRowSet<C>(
     boxes,
     maxRowCount,
   );
-  let iteration = {
-    rowSet: identityRowSet(),
-    completed: false,
-  };
 
   // find largest fitting font size
   const largestIndex = fontSizes.length - 1;
@@ -553,10 +549,8 @@ function getRowSet<C>(
     return identityRowSet();
   }
 
-  iteration = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]);
-
-  iteration.rowSet.rows = iteration.rowSet.rows.filter((r) => iteration.completed && !isNaN(r.length));
-  return iteration.rowSet;
+  const { rowSet, completed } = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]); // todo in the future, make the hill climber also yield the result to avoid this +1 call
+  return { ...rowSet, rows: rowSet.rows.filter((r) => completed && !isNaN(r.length)) };
 }
 
 /** @internal */
