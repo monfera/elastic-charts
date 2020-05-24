@@ -437,6 +437,8 @@ function getRowSet<C>(
   let rowSet = identityRowSet();
   let completed = false;
   let fontSizeIndex = initialFontSizeIndex;
+
+  // iterate through font sizes from largest to smallest
   while (!completed && fontSizeIndex >= 0) {
     const fontSize = fontSizes[fontSizeIndex];
     const wordSpacing = getWordSpacing(fontSize);
@@ -459,14 +461,12 @@ function getRowSet<C>(
     let measuredBoxes = allMeasuredBoxes.slice();
     let innerCompleted = false;
 
+    // iterate through possible target row counts
     while (++targetRowCount <= maxRowCount && !innerCompleted) {
       measuredBoxes = allMeasuredBoxes.slice();
       rowSet = {
         id: nodeId(node),
         fontSize,
-        // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
-        // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
-        // todo factor out the discretization into a => FontWeight function
         fillTextColor: '',
         rotation,
         verticalAlignment,
@@ -482,6 +482,8 @@ function getRowSet<C>(
       };
 
       let currentRowIndex = 0;
+
+      // iterate through rows
       while (currentRowIndex < targetRowCount) {
         const currentRow = rowSet.rows[currentRowIndex];
         const currentRowWords = currentRow.rowWords;
@@ -508,7 +510,7 @@ function getRowSet<C>(
         let currentRowLength = 0;
         let rowHasRoom = true;
 
-        // keep adding words while there's room
+        // iterate through words: keep adding words while there's room
         while (measuredBoxes.length && rowHasRoom) {
           // adding box to row
           const currentBox = measuredBoxes[0];
