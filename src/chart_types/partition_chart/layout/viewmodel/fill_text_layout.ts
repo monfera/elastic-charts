@@ -525,13 +525,15 @@ function getRowSet<C>(
   node: ShapeTreeNode,
 ) {
   let fontSizeIndex = fontSizes.length;
-  let rowSet = identityRowSet();
-  let completed = false;
+  let iteration = {
+    rowSet: identityRowSet(),
+    completed: false,
+  };
 
   // iterate through font sizes from largest to smallest
-  while (!completed && --fontSizeIndex >= 0) {
-    const result = tryFontSize(
-      rowSet,
+  while (!iteration.completed && --fontSizeIndex >= 0) {
+    iteration = tryFontSize(
+      iteration.rowSet,
       measure,
       rotation,
       verticalAlignment,
@@ -546,11 +548,10 @@ function getRowSet<C>(
       maxRowCount,
       fontSizes[fontSizeIndex],
     );
-    rowSet = result.rowSet;
-    completed = result.completed;
   }
-  rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
-  return rowSet;
+
+  iteration.rowSet.rows = iteration.rowSet.rows.filter((r) => iteration.completed && !isNaN(r.length));
+  return iteration.rowSet;
 }
 
 /** @internal */
