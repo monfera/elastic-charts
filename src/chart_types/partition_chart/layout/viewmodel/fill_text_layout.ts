@@ -313,180 +313,183 @@ type ShapeConstructor<C> = (n: ShapeTreeNode) => C;
 type NodeWithOrigin = { node: QuadViewModel; origin: PointTuple };
 
 function fill<C>(
-  config: Config,
-  layers: Layer[],
-  measure: TextMeasure,
-  rawTextGetter: RawTextGetter,
-  valueGetter: ValueGetterFunction,
-  formatter: ValueFormatter,
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
-  getRotation: Function,
-  leftAlign: boolean,
-  middleAlign: boolean,
+  getRotation: GetRotation,
 ) {
-  return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
-    const { maxRowCount, fillLabel } = config;
+  return function(
+    config: Config,
+    layers: Layer[],
+    measure: TextMeasure,
+    rawTextGetter: RawTextGetter,
+    valueGetter: ValueGetterFunction,
+    formatter: ValueFormatter,
+    leftAlign: boolean,
+    middleAlign: boolean,
+  ) {
+    return (allFontSizes: Pixels[][], textFillOrigin: PointTuple, node: QuadViewModel): RowSet => {
+      const { maxRowCount, fillLabel } = config;
 
-    const layer = layers[node.depth - 1] || {};
-    const verticalAlignment = middleAlign
-      ? VerticalAlignments.middle
-      : node.depth < layers.length
-      ? VerticalAlignments.bottom
-      : VerticalAlignments.top;
-    const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
-    const {
-      textColor,
-      textInvertible,
-      fontStyle,
-      fontVariant,
-      fontFamily,
-      fontWeight,
-      valueFormatter,
-      padding,
-    } = Object.assign(
-      { fontFamily: config.fontFamily, fontWeight: 'normal', padding: 2 },
-      fillLabel,
-      { valueFormatter: formatter },
-      layer.fillLabel,
-      layer.shape,
-    );
-
-    const valueFont = Object.assign(
-      { fontFamily: config.fontFamily, fontWeight: 'normal' },
-      config.fillLabel && config.fillLabel.valueFont,
-      fillLabel,
-      fillLabel.valueFont,
-      layer.fillLabel,
-      layer.fillLabel && layer.fillLabel.valueFont,
-    );
-
-    const specifiedTextColorIsDark = colorIsDark(textColor);
-    const shapeFillColor = node.fillColor;
-    const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
-    let fontSizeIndex = fontSizes.length - 1;
-    const sizeInvariantFont: Font = {
-      fontStyle,
-      fontVariant,
-      fontWeight,
-      fontFamily,
-    };
-    const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
-    let rowSet = identityRowSet();
-    let completed = false;
-    const rotation = getRotation(node);
-    const container = shapeConstructor(node);
-    const [cx, cy] = textFillOrigin;
-
-    while (!completed && fontSizeIndex >= 0) {
-      const fontSize = fontSizes[fontSizeIndex];
-      const wordSpacing = getWordSpacing(fontSize);
-
-      // model text pieces, obtaining their width at the current font size
-      const measurements = measure(fontSize, allBoxes);
-      const allMeasuredBoxes: RowBox[] = measurements.map(
-        ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
-          width,
-          verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
-          wordBeginning: NaN,
-          ...allBoxes[i],
-          fontSize, // iterated fontSize overrides a possible more global fontSize
-        }),
+      const layer = layers[node.depth - 1] || {};
+      const verticalAlignment = middleAlign
+        ? VerticalAlignments.middle
+        : node.depth < layers.length
+        ? VerticalAlignments.bottom
+        : VerticalAlignments.top;
+      const fontSizes = allFontSizes[Math.min(node.depth, allFontSizes.length) - 1];
+      const {
+        textColor,
+        textInvertible,
+        fontStyle,
+        fontVariant,
+        fontFamily,
+        fontWeight,
+        valueFormatter,
+        padding,
+      } = Object.assign(
+        { fontFamily: config.fontFamily, fontWeight: 'normal', padding: 2 },
+        fillLabel,
+        { valueFormatter: formatter },
+        layer.fillLabel,
+        layer.shape,
       );
-      const linePitch = fontSize;
 
-      // rowSet building starts
-      let targetRowCount = 0;
-      let measuredBoxes = allMeasuredBoxes.slice();
-      let innerCompleted = false;
+      const valueFont = Object.assign(
+        { fontFamily: config.fontFamily, fontWeight: 'normal' },
+        config.fillLabel && config.fillLabel.valueFont,
+        fillLabel,
+        fillLabel.valueFont,
+        layer.fillLabel,
+        layer.fillLabel && layer.fillLabel.valueFont,
+      );
 
-      while (++targetRowCount <= maxRowCount && !innerCompleted) {
-        measuredBoxes = allMeasuredBoxes.slice();
-        const backgroundIsDark = colorIsDark(shapeFillColor);
-        const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
-        rowSet = {
-          id: nodeId(node),
-          fontSize,
-          // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
-          // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
-          // todo factor out the discretization into a => FontWeight function
-          fillTextColor: inverseForContrast
-            ? to === undefined
-              ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
-              : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
-            : textColor,
-          rotation,
-          verticalAlignment,
-          leftAlign: leftAlign,
-          rows: [...Array(targetRowCount)].map(() => ({
-            rowWords: [],
-            rowAnchorX: NaN,
-            rowAnchorY: NaN,
-            maximumLength: NaN,
-            length: NaN,
-          })),
-          container,
-        };
+      const specifiedTextColorIsDark = colorIsDark(textColor);
+      const shapeFillColor = node.fillColor;
+      const { r: tr, g: tg, b: tb, opacity: to } = stringToRGB(textColor);
+      let fontSizeIndex = fontSizes.length - 1;
+      const sizeInvariantFont: Font = {
+        fontStyle,
+        fontVariant,
+        fontWeight,
+        fontFamily,
+      };
+      const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
+      let rowSet = identityRowSet();
+      let completed = false;
+      const rotation = getRotation(node);
+      const container = shapeConstructor(node);
+      const [cx, cy] = textFillOrigin;
 
-        let currentRowIndex = 0;
-        while (currentRowIndex < targetRowCount) {
-          const currentRow = rowSet.rows[currentRowIndex];
-          const currentRowWords = currentRow.rowWords;
+      while (!completed && fontSizeIndex >= 0) {
+        const fontSize = fontSizes[fontSizeIndex];
+        const wordSpacing = getWordSpacing(fontSize);
 
-          // current row geometries
-          const { maximumRowLength, rowAnchorX, rowAnchorY } = getShapeRowGeometry(
-            container,
-            cx,
-            cy,
-            targetRowCount,
-            linePitch,
-            currentRowIndex,
+        // model text pieces, obtaining their width at the current font size
+        const measurements = measure(fontSize, allBoxes);
+        const allMeasuredBoxes: RowBox[] = measurements.map(
+          ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
+            width,
+            verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
+            wordBeginning: NaN,
+            ...allBoxes[i],
+            fontSize, // iterated fontSize overrides a possible more global fontSize
+          }),
+        );
+        const linePitch = fontSize;
+
+        // rowSet building starts
+        let targetRowCount = 0;
+        let measuredBoxes = allMeasuredBoxes.slice();
+        let innerCompleted = false;
+
+        while (++targetRowCount <= maxRowCount && !innerCompleted) {
+          measuredBoxes = allMeasuredBoxes.slice();
+          const backgroundIsDark = colorIsDark(shapeFillColor);
+          const inverseForContrast = textInvertible && specifiedTextColorIsDark === backgroundIsDark;
+          rowSet = {
+            id: nodeId(node),
             fontSize,
+            // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
+            // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
+            // todo factor out the discretization into a => FontWeight function
+            fillTextColor: inverseForContrast
+              ? to === undefined
+                ? `rgb(${255 - tr}, ${255 - tg}, ${255 - tb})`
+                : `rgba(${255 - tr}, ${255 - tg}, ${255 - tb}, ${to})`
+              : textColor,
             rotation,
             verticalAlignment,
-            padding,
-          );
+            leftAlign: leftAlign,
+            rows: [...Array(targetRowCount)].map(() => ({
+              rowWords: [],
+              rowAnchorX: NaN,
+              rowAnchorY: NaN,
+              maximumLength: NaN,
+              length: NaN,
+            })),
+            container,
+          };
 
-          currentRow.rowAnchorX = rowAnchorX;
-          currentRow.rowAnchorY = rowAnchorY;
-          currentRow.maximumLength = maximumRowLength;
+          let currentRowIndex = 0;
+          while (currentRowIndex < targetRowCount) {
+            const currentRow = rowSet.rows[currentRowIndex];
+            const currentRowWords = currentRow.rowWords;
 
-          // row building starts
-          let currentRowLength = 0;
-          let rowHasRoom = true;
+            // current row geometries
+            const { maximumRowLength, rowAnchorX, rowAnchorY } = getShapeRowGeometry(
+              container,
+              cx,
+              cy,
+              targetRowCount,
+              linePitch,
+              currentRowIndex,
+              fontSize,
+              rotation,
+              verticalAlignment,
+              padding,
+            );
 
-          // keep adding words while there's room
-          while (measuredBoxes.length && rowHasRoom) {
-            // adding box to row
-            const currentBox = measuredBoxes[0];
+            currentRow.rowAnchorX = rowAnchorX;
+            currentRow.rowAnchorY = rowAnchorY;
+            currentRow.maximumLength = maximumRowLength;
 
-            const wordBeginning = currentRowLength;
-            currentRowLength += currentBox.width + wordSpacing;
+            // row building starts
+            let currentRowLength = 0;
+            let rowHasRoom = true;
 
-            if (currentRowLength <= currentRow.maximumLength) {
-              currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
-              currentRow.length = currentRowLength;
-              measuredBoxes.shift();
-            } else {
-              rowHasRoom = false;
+            // keep adding words while there's room
+            while (measuredBoxes.length && rowHasRoom) {
+              // adding box to row
+              const currentBox = measuredBoxes[0];
+
+              const wordBeginning = currentRowLength;
+              currentRowLength += currentBox.width + wordSpacing;
+
+              if (currentRowLength <= currentRow.maximumLength) {
+                currentRowWords.push(Object.assign({}, currentBox, { wordBeginning }));
+                currentRow.length = currentRowLength;
+                measuredBoxes.shift();
+              } else {
+                rowHasRoom = false;
+              }
             }
+
+            currentRowIndex++;
           }
 
-          currentRowIndex++;
+          innerCompleted = rowSetComplete(rowSet, measuredBoxes);
         }
-
-        innerCompleted = rowSetComplete(rowSet, measuredBoxes);
-      }
-      {
-        // row building conditions
-        completed = !measuredBoxes.length;
-        if (!completed) {
-          fontSizeIndex -= 1;
+        {
+          // row building conditions
+          completed = !measuredBoxes.length;
+          if (!completed) {
+            fontSizeIndex -= 1;
+          }
         }
       }
-    }
-    rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
-    return rowSet;
+      rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
+      return rowSet;
+    };
   };
 }
 
@@ -501,12 +504,15 @@ export function inSectorRotation(horizontalTextEnforcer: number, horizontalTextA
   };
 }
 
+type GetRotation = (node: ShapeTreeNode) => Radian;
+
 /** @internal */
 export function fillTextLayout<C>(
   shapeConstructor: ShapeConstructor<C>,
   getShapeRowGeometry: GetShapeRowGeometry<C>,
-  getRotation: (node: ShapeTreeNode) => Radian,
+  getRotation: GetRotation,
 ) {
+  const specificFiller = fill(shapeConstructor, getShapeRowGeometry, getRotation);
   return function(
     measure: TextMeasure,
     rawTextGetter: RawTextGetter,
@@ -539,16 +545,13 @@ export function fillTextLayout<C>(
       allFontSizes.push(fontSizes);
     }
 
-    const filler = fill(
+    const filler = specificFiller(
       config,
       layers,
       measure,
       rawTextGetter,
       valueGetter,
       valueFormatter,
-      shapeConstructor,
-      getShapeRowGeometry,
-      getRotation,
       leftAlign,
       middleAlign,
     );
