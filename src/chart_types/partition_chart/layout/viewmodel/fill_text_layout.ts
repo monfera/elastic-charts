@@ -553,6 +553,10 @@ function getRowSet<C>(
     integerSnap,
   );
 
+  if (!(fontSizeIndex >= 0)) {
+    return identityRowSet();
+  }
+
   iteration = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]);
 
   iteration.rowSet.rows = iteration.rowSet.rows.filter((r) => iteration.completed && !isNaN(r.length));
