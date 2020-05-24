@@ -408,28 +408,28 @@ function fill<C>(
   };
 }
 
-function getRowSet(
-  allBoxes: any[],
+function getRowSet<C>(
+  allBoxes: Box[],
   maxRowCount: number,
-  fontSizes: number[],
+  fontSizes: Pixels[],
   shapeFillColor: string,
-  textInvertible: any,
+  textInvertible: boolean,
   initialFontSizeIndex: number,
   specifiedTextColorIsDark: boolean,
-  measure: { (fontSize: number, boxes: Box[]): TextMetrics[]; (arg0: any, arg1: any): any },
+  measure: TextMeasure,
   textColor: string,
   tr: number,
   tg: number,
   tb: number,
-  to: number | undefined,
-  rotation: number,
+  to: number,
+  rotation: Radian,
   verticalAlignment: VerticalAlignments,
   leftAlign: boolean,
-  container: any,
-  getShapeRowGeometry: Function,
-  cx: number,
-  cy: number,
-  padding: any,
+  container: C,
+  getShapeRowGeometry: GetShapeRowGeometry<C>,
+  cx: Coordinate,
+  cy: Coordinate,
+  padding: number,
   node: ShapeTreeNode,
 ) {
   let rowSet = identityRowSet();
