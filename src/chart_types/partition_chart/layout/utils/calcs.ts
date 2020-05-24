@@ -71,8 +71,13 @@ export function getFillTextColor(shapeFillColor: Color, textColor: Color, textIn
 }
 
 /** @internal */
-export function integer(n: number) {
+export function floor(n: number) {
   return Math.floor(n);
+}
+
+/** @internal */
+export function round(n: number) {
+  return Math.round(n);
 }
 
 /** @internal */
@@ -140,7 +145,7 @@ export function monotonicHillClimb(
     const newPivotVar = loVar + (hiVar - loVar) * bisectRatio;
     const newPivotResponse = getResponse(newPivotVar);
     if (Math.abs(pivotResponse - newPivotResponse) < 1 / 1000 && pivotResponse !== newPivotResponse) debugger;
-    if (pivotResponse === newPivotResponse && pivotResponse <= responseUpperConstraint) {
+    if (pivotResponse === newPivotResponse) {
       return loVar; // bail if we're good and not making further progress
     }
     pivotVar = newPivotVar;

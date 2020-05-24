@@ -41,7 +41,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { getFillTextColor, integer, monotonicHillClimb, monotonicHillClimb0 } from '../utils/calcs';
+import { getFillTextColor, monotonicHillClimb, round } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
@@ -551,11 +551,11 @@ function getRowSet<C>(
 */
   const largestIndex = fontSizes.length - 1;
   console.log('new one');
-  const fontSizeIndex = integer(
+  const fontSizeIndex = round(
     monotonicHillClimb(
       (fontSizeIndex: number) =>
-        integer(fontSizeIndex) +
-        (tryFunction(identityRowSet(), fontSizes[integer(fontSizeIndex)]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
+        round(fontSizeIndex) +
+        (tryFunction(identityRowSet(), fontSizes[round(fontSizeIndex)]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
       largestIndex,
       largestIndex,
     ),
