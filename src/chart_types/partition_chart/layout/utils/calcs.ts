@@ -71,6 +71,11 @@ export function getFillTextColor(shapeFillColor: Color, textColor: Color, textIn
 }
 
 /** @internal */
+export function integerRound(n: number) {
+  return Math.round(n);
+}
+
+/** @internal */
 export function monotonicHillClimb(
   getResponse: (n: number) => number,
   maxVar: number,

@@ -24,7 +24,7 @@ import { meanAngle } from '../geometry';
 import { Box, Font, TextAlign, TextMeasure } from '../types/types';
 import { ValueFormatter } from '../../../../utils/commons';
 import { Point } from '../../../../utils/point';
-import { monotonicHillClimb } from '../utils/calcs';
+import { integerRound, monotonicHillClimb } from '../utils/calcs';
 
 function cutToLength(s: string, maxLength: number) {
   return s.length <= maxLength ? s : `${s.substr(0, maxLength - 1)}…`; // ellipsis is one char
@@ -134,15 +134,11 @@ export function linkTextLayout(
     .filter((l: LinkLabelVM) => l.text !== ''); // cull linked labels whose text was truncated to nothing
 }
 
-function discreteLength(n: number) {
-  return Math.round(n);
-}
-
 function fitText(measure: TextMeasure, desiredText: string, allottedWidth: number, fontSize: number, box: Box) {
   const desiredLength = desiredText.length;
-  const visibleLength = discreteLength(
+  const visibleLength = integerRound(
     monotonicHillClimb(
-      (v: number) => measure(fontSize, [{ ...box, text: box.text.substr(0, discreteLength(v)) }])[0].width,
+      (v: number) => measure(fontSize, [{ ...box, text: box.text.substr(0, integerRound(v)) }])[0].width,
       desiredLength,
       allottedWidth,
     ),
