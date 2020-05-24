@@ -282,31 +282,18 @@ export function shapeViewModel<C>(
         inSectorRotation(config.horizontalTextEnforcer, config.horizontalTextAngleThreshold),
       );
 
-  const rowSets: RowSet[] = treemapLayout
-    ? partiallyApplied(
-        textMeasure,
-        rawTextGetter,
-        valueGetter,
-        valueFormatter,
-        nodesWithRoom,
-        config,
-        layers,
-        textFillOrigins,
-        treemapLayout,
-        !treemapLayout,
-      )
-    : partiallyApplied(
-        textMeasure,
-        rawTextGetter,
-        valueGetter,
-        valueFormatter,
-        nodesWithRoom,
-        config,
-        layers,
-        textFillOrigins,
-        treemapLayout,
-        !treemapLayout,
-      );
+  const rowSets: RowSet[] = partiallyApplied(
+    textMeasure,
+    rawTextGetter,
+    valueGetter,
+    valueFormatter,
+    nodesWithRoom,
+    config,
+    layers,
+    textFillOrigins,
+    treemapLayout,
+    !treemapLayout,
+  );
 
   // whiskers (ie. just lines, no text) for fill text outside the outer radius
   const outsideLinksViewModel = makeOutsideLinksViewModel(outsideFillNodes, rowSets, linkLabel.radiusPadding);
