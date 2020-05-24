@@ -375,10 +375,10 @@ function fill<C>(
         fontFamily,
       };
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
-      let rowSet = identityRowSet();
-      let completed = false;
       const [cx, cy] = textFillOrigin;
 
+      let rowSet = identityRowSet();
+      let completed = false;
       while (!completed && fontSizeIndex >= 0) {
         const fontSize = fontSizes[fontSizeIndex];
         const wordSpacing = getWordSpacing(fontSize);
@@ -486,6 +486,7 @@ function fill<C>(
           }
         }
       }
+
       rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
       return rowSet;
     };
