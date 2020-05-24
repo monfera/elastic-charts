@@ -397,7 +397,7 @@ function fill<C>(
 }
 
 function getRowSet<C>(
-  allBoxes: Box[],
+  boxes: Box[],
   maxRowCount: number,
   fontSizes: Pixels[],
   measure: TextMeasure,
@@ -421,13 +421,13 @@ function getRowSet<C>(
     const wordSpacing = getWordSpacing(fontSize);
 
     // model text pieces, obtaining their width at the current font size
-    const measurements = measure(fontSize, allBoxes);
+    const measurements = measure(fontSize, boxes);
     const allMeasuredBoxes: RowBox[] = measurements.map(
       ({ width, emHeightDescent, emHeightAscent }: TextMetrics, i: number) => ({
         width,
         verticalOffset: -(emHeightDescent + emHeightAscent) / 2, // meaning, `middle`,
         wordBeginning: NaN,
-        ...allBoxes[i],
+        ...boxes[i],
         fontSize, // iterated fontSize overrides a possible more global fontSize
       }),
     );
