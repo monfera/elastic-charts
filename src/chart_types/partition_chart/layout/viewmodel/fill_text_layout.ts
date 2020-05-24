@@ -41,7 +41,7 @@ import {
 import { Box, Font, PartialFont, TextMeasure } from '../types/types';
 import { conjunctiveConstraint } from '../circline_geometry';
 import { Layer } from '../../specs/index';
-import { getFillTextColor } from '../utils/calcs';
+import { getFillTextColor, integer, monotonicHillClimb, monotonicHillClimb0 } from '../utils/calcs';
 import { ValueFormatter } from '../../../../utils/commons';
 import { RectangleConstruction, VerticalAlignments } from './viewmodel';
 
@@ -538,18 +538,30 @@ function getRowSet<C>(
     boxes,
     maxRowCount,
   );
-  let fontSizeIndex = fontSizes.length;
   let iteration = {
     rowSet: identityRowSet(),
     completed: false,
   };
 
-  // iterate through font sizes from largest to smallest
+  // find largest fitting font size
+  /*
   while (!iteration.completed && --fontSizeIndex >= 0) {
     iteration = tryFunction(iteration.rowSet, fontSizes[fontSizeIndex]);
   }
+*/
+  const largestIndex = fontSizes.length - 1;
+  console.log('new one');
+  const fontSizeIndex = integer(
+    monotonicHillClimb(
+      (fontSizeIndex: number) =>
+        integer(fontSizeIndex) +
+        (tryFunction(identityRowSet(), fontSizes[integer(fontSizeIndex)]).completed ? 0 : largestIndex + 1), // arbitrary large number above `responseUpperConstraint`
+      largestIndex,
+      largestIndex,
+    ),
+  );
 
-  iteration = tryFunction(iteration.rowSet, fontSizes[fontSizeIndex]);
+  iteration = tryFunction(identityRowSet(), fontSizes[fontSizeIndex]);
 
   iteration.rowSet.rows = iteration.rowSet.rows.filter((r) => iteration.completed && !isNaN(r.length));
   return iteration.rowSet;

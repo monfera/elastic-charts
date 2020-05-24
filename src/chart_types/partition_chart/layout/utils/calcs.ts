@@ -97,6 +97,7 @@ export function monotonicHillClimb0(
 
   let pivotVar: number = loVar;
   while (loVar <= hiVar) {
+    console.log(pivotVar);
     const newPivotVar = loVar + 1;
     pivotVar = newPivotVar;
     const pivotResponse = getResponse(pivotVar);
@@ -132,14 +133,18 @@ export function monotonicHillClimb(
   if (hiResponse <= responseUpperConstraint) return maxVar; // early bail if maxVar is compliant
 
   let pivotVar: number = NaN;
+  let pivotResponse: number = NaN;
   while (loVar < hiVar) {
+    console.log(pivotVar);
     const bisectRatio = proportionalResponse ? (responseUpperConstraint - loResponse) / (hiResponse - loResponse) : 0.5;
     const newPivotVar = loVar + (hiVar - loVar) * bisectRatio;
-    if (pivotVar === newPivotVar) {
-      return loVar; // early bail if we're not making progress
+    const newPivotResponse = getResponse(newPivotVar);
+    if (Math.abs(pivotResponse - newPivotResponse) < 1 / 1000 && pivotResponse !== newPivotResponse) debugger;
+    if (pivotResponse === newPivotResponse && pivotResponse <= responseUpperConstraint) {
+      return loVar; // bail if we're good and not making further progress
     }
     pivotVar = newPivotVar;
-    const pivotResponse = getResponse(pivotVar);
+    pivotResponse = newPivotResponse;
     const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
     if (pivotIsCompliant) {
       loVar = pivotVar;
