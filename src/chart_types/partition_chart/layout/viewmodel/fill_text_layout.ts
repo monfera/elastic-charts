@@ -377,6 +377,17 @@ function fill<C>(
       const allBoxes = getAllBoxes(rawTextGetter, valueGetter, valueFormatter, sizeInvariantFont, valueFont, node);
       const [cx, cy] = textFillOrigin;
 
+      const color = {
+        shapeFillColor,
+        textInvertible,
+        specifiedTextColorIsDark,
+        textColor,
+        tr,
+        tg,
+        tb,
+        to,
+      };
+
       const { rowSet, completed } = getRowSet(
         allBoxes,
         maxRowCount,
@@ -392,19 +403,16 @@ function fill<C>(
         cy,
         padding,
         node,
-        {
-          shapeFillColor,
-          textInvertible,
-          specifiedTextColorIsDark,
-          textColor,
-          tr,
-          tg,
-          tb,
-          to,
-        },
       );
 
       rowSet.rows = rowSet.rows.filter((r) => completed && !isNaN(r.length));
+      const backgroundIsDark = colorIsDark(color.shapeFillColor);
+      const inverseForContrast = color.textInvertible && color.specifiedTextColorIsDark === backgroundIsDark;
+      rowSet.fillTextColor = inverseForContrast
+        ? color.to === undefined
+          ? `rgb(${255 - color.tr}, ${255 - color.tg}, ${255 - color.tb})`
+          : `rgba(${255 - color.tr}, ${255 - color.tg}, ${255 - color.tb}, ${color.to})`
+        : color.textColor;
       return rowSet;
     };
   };
@@ -425,27 +433,10 @@ function getRowSet<C>(
   cy: Coordinate,
   padding: number,
   node: ShapeTreeNode,
-  c: {
-    shapeFillColor: string;
-    textInvertible: boolean;
-    specifiedTextColorIsDark: boolean;
-    textColor: string;
-    tr: number;
-    tg: number;
-    tb: number;
-    to: number;
-  },
 ) {
   let rowSet = identityRowSet();
   let completed = false;
   let fontSizeIndex = initialFontSizeIndex;
-  const backgroundIsDark = colorIsDark(c.shapeFillColor);
-  const inverseForContrast = c.textInvertible && c.specifiedTextColorIsDark === backgroundIsDark;
-  const fillTextColor = inverseForContrast
-    ? c.to === undefined
-      ? `rgb(${255 - c.tr}, ${255 - c.tg}, ${255 - c.tb})`
-      : `rgba(${255 - c.tr}, ${255 - c.tg}, ${255 - c.tb}, ${c.to})`
-    : c.textColor;
   while (!completed && fontSizeIndex >= 0) {
     const fontSize = fontSizes[fontSizeIndex];
     const wordSpacing = getWordSpacing(fontSize);
@@ -476,7 +467,7 @@ function getRowSet<C>(
         // fontWeight must be a multiple of 100 for non-variable width fonts, otherwise weird things happen due to
         // https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight#Fallback_weights - Fallback weights
         // todo factor out the discretization into a => FontWeight function
-        fillTextColor,
+        fillTextColor: '',
         rotation,
         verticalAlignment,
         leftAlign,
