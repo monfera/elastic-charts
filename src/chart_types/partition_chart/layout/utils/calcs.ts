@@ -115,17 +115,13 @@ export function monotonicHillClimb(
   getResponse: (n: number) => number,
   maxVar: number,
   responseUpperConstraint: number,
-  proportionalResponse: boolean = false,
   minVar: number = 0,
-  responseForMinVar: number = 0,
 ) {
   // Lowers iteration count by weakly assuming that there's eg. a `pixelWidth(text) ~ charLength(text)` relation, ie. instead of pivoting
   // at the 50% midpoint like a basic binary search would do, it takes proportions into account. Still works if assumption is false.
   // It's usable for all problems where there's a monotonic relationship between the constrained output and the variable
   // (eg. can maximize font size etc.)
   let loVar = minVar;
-  let loResponse = responseForMinVar;
-
   let hiVar = maxVar;
   let hiResponse = getResponse(hiVar);
 
@@ -135,19 +131,17 @@ export function monotonicHillClimb(
   let pivotResponse: number = NaN;
   let lastPivotResponse: number = NaN;
   while (loVar < hiVar) {
-    const bisectRatio = proportionalResponse ? (responseUpperConstraint - loResponse) / (hiResponse - loResponse) : 0.5;
-    const newPivotVar = loVar + (hiVar - loVar) * bisectRatio;
+    const newPivotVar = (loVar + hiVar) / 2;
     const newPivotResponse = getResponse(newPivotVar);
     if (newPivotResponse === pivotResponse || newPivotResponse === lastPivotResponse) {
       return loVar; // bail if we're good and not making further progress
     }
     pivotVar = newPivotVar;
-    lastPivotResponse = pivotResponse;
+    lastPivotResponse = pivotResponse; // for prevention of bistable oscillation around discretization snap
     pivotResponse = newPivotResponse;
     const pivotIsCompliant = pivotResponse <= responseUpperConstraint;
     if (pivotIsCompliant) {
       loVar = pivotVar;
-      loResponse = pivotResponse;
     } else {
       hiVar = pivotVar;
       hiResponse = pivotResponse;
