@@ -358,11 +358,10 @@ function fill<C>(
 
       const valueFont = Object.assign(
         { fontFamily: configFontFamily, fontWeight: 'normal' },
-        fillLabel && fillLabel.valueFont,
         fillLabel,
         fillLabel.valueFont,
         layer.fillLabel,
-        layer.fillLabel && layer.fillLabel.valueFont,
+        layer.fillLabel?.valueFont,
       );
 
       const specifiedTextColorIsDark = colorIsDark(textColor);
