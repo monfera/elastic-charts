@@ -90,13 +90,13 @@ export function monotonicHillClimb(
   let hiVar = domainSnap(maxVar);
   let hiResponse = getResponse(hiVar);
 
-  if (hiResponse <= responseUpperConstraint || loVar >= hiVar) {
-    return hiVar; // early bail if maxVar is compliant
-  }
-
-  if (loResponse > responseUpperConstraint) {
+  if (loResponse > responseUpperConstraint || loVar > hiVar) {
     // bail if even the lowest value doesn't satisfy the constraint
     return NaN;
+  }
+
+  if (hiResponse <= responseUpperConstraint) {
+    return hiVar; // early bail if maxVar is compliant
   }
 
   let pivotVar: number = NaN;
